@@ -52,10 +52,7 @@ function HomepageHeader() {
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <Layout
-      title={siteConfig.title}
-      description="A next-gen 2D game engine built for making games fast."
-    >
+    <Layout description="A next-gen 2D game engine built for making games fast. We aim to make it possible for anyone to create a game in any genre in < 24h that can run on any platform or device.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
