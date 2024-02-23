@@ -1,0 +1,9 @@
+# Start a New Project
+
+To start a new project, you can run the `turbo init` command with your project name:
+
+```bash
+turbo init my-awesome-game
+```
+
+This will initialize a Rust crate in a dir called `my-awesome-game` that you can open in your favorite code editor.

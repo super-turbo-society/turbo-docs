@@ -1,0 +1,146 @@
+# Gamepad
+
+:::info Virtual Gamepad
+
+Turbo's concept of a "gamepad" is similar to a SNES controller and maps up to 2 player's local gamepad input to the keyboard:
+
+| Gamepad | Keyboard (P1)       | Keyboard (P2) |
+| ------- | ------------------- | ------------- |
+| Up      | `W` or `UpArrow`    | `I`           |
+| Down    | `A` or `DownArrow`  | `J`           |
+| Left    | `S` or `LeftArrow`  | `K`           |
+| Right   | `D` or `RightArrow` | `L`           |
+| A       | `Z`                 | `M`           |
+| B       | `X`                 | `,`           |
+| X       | `C`                 | `.`           |
+| Y       | `V`                 | `/`           |
+| Start   | `Space`             | `[`           |
+| Select  | `Enter`             | `]`           |
+
+Turbo will support actual gamepads with this API in a future update.
+
+:::
+
+## `gamepad`
+
+```rust title="turbo::input"
+pub fn gamepad(player: u32) -> Gamepad<Button>
+```
+
+| Param    | Type  | Default | Description                         |
+| :------- | :---- | :------ | :---------------------------------- |
+| `player` | `u32` |         | The player to get gamepad input for |
+
+<details>
+<summary>**`Gamepad`**</summary>
+
+```rust title="turbo::input"
+/// Represents the state of various gamepad buttons.
+#[repr(C, packed)]
+#[derive(Clone, Copy, Debug, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
+pub struct Gamepad<T: Copy> {
+    /// The state of the up button.
+    pub up: T,
+    /// The state of the down button.
+    pub down: T,
+    /// The state of the left button.
+    pub left: T,
+    /// The state of the right button.
+    pub right: T,
+    /// The state of the A button.
+    pub a: T,
+    /// The state of the B button.
+    pub b: T,
+    /// The state of the X button.
+    pub x: T,
+    /// The state of the Y button.
+    pub y: T,
+    /// The state of the Start button.
+    pub start: T,
+    /// The state of the Select button.
+    pub select: T,
+}
+```
+
+</details>
+
+<details>
+<summary>**`Button`**</summary>
+
+```rust title="turbo::input"
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Button {
+    Released = 0,
+    JustPressed = 1,
+    Pressed = 2,
+    JustReleased = 3,
+}
+```
+
+</details>
+
+### Basics
+
+To retrieve the gamepad state of a player, use the `gamepad` function. The player is `0`-indexed, so `0` is player 1, `1` is player 2, etc.
+
+```rust
+// Get the gamepad state for player 1
+let p1_gamepad = gamepad(0);
+
+// Get the gamepad state for player 2
+let p2_gamepad = gamepad(1);
+```
+
+### Convenience Methods
+
+To check the button states for players, utilize the following methods after obtaining the gamepad state using the `gamepad` function:
+
+```rust
+// Get the gamepad state for player 1
+let gp = gamepad(0);
+
+// Checks if the A button is JustPressed
+if gp.a.just_pressed() {
+    // Handle JustPressed state
+}
+
+// Checks if the A button is JustPressed or Pressed
+if gp.a.pressed() {
+    // Handle JustPressed and Pressed states
+}
+
+// Checks if the A button is JustReleased
+if gp.a.just_released() {
+    // Handle JustReleased state
+}
+
+// Checks if the A button is JustReleased or Released
+if gp.a.released() {
+    // Handle JustReleased and Released states
+}
+```
+
+### Matching `Button` Variants
+
+You can also match on the `Button` variants directly:
+
+```rust
+// Get the gamepad state for player 1
+let gp = gamepad(0);
+
+// Check the input state of the Start button
+match gp.start {
+    Button::JustPressed => {
+        // Handle the JustPressed state
+    },
+    Button::Pressed => {
+        // Handle the Pressed state
+    },
+    Button::JustReleased => {
+        // Handle the JustReleased state
+    },
+    Button::JustReleased => {
+        // Handle the Released state
+    },
+}
+```
