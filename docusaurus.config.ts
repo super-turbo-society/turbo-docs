@@ -37,7 +37,8 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/super-turbo-society/turbo-docs/tree/main/",
+          editUrl:
+            "https://github.com/super-turbo-society/turbo-docs/tree/main/",
         },
         // blog: {
         //   showReadingTime: true,
@@ -56,13 +57,13 @@ const config: Config = {
     // Replace with your project's social card
     defaultMode: "dark",
     image: "/img/turbo-social-card.png",
-    // announcementBar: {
-    //   id: "support_us",
-    //   content: 'We are looking to revamp our docs, please fill <a target="_blank" rel="noopener noreferrer" href="#">this survey</a>',
-    //   backgroundColor: "var(--ifm-color-primary)",
-    //   textColor: "var(--ifm-button-color)",
-    //   isCloseable: false,
-    // },
+    announcementBar: {
+      id: "support_us",
+      content: 'Want to connect with other Turbo game devs? Come join our <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/7rBptEtM3v">Discord Community &rarr;</a>',
+      backgroundColor: "var(--ifm-color-primary)",
+      textColor: "var(--ifm-button-color)",
+      isCloseable: false,
+    },
     navbar: {
       title: "Turbo",
       logo: {
@@ -83,8 +84,9 @@ const config: Config = {
         // {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: "https://github.com/super-turbo-society/turbo-demos",
-          label: "GitHub",
           position: "right",
+          className: "header-github-link",
+          "aria-label": "GitHub repository",
         },
       ],
     },

@@ -63,29 +63,13 @@ Before installing the Turbo CLI, ensure you [Rust](https://www.rust-lang.org/) w
         </Admonition>
 
 
-        In your shell, verify the installation with:
+        Verify your installation with the following command:
 
         ```bash
         turbo -h
         ```
 
-        If successful, you'll see `turbo`'s help documentation:
-
-        ```bash
-        Run Turbo games natively on desktop
-
-        Usage: turbo <COMMAND>
-
-        Commands:
-        init  Initializes a new Turbo project in Rust
-        run   Runs a Rust Turbo project
-        help  Print this message or the help of the given subcommand(s)
-
-        Options:
-        -v, --version  Print version
-        -h, --help     Print help
-        -V, --version  Print version
-        ```
+        If successful, it will output `turbo`'s help documentation.
     </TabItem>
 
     <TabItem value="Windows_MSVC" label="Windows (MSVC)">
@@ -98,29 +82,13 @@ Before installing the Turbo CLI, ensure you [Rust](https://www.rust-lang.org/) w
         - Download the 64-bit release for [Windows MSVC](https://turbo.computer/bin/turbo-0.2.1-x86_64-pc-windows-msvc/turbo.exe.zip).
         -  Unzip the file and move `turbo.exe` into `C:\Windows\System32`.
 
-        **Open Git Bash**. Verify the installation with:
+        **Open Git Bash**. Verify your installation with the following command:
 
         ```bash
         turbo -h
         ```
 
-        If successful, you'll see `turbo`'s help documentation:
-
-        ```bash
-        Run Turbo games natively on desktop
-
-        Usage: turbo.exe <COMMAND>
-
-        Commands:
-        init  Initializes a new Turbo project in Rust
-        run   Runs a Rust Turbo project
-        help  Print this message or the help of the given subcommand(s)
-
-        Options:
-        -v, --version  Print version
-        -h, --help     Print help
-        -V, --version  Print version
-        ```
+        If successful, it will output `turbo`'s help documentation.
     </TabItem>
 
     <TabItem value="Windows_MinGW" label="Windows (GNU)">
@@ -134,29 +102,13 @@ Before installing the Turbo CLI, ensure you [Rust](https://www.rust-lang.org/) w
         - Download the 64-bit release for [Windows GNU](https://turbo.computer/bin/turbo-0.2.1-x86_64-pc-windows-gnu/turbo.exe.zip).
         - Unzip the file and move `turbo.exe` into `/usr/local/bin`.
 
-        **In your MinGW shell**, verify the installation with:
+        **Open your MinGW shell**. Verify your installation with the following command:
 
         ```bash
         turbo -h
         ```
 
-        If successful, you'll see `turbo`'s help documentation:
-
-        ```bash
-        Run Turbo games natively on desktop
-
-        Usage: turbo.exe <COMMAND>
-
-        Commands:
-        init  Initializes a new Turbo project in Rust
-        run   Runs a Rust Turbo project
-        help  Print this message or the help of the given subcommand(s)
-
-        Options:
-        -v, --version  Print version
-        -h, --help     Print help
-        -V, --version  Print version
-        ```
+        If successful, it will output `turbo`'s help documentation.
 
     </TabItem>
 
