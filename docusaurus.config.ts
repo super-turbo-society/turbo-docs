@@ -56,7 +56,7 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     defaultMode: "dark",
-    image: "/img/turbo-social-card.png",
+    image: "/img/turbo-social-card-2.png",
     announcementBar: {
       id: "support_us",
       content: 'Want to connect with other Turbo game devs? Come join our <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/7rBptEtM3v">Discord Community &rarr;</a>',

@@ -98,5 +98,5 @@ let m = mouse(0);
 let [mx, my] = m.position;
 
 // Draw a circular cursor
-circ!(d = 8, x = mx - 4, y = my - 4, fill = 0xff00ffff);
+circ!(d = 8, x = mx - 4, y = my - 4, color = 0xff00ffff);
 ```

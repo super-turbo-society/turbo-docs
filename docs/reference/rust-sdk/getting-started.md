@@ -8,13 +8,13 @@ sidebar_position: 0
 
 A Turbo game typically has 3 main parts, each controlled by a macro:
 
-1. **Configuration** - `turbo::cfg`
-2. **Initialization** - `turbo::init`
-3. **Execution** - `turbo::go`
+1. **Configuration** - `turbo::cfg!`
+2. **Initialization** - `turbo::init!`
+3. **Execution** - `turbo::go!`
 
 :::tip
 
-All are optional except for `turbo::go`, but most games will at least want to include game state initialization via `turbo::init` as well.
+All are optional except for `turbo::go!`, but most games will at least want to include game state initialization via `turbo::init!` as well.
 
 :::
 
@@ -44,7 +44,7 @@ The Solana configuration is required for those who want to interact with Solana 
 
 ## Initialization
 
-Turbo provides a straightforward way to initialize the standard game state using the `turbo::init` macro. This macro is essential for defining and setting up the game state before entering the main game loop:
+Turbo provides a straightforward way to initialize the standard game state using the `turbo::init!` macro. This macro is essential for defining and setting up the game state before entering the main game loop:
 
 ```rust
 turbo::init! {
@@ -73,7 +73,7 @@ turbo::init! {
 
 :::info
 
-- For convenience, `turbo::init` allows nested struct and enum definitions via the [structstruck](https://docs.rs/structstruck/latest/structstruck/) crate.
+- For convenience, `turbo::init!` allows nested struct and enum definitions via the [structstruck](https://docs.rs/structstruck/latest/structstruck/) crate.
 - `turbo::init` will derive the following traits for type each defined in the macro: `BorshSerialize`, `BorshDeserialize`, `PartialEq`, `Debug`, and `Clone`.
 - In development, you can reset the state of the game to its initial state anytime by using a simple keyboard shortcut `Cmd+R` on MacOS/Linux and `Ctrl+R` on Windows.
 
@@ -108,6 +108,6 @@ turbo::go! {
 
 :::note
 
-If you're building something more along the lines of a visualizer, your game may not have its own state to manage. In this case, all you need is the game logic. You can skip `turbo::init` (and loading/saving game state).
+If you're building something more along the lines of a visualizer, your game may not have its own state to manage. In this case, all you need is the game logic. You can skip `turbo::init!` (and loading/saving game state).
 
 :::

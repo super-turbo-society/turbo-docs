@@ -5,11 +5,11 @@ import TabItem from '@theme/TabItem';
 
 ## Logging
 
-The `turbo::println!` macro can log messages to the console for debugging purposes.
+The `log!` macro can log messages to the console for debugging purposes.
 
 ```rust
 // Log a message
-turbo::println!("DEBUG: {:?}", some_var);
+log!("DEBUG: {:?}", some_var);
 ```
 
 ## Resetting Game State
