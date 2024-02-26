@@ -9,13 +9,15 @@ import Admonition from '@theme/Admonition';
 # Quick Start
 
 <img src={require("./img/game-jam-smol.png").default} style={{ width: "100%", imageRendering: "pixelated", borderRadius: 8 }} />
+<br />
+<br />
 
-## Prerequisites
+:::info Prerequisites
 
-Before installing the Turbo CLI, ensure you [Rust](https://www.rust-lang.org/) with the wasm target and [`cargo-watch`](https://crates.io/crates/cargo-watch) installed. The steps to do so are as follows:
+Before installing the Turbo CLI, ensure you have [Rust](https://www.rust-lang.org/) with the wasm target:
 
 <details>
-    <summary>1. **Install Rust**</summary>
+    <summary>**How to install Rust + wasm**</summary>
     
     On MacOS, Linux, or another Unix-like OS, run the following command:
     ```
@@ -26,27 +28,14 @@ Before installing the Turbo CLI, ensure you [Rust](https://www.rust-lang.org/) w
 
     If needed, you can find more info on [Rust's installation docs &rarr;](https://www.rust-lang.org/tools/install)
 
-</details>
-<details>
-    <summary>2. **Add Rust's WebAssembly Target**</summary>
-
-    In your shell, run the following command:
+    Once installed, run the following command to add the WebAssembly target:
 
     ```bash
     rustup target add wasm32-unknown-unknown
     ```
-
 </details>
-<details>
-    <summary>3. **Install Cargo Watch**</summary>
 
-    In your shell, run the following command:
-
-    ```bash
-    cargo install cargo-watch
-    ```
-
-</details>
+:::
 
 ## Installation
 
