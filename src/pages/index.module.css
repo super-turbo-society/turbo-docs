@@ -4,7 +4,7 @@
  */
 
 .heroBanner {
-  padding: 4rem 0;
+  padding: 8rem 0;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -176,7 +176,7 @@
   right: 0;
   left: initial;
   animation-delay: 0s;
-  animation-duration: 1s;
+  animation-duration: 1.3s;
 }
 .cover .shooting-stars span:nth-child(2) {
   top: 0;
@@ -224,7 +224,7 @@
   top: 0px;
   right: 700px;
   left: initial;
-  animation-delay: 1.4s;
+  animation-delay: 0.6s;
   animation-duration: 1.25s;
 }
 .cover .shooting-stars span:nth-child(9) {

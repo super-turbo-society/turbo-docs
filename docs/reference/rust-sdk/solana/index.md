@@ -4,7 +4,14 @@ sidebar_position: 4
 
 import DocCardList from '@theme/DocCardList';
 
+
 # Solana
+
+:::info Prerequisites
+
+**Before continuing make sure you [setup your local Solana development environment](https://solana.com/developers/guides/getstarted/setup-local-development).**
+
+:::
 
 When the `solana` feature is enabled, Turbo's `solana` module is made available. This module allows for you to read and write data to/from the Solana blockchain 🚀
 

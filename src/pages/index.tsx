@@ -25,8 +25,19 @@ function HomepageHeader() {
           <span></span>
         </section>
         <img src="/img/turbo_light.svg" />
-        <Heading as="h1" className="hero__title">
-          {siteConfig.title}
+        <Heading as="h1" className="hero__title" style={{ marginBottom: 0 }}>
+          <span style={{ position: "relative" }}>
+            {siteConfig.title}
+            <super
+              style={{
+                fontSize: "1rem",
+                position: "absolute",
+                top: ".5rem",
+              }}
+            >
+              v0.2.7
+            </super>
+          </span>
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>

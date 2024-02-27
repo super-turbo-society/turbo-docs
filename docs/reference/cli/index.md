@@ -26,7 +26,21 @@ Options:
 ## Versions
 
 <details>
-<summary>**Turbo CLI v0.2.6** (latest)</summary>
+<summary>**Turbo CLI v0.2.7** (latest)</summary>
+
+| Version    | Platform                                                                                      |
+| :--------- | :-------------------------------------------------------------------------------------------- |
+| **v0.2.7** | [MacOS](https://turbo.computer/bin/turbo-0.2.7-aarch64-apple-darwin/turbo)                    |
+| **v0.2.7** | [MacOS (Intel)](https://turbo.computer/bin/turbo-0.2.7-x86_64-apple-darwin/turbo)             |
+| **v0.2.7** | [Linux (GNU)](https://turbo.computer/bin/turbo-0.2.7-x86_64-unknown-linux-gnu/turbo)          |
+| **v0.2.7** | [Linux (GNU)](https://turbo.computer/bin/turbo-0.2.7-x86_64-unknown-linux-musl/turbo)         |
+| **v0.2.7** | [Windows (MSVC)](https://turbo.computer/bin/turbo-0.2.7-x86_64-pc-windows-msvc/turbo.exe.zip) |
+| **v0.2.7** | [Windows (GNU)](https://turbo.computer/bin/turbo-0.2.7-x86_64-pc-windows-gnu/turbo.exe.zip)   |
+
+</details>
+
+<details>
+<summary>**Turbo CLI v0.2.6**</summary>
 
 | Version    | Platform                                                                                      |
 | :--------- | :-------------------------------------------------------------------------------------------- |
