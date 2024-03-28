@@ -8,10 +8,12 @@ Run Turbo games natively on desktop
 Usage: turbo <COMMAND>
 
 Commands:
-  init   Initializes a new Turbo project in Rust
-  run    Runs a Rust Turbo project
-  build  Builds a Turbo project
-  help   Print this message or the help of the given subcommand(s)
+  init      Initializes a new Turbo project in Rust
+  run       Runs a Rust Turbo project
+  build     Builds a Turbo project
+  export    Exports a Rust Turbo project in web format
+  validate  Runs a Turbo validator
+  help      Print this message or the help of the given subcommand(s)
 
 Options:
   -v, --version  Print version
@@ -26,7 +28,21 @@ Options:
 ## Versions
 
 <details>
-<summary>**Turbo CLI v0.2.7** (latest)</summary>
+<summary>**Turbo CLI v0.2.8** (latest)</summary>
+
+| Version    | Platform                                                                                      |
+| :--------- | :-------------------------------------------------------------------------------------------- |
+| **v0.2.8** | [MacOS](https://turbo.computer/bin/turbo-0.2.8-aarch64-apple-darwin/turbo)                    |
+| **v0.2.8** | [MacOS (Intel)](https://turbo.computer/bin/turbo-0.2.8-x86_64-apple-darwin/turbo)             |
+| **v0.2.8** | [Linux (GNU)](https://turbo.computer/bin/turbo-0.2.8-x86_64-unknown-linux-gnu/turbo)          |
+| **v0.2.8** | [Linux (GNU)](https://turbo.computer/bin/turbo-0.2.8-x86_64-unknown-linux-musl/turbo)         |
+| **v0.2.8** | [Windows (MSVC)](https://turbo.computer/bin/turbo-0.2.8-x86_64-pc-windows-msvc/turbo.exe.zip) |
+| **v0.2.8** | [Windows (GNU)](https://turbo.computer/bin/turbo-0.2.8-x86_64-pc-windows-gnu/turbo.exe.zip)   |
+
+</details>
+
+<details>
+<summary>**Turbo CLI v0.2.7**</summary>
 
 | Version    | Platform                                                                                      |
 | :--------- | :-------------------------------------------------------------------------------------------- |
