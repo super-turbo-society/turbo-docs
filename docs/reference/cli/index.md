@@ -8,12 +8,13 @@ Run Turbo games natively on desktop
 Usage: turbo <COMMAND>
 
 Commands:
-  init      Initializes a new Turbo project in Rust
-  run       Runs a Rust Turbo project
-  build     Builds a Turbo project
-  export    Exports a Rust Turbo project in web format
-  validate  Runs a Turbo validator
-  help      Print this message or the help of the given subcommand(s)
+  init     Initializes a new Turbo project in Rust
+  run      Runs a Rust Turbo project
+  build    Builds a Turbo project
+  export   Exports a Rust Turbo project in web format
+  connect  Connects to a Turbo host
+  host     Runs a Turbo host
+  help     Print this message or the help of the given subcommand(s)
 
 Options:
   -v, --version  Print version

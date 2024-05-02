@@ -7,10 +7,10 @@ sidebar_position: 1
 ```md
 Runs a Rust Turbo project
 
-Usage: turbo run [OPTIONS] <PROJECT_DIR>
+Usage: turbo run [OPTIONS] [PROJECT_DIR]
 
 Arguments:
-  <PROJECT_DIR>  The directory where your game's code and assets live
+  [PROJECT_DIR]  The directory where your game's code and assets live [default: .]
 
 Options:
   -w, --watch                          Uses cargo-watch to recompile your game code automatically
