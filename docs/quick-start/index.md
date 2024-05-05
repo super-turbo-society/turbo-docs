@@ -69,7 +69,7 @@ Before installing the Turbo CLI, ensure you have [Rust](https://www.rust-lang.or
 
         Follow these steps to install `turbo` on Windows:
 
-        - Download the 64-bit release for [Windows MSVC](https://github.com/super-turbo-society/turbo-cli/releases/download/0.2.10/turbo-0.2.10-x86_64-pc-windows-msvc.zip).
+        - Download the 64-bit release for [Windows MSVC](https://github.com/super-turbo-society/turbo-cli/releases/download/0.2.12/turbo-0.2.12-x86_64-pc-windows-msvc.zip).
         -  Unzip the file and move `turbo.exe` into `C:\Windows\System32`.
 
         **Open Git Bash**. Verify your installation with the following command:
@@ -89,7 +89,7 @@ Before installing the Turbo CLI, ensure you have [Rust](https://www.rust-lang.or
 
         Follow these steps to install `turbo` on Windows with MinGW:
 
-        - Download the 64-bit release for [Windows GNU](https://github.com/super-turbo-society/turbo-cli/releases/download/0.2.10/turbo-0.2.10-x86_64-pc-windows-gnu.zip).
+        - Download the 64-bit release for [Windows GNU](https://github.com/super-turbo-society/turbo-cli/releases/download/0.2.12/turbo-0.2.12-x86_64-pc-windows-gnu.zip).
         - Unzip the file and move `turbo.exe` into `/usr/local/bin`.
 
         **Open your MinGW shell**. Verify your installation with the following command:
