@@ -3,6 +3,13 @@
  * and scoped locally.
  */
 
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&family=Silkscreen:wght@400;700&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* footer, nav, [role="banner"] {
+  display: none !important;
+} */
+
 .heroBanner {
   padding: 8rem 0;
   text-align: center;
@@ -59,6 +66,11 @@
 @font-face {
   font-family: "04b03";
   src: url("/fonts/04b03.ttf");
+}
+
+@font-face {
+  font-family: PixelCode;
+  src: url("/fonts/PixelCode.ttf");
 }
 
 @keyframes bg-motion {
@@ -123,7 +135,7 @@
 }
 .cover {
   opacity: 0;
-  animation: unblur .5s .8s ease 1 forwards;
+  animation: unblur 0.5s 0.8s ease 1 forwards;
 }
 
 @keyframes animate-stars {

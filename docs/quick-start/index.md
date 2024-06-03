@@ -49,7 +49,7 @@ Before installing the Turbo CLI, ensure you have [Rust](https://www.rust-lang.or
         ```
 
         <Admonition type="note" title="Install script alternative">
-            The installer will ask for your password to place the command in `/usr/local/bin`. If you don't want to rely on the install script, you can [manually download the cli](/docs/reference/cli/#versions) and place it somewhere in your `$PATH`.
+            The installer will ask for your password to place the command in `/usr/local/bin`. If you don't want to rely on the install script, you can [manually download the cli](/docs/reference/cli/#releases) and place it somewhere in your `$PATH`.
         </Admonition>
 
 

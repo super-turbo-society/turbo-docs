@@ -12,18 +12,6 @@ function HomepageHeader() {
   return (
     <header className={clsx(styles.heroBanner)}>
       <div className={clsx("container", styles.cover)}>
-        <section className={clsx(styles["shooting-stars"])}>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </section>
         <img src="/img/turbo_light.svg" />
         <Heading as="h1" className="hero__title" style={{ marginBottom: 0 }}>
           <span style={{ position: "relative" }}>
@@ -64,7 +52,7 @@ export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout description="A next-gen 2D game engine built for making games fast. We aim to make it possible for anyone to create a game in any genre in < 24h that can run on any platform or device.">
-      <HomepageHeader />
+      {/* <HomepageHeader /> */}
       <main>
         <HomepageFeatures />
       </main>
