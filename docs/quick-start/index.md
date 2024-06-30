@@ -12,97 +12,85 @@ import Admonition from '@theme/Admonition';
 <br />
 <br />
 
-:::info Prerequisites
-
-Before installing the Turbo CLI, ensure you have [Rust](https://www.rust-lang.org/) with the wasm target:
-
-<details>
-    <summary>**How to install Rust + wasm**</summary>
-    
-    On MacOS, Linux, or another Unix-like OS, run the following command:
-    ```
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    ```
-    
-    On Windows, download and run [`rustup-init.exe`](https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe).
-
-    If needed, you can find more info on [Rust's installation docs &rarr;](https://www.rust-lang.org/tools/install)
-
-    Once installed, run the following command to add the WebAssembly target:
-
-    ```bash
-    rustup target add wasm32-unknown-unknown
-    ```
-
-</details>
-
-:::
-
 ## Installation
 
 <Tabs>
     <TabItem value="MacOS_Linux" label="MacOS / Linux" default>
-        Install `turbo` by running this script:
+
+        1. **Install [Rust](https://www.rust-lang.org/)**.
+
+        ```sh
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        ```
+
+        2. **Add the Rust WebAssembly compiler target**
+        ```
+        rustup target add wasm32-unknown-unknown
+        ```
+
+        3. **Run the Turbo CLI install script**
 
         ```bash
         curl -sSfL https://turbo.computer/install.sh | sh
         ```
 
-        <Admonition type="note" title="Install script alternative">
-            The installer will ask for your password to place the command in `/usr/local/bin`. If you don't want to rely on the install script, you can [manually download the cli](/docs/reference/cli/#releases) and place it somewhere in your `$PATH`.
+
+        <Admonition type="note">
+            The installer will ask for your password for permission to move the `turbo` command into `/usr/local/bin`. If you prefer a manual download, follow these steps:
+            1. Download the 64-bit release for your platform on the [releases page](https://github.com/super-turbo-society/turbo-cli/releases/0.3.0).
+            2. Decompress the archive and move `turbo` into your `$PATH`. We recommend `/usr/local/bin`.
         </Admonition>
 
-
-        Verify your installation with the following command:
+        4. **Verify your installation**
 
         ```bash
         turbo -h
         ```
 
-        If successful, it will output `turbo`'s help documentation.
+        If successful, it will output `turbo`'s help documentation 🎉
+
     </TabItem>
 
-    <TabItem value="Windows_MSVC" label="Windows (MSVC)">
-        <Admonition type="info" title="Prerequisite">
-            Make sure you have [Git for Windows](https://git-scm.com/download/win) installed.
+    <TabItem value="Windows" label="Windows">
+
+        1. **Install [Git for Windows](https://git-scm.com/download/win).**
+        
+        We will use **Git Bash** to run the commands in subsequent steps.
+
+        2. **Install [Rust](https://www.rust-lang.org/)**
+        
+        Download and run [rustup-init.exe](https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-gnu/rustup-init.exe).
+
+        3. **Add the Rust WebAssembly compiler target**        
+        
+        ```
+        rustup target add wasm32-unknown-unknown
+        ```
+
+        4. **Run the Turbo CLI install script**
+
+        ```bash
+        curl -sSfL https://turbo.computer/install.sh | sh
+        ```
+
+        <Admonition type="note">
+            If you prefer a manual download, follow these steps:
+            1. Download the 64-bit release for [Windows MSVC](https://github.com/super-turbo-society/turbo-cli/releases/download/0.3.0/turbo-0.3.0-x86_64-pc-windows-msvc.zip).
+            2.  Unzip the file and move `turbo.exe` into `C:\Windows\System32`.
         </Admonition>
 
-        Follow these steps to install `turbo` on Windows:
-
-        - Download the 64-bit release for [Windows MSVC](https://github.com/super-turbo-society/turbo-cli/releases/download/0.2.12/turbo-0.2.12-x86_64-pc-windows-msvc.zip).
-        -  Unzip the file and move `turbo.exe` into `C:\Windows\System32`.
-
-        **Open Git Bash**. Verify your installation with the following command:
+        5. **Verify your installation**
 
         ```bash
         turbo -h
         ```
 
-        If successful, it will output `turbo`'s help documentation.
-    </TabItem>
-
-    <TabItem value="Windows_MinGW" label="Windows (GNU)">
-        <Admonition type="info" title="Prerequisite">
-            Make sure you have [MSYS with MinGW](https://www.msys2.org/) installed.
-        </Admonition>
-
-
-        Follow these steps to install `turbo` on Windows with MinGW:
-
-        - Download the 64-bit release for [Windows GNU](https://github.com/super-turbo-society/turbo-cli/releases/download/0.2.12/turbo-0.2.12-x86_64-pc-windows-gnu.zip).
-        - Unzip the file and move `turbo.exe` into `/usr/local/bin`.
-
-        **Open your MinGW shell**. Verify your installation with the following command:
-
-        ```bash
-        turbo -h
-        ```
-
-        If successful, it will output `turbo`'s help documentation.
-
+        If successful, it will output `turbo`'s help documentation 🎉
     </TabItem>
 
 </Tabs>
+
+---
 
 ## Hello, World!
 

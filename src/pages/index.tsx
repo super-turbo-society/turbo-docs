@@ -23,7 +23,7 @@ function HomepageHeader() {
                 top: ".5rem",
               }}
             >
-              v0.2.12
+              v0.3.0
             </super>
           </span>
         </Heading>

@@ -54,6 +54,26 @@ const config: Config = {
   ],
 
   themeConfig: {
+    algolia: {
+      // The application ID provided by Algolia
+      appId: "MOWFRHS3LY",
+
+      // Public API key: it is safe to commit it
+      apiKey: "98a102723d13537ad9922177ab0f995d",
+
+      indexName: "turbo",
+
+      // Optional: see doc section below
+      contextualSearch: false,
+
+      // // Optional: Algolia search parameters
+      // searchParameters: {},
+
+      // // Optional: path for search page that enabled by default (`false` to disable it)
+      // searchPagePath: "search",
+
+      //... other Algolia params
+    },
     // Replace with your project's social card
     defaultMode: "dark",
     image: "/img/turbo-social-card-2.png",
