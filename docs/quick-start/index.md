@@ -8,7 +8,7 @@ import Admonition from '@theme/Admonition';
 
 # Quick Start
 
-<img src={require("./img/game-jam-smol.png").default} style={{ width: "100%", imageRendering: "pixelated", borderRadius: 8 }} />
+<img src="/solana-superpowers.svg" style={{ height: "240px" }} />
 <br />
 <br />
 
@@ -37,7 +37,7 @@ import Admonition from '@theme/Admonition';
 
         <Admonition type="note">
             The installer will ask for your password for permission to move the `turbo` command into `/usr/local/bin`. If you prefer a manual download, follow these steps:
-            1. Download the 64-bit release for your platform on the [releases page](https://github.com/super-turbo-society/turbo-cli/releases/0.3.0).
+            1. Download the 64-bit release for your platform on the [releases page](https://github.com/super-turbo-society/turbo-cli/releases/0.4.0).
             2. Decompress the archive and move `turbo` into your `$PATH`. We recommend `/usr/local/bin`.
         </Admonition>
 
@@ -54,15 +54,15 @@ import Admonition from '@theme/Admonition';
     <TabItem value="Windows" label="Windows">
 
         1. **Install [Git for Windows](https://git-scm.com/download/win).**
-        
+
         We will use **Git Bash** to run the commands in subsequent steps.
 
         2. **Install [Rust](https://www.rust-lang.org/)**
-        
+
         Download and run [rustup-init.exe](https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-gnu/rustup-init.exe).
 
-        3. **Add the Rust WebAssembly compiler target**        
-        
+        3. **Add the Rust WebAssembly compiler target**
+
         ```
         rustup target add wasm32-unknown-unknown
         ```
@@ -75,7 +75,7 @@ import Admonition from '@theme/Admonition';
 
         <Admonition type="note">
             If you prefer a manual download, follow these steps:
-            1. Download the 64-bit release for [Windows MSVC](https://github.com/super-turbo-society/turbo-cli/releases/download/0.3.0/turbo-0.3.0-x86_64-pc-windows-msvc.zip).
+            1. Download the 64-bit release for [Windows MSVC](https://github.com/super-turbo-society/turbo-cli/releases/download/0.4.0/turbo-0.4.0-x86_64-pc-windows-msvc.zip).
             2.  Unzip the file and move `turbo.exe` into `C:\Windows\System32`.
         </Admonition>
 
