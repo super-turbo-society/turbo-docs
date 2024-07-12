@@ -79,7 +79,7 @@ const config: Config = {
     image: "/img/turbo-social-card-2.png",
     // announcementBar: {
     //   id: "support_us",
-    //   content: 'Want to connect with other Turbo game devs? Come join our <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/7rBptEtM3v">Discord Community &rarr;</a>',
+    //   content: 'Want to connect with other Turbo game devs? Come join our <a target="_blank" rel="noopener noreferrer" href="https://discord.gg/Xb3tgSZGgD">Discord Community &rarr;</a>',
     //   backgroundColor: "var(--ifm-color-primary)",
     //   textColor: "var(--ifm-button-color)",
     //   isCloseable: false,
@@ -147,7 +147,7 @@ const config: Config = {
           items: [
             {
               label: "Discord",
-              href: "https://discord.gg/Mry2mFbY4D",
+              href: "https://discord.gg/Xb3tgSZGgD",
             },
             {
               label: "Twitter",

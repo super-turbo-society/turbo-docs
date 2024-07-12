@@ -176,7 +176,7 @@ Congratulations! 🎉
 
 Here are a few ways to continue your game development journey:
 
-- [Join the Discord community &rarr;](https://discord.gg/Mry2mFbY4D)
+- [Join the Discord community &rarr;](https://discord.gg/Xb3tgSZGgD)
 - [Get comfy with a tutorial that covers the basics &rarr;](/docs/tutorials)
 - [Browse through the Rust SDK reference &rarr;](/docs/reference/rust-sdk/getting-started)
 - [See our "How To" section to quickly learn new concepts &rarr;](/docs/how-to)

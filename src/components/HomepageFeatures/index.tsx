@@ -87,7 +87,7 @@ export default function HomepageFeatures(): JSX.Element {
               <span>&nbsp; Github</span>
             </a>
             <a
-              href="https://discord.gg/4HbAzvQq"
+              href="https://discord.gg/Xb3tgSZGgD"
               target="_blank"
               className={styles.navbarLink}
               style={{
@@ -248,7 +248,7 @@ export default function HomepageFeatures(): JSX.Element {
               <h3>Community</h3>
               <ul>
                 <li>
-                  <a href="https://discord.gg/4HbAzvQq" target="_blank">
+                  <a href="https://discord.gg/Xb3tgSZGgD" target="_blank">
                     Discord
                   </a>
                 </li>
