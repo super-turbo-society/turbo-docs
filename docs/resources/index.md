@@ -12,7 +12,7 @@ sidebar_position: 5
 
 ## Code
 
-- [Turbo Game Developer GPT](https://chat.openai.com/g/g-R4OO8SkIz-turbo-game-developer)
+- [Turbo Game Developer GPT](ai.turbo.computer)
 - [VS Code](https://code.visualstudio.com/)
 
 ## Pixel Art
