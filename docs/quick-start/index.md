@@ -69,6 +69,8 @@ import Admonition from '@theme/Admonition';
 
         4. **Run the Turbo CLI install script**
 
+        **Run Git Bash as an administrator** and enter the following command:
+
         ```bash
         curl -sSfL https://turbo.computer/install.sh | sh
         ```

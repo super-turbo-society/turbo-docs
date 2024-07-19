@@ -141,7 +141,7 @@ export default function HomepageFeatures(): JSX.Element {
         <a href="/docs/quick-start" className={styles.startButton}>
           Press Start
         </a>
-        <sup className={styles.versionNumber}>v0.3.0</sup>
+        <sup className={styles.versionNumber}>v0.4.0</sup>
       </section>
       <section id="features" className={styles.featuresContainer}>
         <img src="pointer-down.svg" style={{ width: 64 }} />
