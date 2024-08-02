@@ -9,7 +9,7 @@ path!(
     start: (i32, i32),
     end: (i32, i32),
     color: u32,
-    w: u32,
+    width: u32,
     border_radius: u32,
 )
 ```
@@ -28,7 +28,7 @@ path!(
 path!(
     start = (0, 0),
     end = (256, 144),
-    w = 4,
+    width = 4,
     color = 0xff00ffff,
 );
 ```
