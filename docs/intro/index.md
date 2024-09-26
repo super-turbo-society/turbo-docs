@@ -26,7 +26,6 @@ Turbo aims to make it possible for anyone to create a game in any genre in < 24h
 
 Turbo's docs are organized into the following sections:
 
-- [Tutorials &rarr;](/docs/tutorials)
-- [Reference &rarr;](/docs/reference)
-- [How To &rarr;](/docs/how-to)
-- [Resources &rarr;](/docs/resources)
+- [Tutorials &rarr;](/tutorials)
+- [How To &rarr;](/how-to)
+- [Resources &rarr;](/resources)

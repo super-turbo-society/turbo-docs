@@ -31,21 +31,17 @@ const config: Config = {
 
   presets: [
     [
-      "classic",
+      "@docusaurus/preset-classic",
       {
+        blog: false,
         docs: {
+          routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            "https://github.com/super-turbo-society/turbo-docs/tree/main/",
+            "https://github.com/super-turbo-society/turbo-tree/main/",
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   // editUrl: "https://github.com/super-turbo-society/turbo-docs",
-        // },
         theme: {
           customCss: "./src/css/custom.css",
         },
@@ -118,27 +114,23 @@ const config: Config = {
           items: [
             {
               label: "Introduction",
-              to: "/docs/intro",
+              to: "/intro",
             },
             {
               label: "Quick Start",
-              to: "/docs/quick-start",
+              to: "/",
             },
             {
               label: "Tutorials",
-              to: "/docs/tutorials",
-            },
-            {
-              label: "Reference",
-              to: "/docs/reference",
+              to: "/tutorials",
             },
             {
               label: "How To",
-              to: "/docs/how-to",
+              to: "/how-to",
             },
             {
               label: "Resources",
-              to: "/docs/resources",
+              to: "/resources",
             },
           ],
         },
