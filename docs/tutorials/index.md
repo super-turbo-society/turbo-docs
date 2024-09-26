@@ -29,5 +29,8 @@ Check out the source code [here](https://github.com/super-turbo-society/turbo-de
 
 [![bork Game](/bork.png)](https://github.com/super-turbo-society/turbo-demos/tree/main/bork-runner)
 
+## Dino Runner
+Run and jump over trees and set a new high score in this infinite runner! Learn the ins and outs of the codebase with this [tutorial](https://medium.com/@tajerdev/building-dinorunner-a-turbo-powered-chrome-dino-game-60173d1ef45e).
 
+[![Dino Runner](/dinorunner.png)](https://medium.com/@tajerdev/building-dinorunner-a-turbo-powered-chrome-dino-game-60173d1ef45e)
 <!-- <DocCardList /> -->
