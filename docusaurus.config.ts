@@ -31,21 +31,17 @@ const config: Config = {
 
   presets: [
     [
-      "classic",
+      "@docusaurus/preset-classic",
       {
+        blog: false,
         docs: {
+          routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            "https://github.com/super-turbo-society/turbo-docs/tree/main/",
+            "https://github.com/super-turbo-society/turbo-tree/main/",
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   // editUrl: "https://github.com/super-turbo-society/turbo-docs",
-        // },
         theme: {
           customCss: "./src/css/custom.css",
         },
@@ -53,27 +49,31 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    require.resolve("docusaurus-lunr-search")
+  ],
+
   themeConfig: {
-    algolia: {
-      // The application ID provided by Algolia
-      appId: "MOWFRHS3LY",
+    // algolia: {
+    //   // The application ID provided by Algolia
+    //   appId: "MOWFRHS3LY",
 
-      // Public API key: it is safe to commit it
-      apiKey: "98a102723d13537ad9922177ab0f995d",
+    //   // Public API key: it is safe to commit it
+    //   apiKey: "98a102723d13537ad9922177ab0f995d",
 
-      indexName: "turbo",
+    //   indexName: "turbo",
 
-      // Optional: see doc section below
-      contextualSearch: false,
+    //   // Optional: see doc section below
+    //   contextualSearch: false,
 
-      // // Optional: Algolia search parameters
-      // searchParameters: {},
+    //   // // Optional: Algolia search parameters
+    //   // searchParameters: {},
 
-      // // Optional: path for search page that enabled by default (`false` to disable it)
-      // searchPagePath: "search",
+    //   // // Optional: path for search page that enabled by default (`false` to disable it)
+    //   // searchPagePath: "search",
 
-      //... other Algolia params
-    },
+    //   //... other Algolia params
+    // },
     // Replace with your project's social card
     defaultMode: "dark",
     image: "/img/turbo-social-card-2.png",
@@ -118,27 +118,23 @@ const config: Config = {
           items: [
             {
               label: "Introduction",
-              to: "/docs/intro",
+              to: "/intro",
             },
             {
               label: "Quick Start",
-              to: "/docs/quick-start",
+              to: "/",
             },
             {
               label: "Tutorials",
-              to: "/docs/tutorials",
-            },
-            {
-              label: "Reference",
-              to: "/docs/reference",
+              to: "/tutorials",
             },
             {
               label: "How To",
-              to: "/docs/how-to",
+              to: "/how-to",
             },
             {
               label: "Resources",
-              to: "/docs/resources",
+              to: "/resources",
             },
           ],
         },

@@ -14,7 +14,7 @@ text!(&str, x: i32, y: i32, color: u32, font: Font)
 | `x`     | `i32`                                          | `0`          | Starting x position of the text                             |
 | `y`     | `i32`                                          | `0`          | Starting y position of the text                             |
 | `color` | `u32`                                          | `0xffffffff` | Hex color to display text in                                |
-| `font`  | [`Font`](/docs/reference/rust-sdk/canvas/font) | `Font::M`    | Font to display text in: `Font::S`, `Font::M`, or `Font::L` |
+| `font`  | [`Font`](/rust-sdk/canvas/font) | `Font::M`    | Font to display text in: `Font::S`, `Font::M`, or `Font::L` |
 
 ### Basic Usage
 

@@ -19,9 +19,6 @@
   /* --ifm-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace; */
   --ifm-font-family-monospace: PixelCode;
-  [src="/motion-t.svg"] {
-    filter: invert(1);
-  }
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -34,9 +31,27 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
-  [src="/motion-t.svg"] {
-    filter: none;
-  }
+}
+
+[data-theme="light"] [src="/motion-t.svg"] {
+  filter: invert(1);
+}
+
+[data-theme="dark"] [src="/motion-t.svg"] {
+  filter: none;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&family=Silkscreen:wght@400;700&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+@font-face {
+  font-family: "04b03";
+  src: url("/assets/fonts/04b03.ttf");
+}
+
+@font-face {
+  font-family: "PixelCode";
+  src: url("/assets/fonts/PixelCode.ttf");
 }
 
 .container .button {

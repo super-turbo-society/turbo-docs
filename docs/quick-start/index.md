@@ -1,4 +1,5 @@
 ---
+slug: /
 sidebar_position: 1
 ---
 
@@ -179,9 +180,9 @@ Congratulations! 🎉
 Here are a few ways to continue your game development journey:
 
 - [Join the Discord community &rarr;](https://discord.gg/Xb3tgSZGgD)
-- [Get comfy with a tutorial that covers the basics &rarr;](/docs/tutorials)
-- [Browse through the Rust SDK reference &rarr;](/docs/reference/rust-sdk/getting-started)
-- [See our "How To" section to quickly learn new concepts &rarr;](/docs/how-to)
+- [Get comfy with a tutorial that covers the basics &rarr;](/tutorials)
+- [Browse through the Rust SDK reference &rarr;](/rust-sdk/getting-started)
+- [See our "How To" section to quickly learn new concepts &rarr;](/how-to)
 - [Explore the possibilities in our demo games repo &rarr;](https://github.com/super-turbo-society/turbo-demos/tree/main?tab=readme-ov-file#-turbo-demo-games)
 
 <br />

@@ -89,4 +89,4 @@ sprite!("doge", x = 112, y = 50, fps = fps::FAST);
 
 ![Doge Sprite Screenshot](/doge_animation_screencap.gif)
 
-[Read more about FPS &rarr;](/docs/reference/rust-sdk/canvas/fps)
+[Read more about FPS &rarr;](/rust-sdk/canvas/fps)
