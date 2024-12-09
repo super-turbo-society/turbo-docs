@@ -7,8 +7,8 @@ Turbo's concept of a "gamepad" is similar to a SNES controller and maps up to 2 
 | Gamepad | Keyboard (P1)       | Keyboard (P2) |
 | ------- | ------------------- | ------------- |
 | Up      | `W` or `UpArrow`    | `I`           |
-| Down    | `A` or `DownArrow`  | `J`           |
-| Left    | `S` or `LeftArrow`  | `K`           |
+| Down    | `S` or `DownArrow`  | `J`           |
+| Left    | `A` or `LeftArrow`  | `K`           |
 | Right   | `D` or `RightArrow` | `L`           |
 | A       | `Z`                 | `M`           |
 | B       | `X`                 | `,`           |
