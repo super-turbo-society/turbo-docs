@@ -38,7 +38,7 @@ import Admonition from '@theme/Admonition';
 
         <Admonition type="note">
             The installer will ask for your password for permission to move the `turbo` command into `/usr/local/bin`. If you prefer a manual download, follow these steps:
-            1. Download the 64-bit release for your platform on the [releases page](https://github.com/super-turbo-society/turbo-cli/releases/0.5.0).
+            1. Download the 64-bit release for your platform on the [releases page](https://github.com/super-turbo-society/turbo-cli/releases/0.6.0).
             2. Decompress the archive and move `turbo` into your `$PATH`. We recommend `/usr/local/bin`.
         </Admonition>
 
@@ -78,7 +78,7 @@ import Admonition from '@theme/Admonition';
 
         <Admonition type="note">
             If you prefer a manual download, follow these steps:
-            1. Download the 64-bit release for [Windows MSVC](https://github.com/super-turbo-society/turbo-cli/releases/download/0.5.0/turbo-0.5.0-x86_64-pc-windows-msvc.zip).
+            1. Download the 64-bit release for [Windows MSVC](https://github.com/super-turbo-society/turbo-cli/releases/download/0.6.0/turbo-0.6.0-x86_64-pc-windows-msvc.zip).
             2.  Unzip the file and move `turbo.exe` into `C:\Windows\System32`.
         </Admonition>
 
