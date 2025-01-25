@@ -6,12 +6,12 @@ A generic struct that handles smooth transitions between values over time.
 
 ```rust title="turbo::tween"
 pub struct Tween<T> {
-pub start: T,
-pub end: T,
-pub duration: usize,
-pub elapsed: usize,
-pub easing: Easing,
-pub start_tick: Option<usize>,
+    pub start: T,
+    pub end: T,
+    pub duration: usize,
+    pub elapsed: usize,
+    pub easing: Easing,
+    pub start_tick: Option<usize>,
 }
 ```
 
