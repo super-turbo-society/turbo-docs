@@ -1,57 +1,41 @@
 # Camera
 
-## `cam!`
-
-Gets the camera position.
-
-```rust title="turbo::canvas"
-cam!() -> [i32; 2]
-```
-
 ### Get camera position
 
 ```rust
-let [camera_x, camera_y] = cam!();
+let (x,y,z) = camera::xyz();
 ```
-
-## `set_cam!`
-
-Sets the camera position.
-
-```rust title="turbo::canvas"
-set_cam!(x: i32, y: i32)
-```
-
-| Param | Type  | Default              | Description                     |
-| :---- | :---- | :------------------- | :------------------------------ |
-| `x`   | `i32` | [current x position] | The camera x position in pixels |
-| `y`   | `i32` | [current y position] | The camera y position in pixels |
 
 ### Set camera position
 
-```rust
-set_cam!(x = 0, y = 0); // set x and y position
-set_cam!(x = 10); // set x position only
-set_cam!(y = 10); // set y position only
+```rust title="turbo::canvas"
+camera::set_xy(100, 100);
 ```
 
-## `move_cam!`
+The position you set here is the center of the viewport in pixels. By default the camera starts at half of the width and height of your game's resolution.
 
+#
+```rust title="turbo::canvas"
+camera::move_x(5.0);
+camera::move_y(8.0);
+```
 Moves the camera relative to the current camera position.
 
+#
 ```rust title="turbo::canvas"
-move_cam!(x: i32, y: i32)
+camera::focus_rect(100,100,10,20);
 ```
 
-| Param | Type  | Default | Description                                      |
-| :---- | :---- | :------ | :----------------------------------------------- |
-| `x`   | `i32` | `0`     | The amount to adjust camera x position in pixels |
-| `y`   | `i32` | `0`     | The amount to adjust camera y position in pixels |
+Use this to center the camera on a specific object, based on position and width and height.
 
-### Move the camera
+### Set zoom level
 
 ```rust
-move_cam!(x = 4, y = 8); // move x position 4 pixels and y position 8 pixels
-move_cam!(x = 10); // set x position 10 pixels
-move_cam!(y = 10); // set y position 10 pixels
+camera::set_z(2.0);
+```
+
+### Reset camera
+
+```rust title="turbo::canvas"
+camera::reset();
 ```
