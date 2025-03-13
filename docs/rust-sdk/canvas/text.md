@@ -20,7 +20,7 @@ text!(
 | `x`     | `i32`                                          | `0`          | Starting x position of the text                             |
 | `y`     | `i32`                                          | `0`          | Starting y position of the text                             |
 | `color` | `u32`                                          | `0xffffffff` | Hex color to display text in                                |
-| `font`  | [`Font`](/rust-sdk/canvas/font)                | `"medium"`   | Font to display text in: `"small"`, `"medium"`, or `"large"`|
+| `font`  | [`Font`](/rust-sdk/canvas/font)                | `"medium"`   | Size to display text in: `"small"`, `"medium"`, or `"large"`|
 
 :::note
 
