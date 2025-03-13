@@ -5,16 +5,28 @@
 Draws ASCII text.
 
 ```rust title="turbo::canvas"
-text!(&str, x: i32, y: i32, color: u32, font: Font)
+text!(
+    "" = &str,
+    x = i32, 
+    y = i32, 
+    color = u32, 
+    font = "size"
+)
 ```
 
 | Param   | Type                                           | Default      | Description                                                 |
 | :------ | :--------------------------------------------- | :----------- | :---------------------------------------------------------- |
-| -       | `&str`                                         | -            | Text to be displayed                                        |
+| `""`    | `&str`                                         | -            | Text to be displayed                                        |
 | `x`     | `i32`                                          | `0`          | Starting x position of the text                             |
 | `y`     | `i32`                                          | `0`          | Starting y position of the text                             |
 | `color` | `u32`                                          | `0xffffffff` | Hex color to display text in                                |
-| `font`  | [`Font`](/rust-sdk/canvas/font) | `Font::M`    | Font to display text in: `Font::S`, `Font::M`, or `Font::L` |
+| `font`  | [`Font`](/rust-sdk/canvas/font)                | `"medium"`   | Font to display text in: `"small"`, `"medium"`, or `"large"`|
+
+:::note
+
+For font sizes Turbo has "small", "medium", and "large" available by default.
+
+:::
 
 ### Basic Usage
 
@@ -34,8 +46,24 @@ text!(
     x = 30,
     y = 40,
     color = 0x00ff00ff,
-    font = Font::S
+    font = "small"
 );
 ```
 
 ![Greetings, Earthlings Screenshot](/greetings_earthlings_screenshot.png)
+
+### Custom Usage
+
+You can even add custom fonts by adding a font folder and specifying in the `font` peram the name of the added font:
+
+```rust
+text!("Magic Missile!!", font = "OldWizard");
+```
+
+![Magic Missile Screenshot](/magic_missile_screenshot.png)
+
+:::tip
+
+head over to [`Font`](/rust-sdk/canvas/font) to learn more about custom fonts!
+
+:::

@@ -8,9 +8,9 @@ Allows you to set the background color of the canvas. This function takes a sing
 clear(u32)
 ```
 
-| Param | Type  | Default      | Description          |
-| :---- | :---- | :----------- | :------------------- |
-| -     | `u32` | `0x000000ff` | Text to be displayed |
+| Param | Type  | Default      | Description                         |
+| :---- | :---- | :----------- | :---------------------------------- |
+| -     | `u32` | -            | input a hexdecimal code for a color |
 
 :::note
 
