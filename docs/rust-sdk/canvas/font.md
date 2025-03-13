@@ -10,7 +10,7 @@ Follow these simple steps to integrate custom fonts into your Turbo game:
 
 2. **Put Fonts in the Folder**
 
-- The following file formats are supported: `.bdf`, `.ttf`,.
+- The following file formats are supported: `.bdf`, `.ttf`, and `.otf`.
 
 Now you're ready to use some custom fonts!
 

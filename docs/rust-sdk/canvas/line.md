@@ -1,11 +1,11 @@
 # Line
 
-## `canvas::line!`
+## `path!`
 
 Draws lines.
 
 ```rust title="turbo::canvas"
-canvas::line!(
+path!(
     start = (i32, i32),
     end = (i32, i32),
     size = u32,
@@ -26,7 +26,7 @@ canvas::line!(
 ### Basic Usage
 
 ```rust
-canvas::line!(
+path!(
     start = (0, 0),
     end = (256, 144),
     size = 4,
