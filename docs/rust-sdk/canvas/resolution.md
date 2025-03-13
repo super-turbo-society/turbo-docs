@@ -3,7 +3,7 @@
 Gets the unscaled canvas size in pixels.
 
 ```rust title="turbo::canvas"
-canvas::size() -> (u32, u32)
+canvas::resolution() -> (u32, u32)
 ```
 
 ### Get canvas size
