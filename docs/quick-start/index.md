@@ -167,7 +167,7 @@ turbo::go! {
         x = 32,             // Starting x position of the text
         y = 48,             // Starting y position of the text
         color = 0xff00ffff, // Text color
-        font = Font::L      // Text font (other options: Font::S and Font::M)
+        font = "large"      // Text font (other options: "small", "medium")
     );
     // highlight-end
 }

@@ -91,4 +91,4 @@ The speed and playback settings of the animation are determined by the settings 
 
 If you want more control over your animations, check out the animation docs:
 
-[Advanced Animation ->](/rust-sdk/canvas/animation)
+[Advanced Animation &rarr;](/rust-sdk/canvas/animation)
