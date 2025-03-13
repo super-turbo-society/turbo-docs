@@ -6,11 +6,11 @@ Draws lines.
 
 ```rust title="turbo::canvas"
 path!(
-    start: (i32, i32),
-    end: (i32, i32),
-    color: u32,
-    width: u32,
-    border_radius: u32,
+    start = (i32, i32),
+    end = (i32, i32),
+    size = u32,
+    color = u32,
+    rounded = bool,
 )
 ```
 
@@ -18,9 +18,10 @@ path!(
 | :-------------- | :----------- | :----------- | :------------------------------------ |
 | `start`         | `(i32, i32)` | `(0, 0)`     | The starting point of the line        |
 | `end`           | `(i32, i32)` | `(0, 0)`     | The end point of the line             |
+| `size`          | `u32`        | `1`          | The line width in pixels              |
 | `color`         | `u32`        | `0xffffffff` | Color that fills the line as RGBA hex |
-| `width`         | `u32`        | `1`          | The line width in pixels              |
-| `border_radius` | `u32`        | `0`          | Border radius in pixels               |
+| `rounded`       | `bool`       | `false`      | Stylize the line to be square or round|
+
 
 ### Basic Usage
 
@@ -28,7 +29,7 @@ path!(
 path!(
     start = (0, 0),
     end = (256, 144),
-    width = 4,
+    size = 4,
     color = 0xff00ffff,
 );
 ```
