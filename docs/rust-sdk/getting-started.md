@@ -6,41 +6,33 @@ sidebar_position: 0
 
 ## Overview
 
-A Turbo game typically has 3 main parts, each controlled by a macro:
+A Turbo game typically has 2 main parts, each controlled by a macro:
 
-1. **Configuration** - `turbo::cfg!`
-2. **Initialization** - `turbo::init!`
-3. **Execution** - `turbo::go!`
+1. **Initialization** - `turbo::init!`
+2. **Execution** - `turbo::go!`
 
 :::tip
 
-All are optional except for `turbo::go!`, but most games will at least want to include game state initialization via `turbo::init!` as well.
+`turbo::init!` is where you define the starting values for your game. `turbo::go!` is where you put your game code. The code you put in `go!` will run 60 times per second.
 
 :::
 
 ## Configuration
 
- Use the `turbo::cfg!` macro to define your game's metadata and configure settings in TOML format:
+Your project will initialize with a file called turbo.toml. You can see the default settings look like this:
 
-```rust
-turbo::cfg! {r#"
-    name = "Game name"
-    version = "1.0.0"
-    author = "game author"
-    description = "Game description"
-    [settings]
-    resolution = [256, 144]
-    [solana]
-    http-rpc-url = "http://127.0.0.1:8899"
-    ws-rpc-url = "ws://127.0.0.1:8900"
-"#}
+```
+name = "hello-world"
+version = "0.1.0"
+author = "Anonymous"
+description = "An awesome game made in Turbo!"
+
+[canvas]
+width = 256
+height = 144
 ```
 
-:::info
-
-The Solana configuration is required for those who want to interact with Solana in their games. Otherwise, the remaining config fields are optional.
-
-:::
+You can change your resolution and game name here.
 
 ## Initialization
 
@@ -74,14 +66,16 @@ turbo::init! {
 :::info
 
 - For convenience, `turbo::init!` allows nested struct and enum definitions via the [structstruck](https://docs.rs/structstruck/latest/structstruck/) crate.
+
 - `turbo::init` will derive the following traits for type each defined in the macro: `BorshSerialize`, `BorshDeserialize`, `PartialEq`, `Debug`, and `Clone`.
+  
 - In development, you can reset the state of the game to its initial state anytime by using a simple keyboard shortcut `Cmd+R` on MacOS/Linux and `Ctrl+R` on Windows.
 
 :::
 
 ## Execution
 
-Turbo games run at 60 fps and the typical game loop should typically follow this pattern:
+Turbo games run at 60 fps and the typical game loop should follow this pattern:
 
 ```rust
 turbo::go! {
