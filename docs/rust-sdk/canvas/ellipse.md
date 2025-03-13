@@ -6,14 +6,14 @@ Draws ellipses.
 
 ```rust title="turbo::canvas"
 ellipse!(
-    x: i32,
-    y: i32,
-    w = i32,
-    h = i32,
+    x = i32,
+    y = i32,
+    w = u32,
+    h = u32,
     color = u32,
     rotation = u32,
-    border_size: i32,
-    border_color: u32,
+    border_size = i32,
+    border_color = u32,
 )
 ```
 
