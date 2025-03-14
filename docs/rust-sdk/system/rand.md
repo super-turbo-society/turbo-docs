@@ -14,12 +14,6 @@ rand() -> u32
 let n = rand();
 ```
 
-:::tip
-
-`rand()` is seeded based on the game tick(), so if you pull a list of random numbers on the first frame of the game, you will end up with the same numbers every time you play. If that is not what you want, try pulling the random numbers after the first user interaction, to get a non-predictable list.
-
-:::
-
 ### Get random number between 1 and 100
 
 ```rust
