@@ -10,7 +10,7 @@ Follow these simple steps to integrate sound into your Turbo game:
 
 2. **Put Images in the Folder**
 
-- The following image formats are supported: `.wav`, `.mp3`, `.ogg`, and `.flac`
+- The following file formats are supported: `.wav`, `.mp3`, `.ogg`, and `.flac`
 
 :::
 
@@ -20,7 +20,7 @@ Use `audio::play(&str)` to play a sound effect from your audio folder. For examp
 
 ## Looping sound
 
-Loop a sound (like background music) like this:
+You can loop a sound like this:
 
 ```rust
 if !audio::is_playing("background_music"){
