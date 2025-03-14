@@ -14,13 +14,13 @@ text!(
 )
 ```
 
-| Param   | Type                                           | Default      | Description                                                 |
-| :------ | :--------------------------------------------- | :----------- | :---------------------------------------------------------- |
-| `""`    | `&str`                                         | -            | Text to be displayed                                        |
-| `x`     | `i32`                                          | `0`          | Starting x position of the text                             |
-| `y`     | `i32`                                          | `0`          | Starting y position of the text                             |
-| `color` | `u32`                                          | `0xffffffff` | Hex color to display text in                                |
-| `font`  | [`Font`](/rust-sdk/canvas/font)                | `"medium"`   | Size to display text in: `"small"`, `"medium"`, or `"large"`|
+| Param   | Type   | Default      | Description                                                  |
+| :------ | :----- | :----------- | :----------------------------------------------------------- |
+| `""`    | `&str` | -            | Text to be displayed                                         |
+| `x`     | `i32`  | `0`          | Starting x position of the text                              |
+| `y`     | `i32`  | `0`          | Starting y position of the text                              |
+| `color` | `u32`  | `0xffffffff` | Hex color to display text in                                 |
+| `font`  | `&str` | `"medium"`   | Size to display text in: `"small"`, `"medium"`, or `"large"` |
 
 :::note
 
@@ -52,9 +52,9 @@ text!(
 
 ![Greetings, Earthlings Screenshot](/greetings_earthlings_screenshot.png)
 
-### Custom Usage
+### Custom Fonts
 
-You can even add custom fonts by adding a font folder and specifying in the `font` peram the name of the added font:
+You can add custom fonts by creating a folder called fonts and adding a font file in there. Then call the font by using it's name (minus the file extension)
 
 ```rust
 text!("Magic Missile!!", font = "OldWizard");

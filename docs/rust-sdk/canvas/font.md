@@ -28,6 +28,6 @@ pub enum Font {
 
 :::tip
 
-head over to [`Text`](/rust-sdk/canvas/text) to see more!
+Head over to [`Text`](/rust-sdk/canvas/text) to read about printing text in your game!
 
 :::
