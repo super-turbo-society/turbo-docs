@@ -13,13 +13,15 @@ A Turbo game typically has 2 main parts, each controlled by a macro:
 
 :::tip
 
-`turbo::init!` is where you define the starting values for your game. `turbo::go!` is where you put your game code. The code you put in `go!` will run 60 times per second.
+`turbo::init!` is where you define the starting values for your game. 
+
+`turbo::go!` is where you put your game code. The code you put in `go!` will run 60 times per second.
 
 :::
 
 ## Configuration
 
-Your project will initialize with a file called turbo.toml. You can see the default settings look like this:
+Your project will initialize with a file called turbo.toml. If you open it, you can see the default settings look like this:
 
 ```
 name = "hello-world"

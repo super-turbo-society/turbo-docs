@@ -1,6 +1,6 @@
 # Nine-Slice
 
-Use Nine-Slice sprites to create UI elements, like buttons and text boxes, that can be resized without distorting the borders.
+Use `nine_slice` sprites to create UI elements, like buttons and text boxes, that can be resized without distorting the borders.
 
 ## `nine_slice!`
 

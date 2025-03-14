@@ -52,4 +52,4 @@ ellipse!(
 );
 ```
 
-![Ellipsev Screenshot](/ellipsev_screenshot.png)
+![Ellipse Screenshot](/ellipsev_screenshot.png)
