@@ -9,5 +9,5 @@ canvas::resolution() -> (u32, u32)
 ### Get canvas size
 
 ```rust
-let (canvas_width, canvas_height) = canvas::size();
+let (canvas_width, canvas_height) = canvas::resolution();
 ```
