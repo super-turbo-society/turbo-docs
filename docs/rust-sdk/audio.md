@@ -1,96 +1,31 @@
 # Audio
 
-## `Tween<T>`
+:::info Audio Setup
 
-A generic struct that handles smooth transitions between values over time.
+Follow these simple steps to integrate sound into your Turbo game:
 
-```rust title="turbo::tween"
-pub struct Tween<T> {
-    pub start: T,
-    pub end: T,
-    pub duration: usize,
-    pub elapsed: usize,
-    pub easing: Easing,
-    pub start_tick: Option<usize>,
+1. **Create an `audio` Folder**
+
+- Inside your project directory, create a folder named `audio`. This folder will contain all your sound files.
+
+2. **Put Images in the Folder**
+
+- The following image formats are supported: `.wav`, `.mp3`, `.ogg`, and `.flac`
+
+:::
+
+## Play Sound
+
+Use `audio::play(&str)` to play a sound effect from your audio folder. For example, if your sound effect is named "coin.wav" you can play it with `audio:play("coin")`
+
+## Looping sound
+
+Loop a sound (like background music) like this:
+
+```rust
+if !audio::is_playing("background_music"){
+    audio::play("background_music");
 }
 ```
 
-### Create a new tween
-
-```rust
-// Create a new tween starting at 0.0
-let mut tween = Tween::new(0.0);
-```
-
-### Set a target
-
-```rust
-// Tween will transition from its current value to 100.0
-tween.set(100.0);
-```
-
-### Set duration
-
-```rust
-// Tween will complete in 60 ticks
-tween.set_duration(60);
-```
-
-### Set easing
-
-```rust
-// Use quadratic easing
-tween.set_ease(Easing::EaseInQuad);
-```
-
-### Get current value of tween
-
-```rust
-// Get the current value of the tween
-let current = tween.get();
-```
-
-### Check if complete
-
-```rust
-if tween.done() {
-    // Tween has finished
-}
-```
-
-### Add to target
-
-```rust
-// Add 10 to the end value
-tween.add(10.0);
-```
-
-## Complete Example
-
-Create a tween that moves across the screen horizontally.
-
-```rust
-turbo::init! {
-    struct GameState {
-        position: Tween<f32>,
-    } = {
-        Self {
-            position: Tween::new(0.0) //start value
-                .duration(120) //duration in frames
-                .ease(Easing::EaseInOutQuad) //easing type
-                .set(220.0) //end value
-        }
-    }
-}
-
-turbo::go! {
-    let mut state = GameState::load();
-    // Get the current value of the tween
-    let val = state.position.get();
-    // Draw a circle using that value
-    circ!(x = val, y = 72, d=8, color = 0x32CD32ff);
-    state.save();
-}
-```
-
-![Tween example showing smooth animation](/tween-example.gif)
+This will automatically restart the music once it ends.
