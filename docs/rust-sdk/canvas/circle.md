@@ -28,7 +28,7 @@ circ!(
 
 ### Basic Usage
 
-Here's an 16px diameter magenta circle in the center of a 256x144 canvas:
+Here's a 16px diameter magenta circle in the center of a 256x144 canvas:
 
 ```rust
 circ!(d = 16, x = 120, y = 64, color = 0xff00ffff);
