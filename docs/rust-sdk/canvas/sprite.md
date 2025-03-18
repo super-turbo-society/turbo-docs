@@ -54,20 +54,21 @@ Let's break it down:
 - Adjust the `rotate` parameter to control the sprite's degrees of rotation.
 
 
-| Param      | Type   | Default         | Description                                                      |
-| :--------- | :----- | :-------------- | :--------------------------------------------------------------- |
-| -          | `&str` | -               | The sprite's name (filename minus the extension)                 |
-| `x`        | `i32`  | `0`             |                                                                  |
-| `y`        | `i32`  | `0`             |                                                                  |
-| `w`        | `u32`  | [sprite width]  |                                                                  |
-| `h`        | `u32`  | [sprite height] |                                                                  |
-| `color`    | `u32`  | `0xffffffff`    | Color that will overlay the sprite (multiplied)                  |
-| `opacity`  | `f32`  | `1.0`           | Sprite opacity - `0.0` = fully transparent. `1.0` = fully opaque |
-| `rotation` | `i32`  | `0`             | Degrees of rotation                                              |
-| `scale_x`  | `f32`  | `1.0`           | Horizontal scaling - `1.0` is 100% (aka, no scaling)             |
-| `scale_y`  | `f32`  | `1.0`           | Vertical scaling - `1.0` is 100% (aka, no scaling)               |
-| `flip_x`   | `bool` | `false`         |                                                                  |
-| `flip_y`   | `bool` | `false`         |                                                                  |
+| Param      | Type    | Default         | Description                                                          |
+| :--------- | :------ | :-------------- | :------------------------------------------------------------------- |
+| -          | `&str`  | -               | The sprite's name (filename minus the extension)                     |
+| `x`        | `i32`   | `0`             |                                                                      |
+| `y`        | `i32`   | `0`             |                                                                      |
+| `w`        | `u32`   | [sprite width]  |                                                                      |
+| `h`        | `u32`   | [sprite height] |                                                                      |
+| `color`    | `u32`   | `0xffffffff`    | Color that will overlay the sprite (multiplied)                      |
+| `opacity`  | `f32`   | `1.0`           | Sprite opacity - `0.0` = fully transparent. `1.0` = fully opaque     |
+| `rotation` | `i32`   | `0`             | Degrees of rotation                                                  |
+| `scale_x`  | `f32`   | `1.0`           | Horizontal scaling - `1.0` is 100% (aka, no scaling)                 |
+| `scale_y`  | `f32`   | `1.0`           | Vertical scaling - `1.0` is 100% (aka, no scaling)                   |
+| `flip_x`   | `bool`  | `false`         |                                                                      |
+| `flip_y`   | `bool`  | `false`         |                                                                      |
+| `frame`    | `usize` | `None`          | Use a specific frame from an animated file, instead of animating it. |
 
 
 ### Animated Sprites
