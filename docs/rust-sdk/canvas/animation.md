@@ -4,13 +4,13 @@ Turbo makes animation easy by storing your animations and progressing them autom
 
 ##`SpriteAnimation`
 
-A `SpriteAnimation` is the data structure that holds your animations values. Create a new one like this:
+A `SpriteAnimation` is the data structure that holds your animations values. Create a new key using `animation::get(&str)`, like this:
 
 ```rust
 let anim = animation::get("key_value");
 ```
 
-Then, you can change settings as needed, including setting the sprite that you want this animation to play:
+If there is no entry for the value you put in, then it will create a new animation. If the value exists already, then it will return that to you. `Then, you can change settings as needed, including setting the sprite that you want this animation to play:
 
 ```rust
 let anim = animation::get("key_value");

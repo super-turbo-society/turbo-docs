@@ -21,7 +21,7 @@ If you want your project to dynamically resize to fill the whole window, instead
 
 ```
 [canvas]
-autoscaling = 1.0
+auto-size = 1.0
 ```
 
-The number you put there will adjust the pixel size in the game, so play around with it until you find the size you like.
+The number here is the ratio of your game's canvas resolution to the window size. 
