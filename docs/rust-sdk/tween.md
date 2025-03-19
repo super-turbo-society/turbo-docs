@@ -75,10 +75,10 @@ turbo::init! {
         position: Tween<f32>,
     } = {
         Self {
-            position: Tween::new(0.0)
-                .duration(120)
-                .ease(Easing::EaseInOutQuad)
-                .set(220.0)
+            position: Tween::new(0.0) //start value
+                .duration(120) //duration in frames
+                .ease(Easing::EaseInOutQuad) //easing type
+                .set(220.0) //end value
         }
     }
 }

@@ -10,7 +10,7 @@ Follow these simple steps to integrate sprites into your Turbo game:
 
 2. **Put Images in the Folder**
 
-- The following image formats are supported: `.png`, `.gif` (non-animated), `.webp`, and `.jpg`/`.jpeg`.
+- The following image formats are supported: `.png`, `.gif`, `.webp`, `.ase` and `.jpg`/`.jpeg`.
 
 Now you're ready to draw some sprites!
 
@@ -29,34 +29,15 @@ sprite!(
     h: u32,
     color: u32,
     opacity: f32,
-    rotate: i32,
+    rotation: i32,
     scale_x: f32,
     scale_y: f32,
     flip_x: bool,
     flip_y: bool,
-    fps: u32,
 )
 ```
 
-| Param     | Type   | Default         | Description                                                      |
-| :-------- | :----- | :-------------- | :--------------------------------------------------------------- |
-| -         | `&str` | -               | The sprite's name (filename minus the extension)                 |
-| `x`       | `i32`  | `0`             |                                                                  |
-| `y`       | `i32`  | `0`             |                                                                  |
-| `w`       | `u32`  | [sprite width]  |                                                                  |
-| `h`       | `u32`  | [sprite height] |                                                                  |
-| `color`   | `u32`  | `0xffffffff`    | Color that will overlay the sprite (multiplied)                  |
-| `opacity` | `f32`  | `1.0`           | Sprite opacity - `0.0` = fully transparent. `1.0` = fully opaque |
-| `rotate`  | `i32`  | `0`             | Degrees of rotation                                              |
-| `scale_x` | `f32`  | `1.0`           | Horizontal scaling - `1.0` is 100% (aka, no scaling)             |
-| `scale_y` | `f32`  | `1.0`           | Vertical scaling - `1.0` is 100% (aka, no scaling)               |
-| `flip_x`  | `bool` | `false`         |                                                                  |
-| `flip_y`  | `bool` | `false`         |                                                                  |
-| `fps`     | `u32`  | `0`             |                                                                  |
-
-### Static Sprites
-
-By default, sprites are drawn statically (non-animated). To demonstrate display a sprite named "goblin" near the center of the screen with 180 degrees of rotation:
+To draw a sprite, simply call the macro and include any parameters you need. The only one that is required is the file name (minus the extension):
 
 ```rust
 sprite!("goblin", x = 120, y = 50, rotate = 180);
@@ -72,21 +53,43 @@ Let's break it down:
 - Adjust the `x` and `y` parameters to position the sprite where you want it.
 - Adjust the `rotate` parameter to control the sprite's degrees of rotation.
 
+
+| Param      | Type    | Default         | Description                                                          |
+| :--------- | :------ | :-------------- | :------------------------------------------------------------------- |
+| -          | `&str`  | -               | The sprite's name (filename minus the extension)                     |
+| `x`        | `i32`   | `0`             |                                                                      |
+| `y`        | `i32`   | `0`             |                                                                      |
+| `w`        | `u32`   | [sprite width]  |                                                                      |
+| `h`        | `u32`   | [sprite height] |                                                                      |
+| `color`    | `u32`   | `0xffffffff`    | Color that will overlay the sprite (multiplied)                      |
+| `opacity`  | `f32`   | `1.0`           | Sprite opacity - `0.0` = fully transparent. `1.0` = fully opaque     |
+| `rotation` | `i32`   | `0`             | Degrees of rotation                                                  |
+| `scale_x`  | `f32`   | `1.0`           | Horizontal scaling - `1.0` is 100% (aka, no scaling)                 |
+| `scale_y`  | `f32`   | `1.0`           | Vertical scaling - `1.0` is 100% (aka, no scaling)                   |
+| `flip_x`   | `bool`  | `false`         |                                                                      |
+| `flip_y`   | `bool`  | `false`         |                                                                      |
+| `frame`    | `usize` | `None`          | Use a specific frame from an animated file, instead of animating it. |
+
+
 ### Animated Sprites
 
-Sprites with a landscape aspect ratio can be used like a "film strip" when the `fps` option is given. So if we have a sprite called `sprites/doge.png` that looks like this:
+The sprite macro will follow any animation rules set in the file, so if you use an animated file type (like .gif or .webp), it will animate automatically.
 
-![Doge animation strip](/doge.png)
+![Animated Doge](/doge.webp)
 
-...and we write some code like this:
+So if we write some code like this:
 
 ```rust
-// Display a sprite named "doge" at specified position with a fast frame rate.
-sprite!("doge", x = 112, y = 50, fps = fps::FAST);
+// Display a sprite named "doge".
+sprite!("doge", x = 112, y = 50);
 ```
 
 ...it will be rendered like this:
 
 ![Doge Sprite Screenshot](/doge_animation_screencap.gif)
 
-[Read more about FPS &rarr;](/rust-sdk/canvas/fps)
+The speed and playback settings of the animation are determined by the settings on your file.
+
+If you want more control over your animations, check out the animation docs:
+
+[Advanced Animation &rarr;](/rust-sdk/canvas/animation)
