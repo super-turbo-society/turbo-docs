@@ -2,7 +2,7 @@
 
 When you initialize a project, you'll see a file called turbo.toml in your project directory. If you open that file, you should see something like this:
 
-```
+```rust title="turbo.toml"
 name = "hello-world"
 version = "0.1.0"
 author = "Anonymous"

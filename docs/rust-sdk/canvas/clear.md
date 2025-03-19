@@ -1,16 +1,14 @@
 # Background Color
 
-## `clear()`
-
-Allows you to set the background color of the canvas. This function takes a single argument which represents the color to be used as the background color when clearing the canvas.
+Use `clear()` to set the background color of the canvas.
 
 ```rust title="turbo::canvas"
 clear(u32)
 ```
 
-| Param | Type  | Default      | Description                         |
-| :---- | :---- | :----------- | :---------------------------------- |
-| -     | `u32` | -            | input a hexdecimal code for a color |
+| Param | Type  | Default | Description                         |
+| :---- | :---- | :------ | :---------------------------------- |
+| -     | `u32` | -       | input a hexdecimal code for a color |
 
 :::note
 

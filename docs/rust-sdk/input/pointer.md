@@ -1,7 +1,5 @@
 # Pointer
 
-## `pointer`
-
 Handles mouse and touch events simultaneously for easy cross-platform functionality.
 
 ```rust title="turbo::input"
@@ -10,7 +8,7 @@ pub fn pointer() -> Pointer
 
 ### Using the pointer
 
-```rust
+```rust 
 let p = pointer();
 // get the current mouse position
 let mouse_position_x = p.x;
@@ -21,8 +19,6 @@ if p.just_pressed(){
 }
 ```
 
-Mouse clicks are treated identically to taps on mobile.
-
-`p.just_pressed()`, `p.pressed()` and `p.just_released()`.
+Mouse clicks are treated identically to taps on mobile. Use `p.just_pressed()`, `p.pressed()` and `p.just_released()` to check for interaction.
 
 On mobile, swipes are treated as `gamepad` direction presses. See [`gamepad`](/rust-sdk/input/gamepad) for more details.

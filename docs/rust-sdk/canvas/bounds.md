@@ -139,7 +139,8 @@ turbo::go! {
 }
 ```
 
-![Bounds example showing a simple button row](/bound-example.gif)
+![Bounds example showing a simple button row](/bounds_example.gif)
+
 
 
 

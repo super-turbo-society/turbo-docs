@@ -1,5 +1,10 @@
 # Mouse
 
+:::info
+
+Mouse has been deprecated and replaced with [Pointer](/rust-sdk/input/pointer) as of version 0.7.0.
+:::
+
 ## `mouse`
 
 Tracks the mouse's left/right button states, wheel delta, and position.

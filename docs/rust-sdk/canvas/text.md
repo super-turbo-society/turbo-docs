@@ -54,7 +54,7 @@ text!(
 
 ### Custom Fonts
 
-You can add custom fonts by creating a folder called `fonts` and adding a font file in there. Then call the font by using it's name (minus the file extension)
+You can add custom fonts by creating a folder called `fonts` and adding a font file in there. Then call the font by using it's name (minus the file extension).
 
 ```rust
 text!("Magic Missile!!", font = "OldWizard");
@@ -64,6 +64,6 @@ text!("Magic Missile!!", font = "OldWizard");
 
 :::tip
 
-Head over to [`Font`](/rust-sdk/canvas/font) to learn more about custom fonts!
+Head over to [Font](/rust-sdk/canvas/font) to learn more about custom fonts!
 
 :::

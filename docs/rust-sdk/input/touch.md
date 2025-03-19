@@ -2,7 +2,7 @@
 
 :::info
 
-On mobile devices, touch input is automatically handled as [mouse input](/rust-sdk/input/mouse).
+On mobile devices, touch input is automatically handled through [pointer](/rust-sdk/input/pointer).
 
 :::
 
