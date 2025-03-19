@@ -37,29 +37,6 @@ The `key_value` does not need to be the same string as the animted sprite file t
 
 :::
 
-## Animation Settings
-
-`SpriteAnimation` has a number of functions you can call to change it's values. The general pattern is that you can access a value, or change it set set_[value_name].
-
-| Param         | Type                     | Default                         | Description                                                                                                            |
-| ------------- | ------------------------ | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| repeat        | usize                    | based on sprite export settings | How many times the sprite will play through it's animation before it stops.                                            |
-| direction     | SpriteAnimationDirection | Forward                         | Which direction to play the animation (Forward, Backward, PingPong, PingPongReverse)                                   |
-| fill_forwards | bool                     | false                           | When this is true, the animation stays on the last frame when it ends.   If it is false, it returns to the first frame |
-| speed         | f32                      | 1.0                             | How fast the animation plays multiplied by the speed set in the export settings.                                       |
-| delay         | f32                      | 0.0                             | The delay (in milliseconds) before the animation starts                                                                |
-| paused        | bool                     | false                           | Pause the animation                                                                                                    |
-
-#
-There are also a few helpful functions you can call on your `SpriteAnimation`. 
-
-| Function name    | Description                                          |
-| ---------------- | ---------------------------------------------------- |
-| use_sprite(&str) | The name of the sprite file to use on this animation |
-| restart()        | Restarts the animation from the beginning            |
-| pause()          | Pauses the animation                                 |
-| resume()         | Resumes the animation                                |
-
 ## Transitioning animations
 
 There are several ways you can transition between animations, but one of the simplest is to use the `default_sprite` field in the `sprite!` macro. This will check if the animation on that key is `done` and if it is, transition to the default sprite. This is great for any time you want to play an animation all the way through one time, the go back to a default. For example, if your character dashes, you could play the dash animation, but keep an idle animation as the default. Then, when the dash id done, you'll go back to the idle.
@@ -83,3 +60,26 @@ The `default_sprite` is used if the `animation_key` doesn't have a sprite assign
 If a sprite is set to loop infinitely, it will not return true for `.done`. Make sure to use `.set_repeat(1)` or adjust your export settings on that file if you always want it to only play once.
 
 :::
+
+## Animation Values
+
+`SpriteAnimation` has a number of functions you can call to change it's values. The general pattern is that you can access a value, or change it with `set_`.
+
+| Param         | Type                     | Default                         | Description                                                                                                            |
+| ------------- | ------------------------ | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| repeat        | usize                    | based on sprite export settings | How many times the sprite will play through it's animation before it stops.                                            |
+| direction     | SpriteAnimationDirection | Forward                         | Which direction to play the animation (Forward, Backward, PingPong, PingPongReverse)                                   |
+| fill_forwards | bool                     | false                           | When this is true, the animation stays on the last frame when it ends.   If it is false, it returns to the first frame |
+| speed         | f32                      | 1.0                             | How fast the animation plays multiplied by the speed set in the export settings.                                       |
+| delay         | f32                      | 0.0                             | The delay (in milliseconds) before the animation starts                                                                |
+| paused        | bool                     | false                           | Pause the animation                                                                                                    |
+
+#
+There are also a few helpful functions you can call on your `SpriteAnimation`. 
+
+| Function name    | Description                                          |
+| ---------------- | ---------------------------------------------------- |
+| use_sprite(&str) | The name of the sprite file to use on this animation |
+| restart()        | Restarts the animation from the beginning            |
+| pause()          | Pauses the animation                                 |
+| resume()         | Resumes the animation                                |
