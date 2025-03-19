@@ -1,11 +1,11 @@
 # Config
 
-When you initialize a project, you'll see a file called turbo.toml in your project directory. If you open that file, you should see something like this:
+When you initialize a project, you'll see a file called `turbo.toml` in your project directory. If you open that file, you should see something like this:
 
 ```rust title="turbo.toml"
 name = "hello-world"
 version = "0.1.0"
-author = "Anonymous"
+authors = ["Your Name"]
 description = "An awesome game made in Turbo!"
 
 [canvas]
@@ -24,4 +24,13 @@ If you want your project to dynamically resize to fill the whole window, instead
 auto-size = 1.0
 ```
 
-The number here is the ratio of your game's canvas resolution to the window size. 
+The number here is the ratio of your game's canvas resolution to the window size.
+
+## Netcode
+
+If you want to enable netcode in your project via Turbo OS, add this section to your config:
+
+```
+[turbo-os]
+api-url = "https://os.turbo.computer"
+```

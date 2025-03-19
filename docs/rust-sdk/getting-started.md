@@ -80,7 +80,7 @@ turbo::init! {
 Turbo games run at 60 fps and the typical game loop should follow this pattern:
 
 ```rust
-turbo::go! {
+turbo::go!({
     // highlight-start
     // 1. Load State
     // highlight-end
@@ -99,7 +99,7 @@ turbo::go! {
     // The final thing you should do in your game loop is save your game state.
     // This serializes state and persists it in memory so it doesn't get lost while hot-reloading
     state.save();
-}
+});
 ```
 
 :::note

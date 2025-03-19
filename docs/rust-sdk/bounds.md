@@ -19,17 +19,17 @@ pub struct Bounds {
 
 ```rust
 // create a new bounds that fills the full space of your screen
-let viewport = viewport();
+let viewport_bounds = viewport();
 ```
 
 ### Create a bounds of a set size and center it
 
 ```rust
-let viewport = viewport();
+let viewport_bounds = viewport();
 // create a new bounds that is 48 px wide and 14 px tall
 let bounds = Bounds::with_size(48, 14)
     // center it horizontally and vertically within the whole screen
-    .anchor_center(&viewport)
+    .anchor_center(&viewport_bounds)
     // move it up 16px
     .translate_y(-16);
 ```
@@ -49,11 +49,11 @@ let child = parent.adjust_width_by_fraction(0.5);
 Once you have your bounds in the correct position, you can access its values.
 
 ```rust
-let viewport = viewport();
+let viewport_bounds = viewport();
 // create a new bounds that is 48 px wide and 14 px tall
 let bounds = Bounds::with_size(48, 14)
     // centers it horizontally and vertically within the whole screen
-    .anchor_center(&viewport)
+    .anchor_center(&viewport_bounds)
     // move it up 16px
     .translate_y(-16);
 // highlight-start
@@ -63,7 +63,7 @@ rect!(
     xy = bounds.xy(),
     // Use the bounds size for w and h
     wh = bounds.wh(),
-    );
+);
 // highlight-end
 ```
 
@@ -89,20 +89,20 @@ rect!(
     xy = bounds.xy(),
     // Use the bounds size for w and h
     wh = bounds.wh(),
-    );
+);
 ```
 ## Complete Example
 
 Create a row of 3 buttons that use `bounds` to recognize whenever they are hovered or clicked
 
 ```rust
-turbo::go! {
-    let viewport = viewport();
-    let buttons = viewport
+turbo::go!({
+    let viewport_bounds = viewport();
+    let buttons = viewport_bounds
         .height(32)
         .inset_left(8)
         .inset_right(8)
-        .anchor_center(&viewport)
+        .anchor_center(&viewport_bounds)
         .inset_bottom(12)
         .columns_with_gap(3, 12); //create a vec of 3 buttons, equally separated, with 12 horizontal pixels between them
     for (i, btn) in buttons.into_iter().enumerate() {
@@ -136,7 +136,7 @@ turbo::go! {
         let btn_inner = btn.inset_left(4).inset_top(4);
         text!(label, x = btn_inner.x(), y = btn_inner.y(), font = "medium");    
     }
-}
+});
 ```
 
 ![Bounds example showing a simple button row](/bounds_example.gif)

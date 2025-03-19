@@ -10,11 +10,12 @@ pub fn pointer() -> Pointer
 
 ```rust 
 let p = pointer();
-// get the current mouse position
-let mouse_position_x = p.x;
-let mouse_position_y = p.y;
 
-if p.just_pressed(){
+// get the current mouse/touch position
+let position_x = p.x;
+let position_y = p.y;
+
+if p.just_pressed() {
     // handle mouse click or touch event
 }
 ```

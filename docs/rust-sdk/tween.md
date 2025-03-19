@@ -83,14 +83,14 @@ turbo::init! {
     }
 }
 
-turbo::go! {
+turbo::go!({
     let mut state = GameState::load();
     // Get the current value of the tween
     let val = state.position.get();
     // Draw a circle using that value
     circ!(x = val, y = 72, d=8, color = 0x32CD32ff);
     state.save();
-}
+});
 ```
 
 ![Tween example showing smooth animation](/tween-example.gif)

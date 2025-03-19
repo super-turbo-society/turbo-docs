@@ -1,19 +1,19 @@
-# Animation
+# Animations
 
 Turbo makes animation easy by storing your animations and progressing them automatically. You can set and retreive the status of any animation with an `animation_key`. Once you have the key, you can adjust any settings on your animation, then call the `sprite!` macro using that animation key, and turbo will continue to progress the animation forward every frame.
 
 ## SpriteAnimation
 
-A `SpriteAnimation` is the data structure that holds your animations values. Create a new key using `animation::get(&str)`, like this:
+A `SpriteAnimation` is the data structure that holds your animations values. Create a new key using `animation::get`:
 
 ```rust
-let anim = animation::get("key_value");
+let anim = animation::get("foo");
 ```
 
 If there is no entry for the value you put in, then it will create a new animation. If the value exists already, then it will return that to you. Then, you can change the animation values, including setting the sprite that you want this animation to play:
 
 ```rust
-let anim = animation::get("key_value");
+let anim = animation::get("foo");
 // highlight-start
 anim.use_sprite("turbi_idle"); // set the sprite file you want to use
 anim.set_speed(1.5); // increase the speed of the animation
@@ -23,17 +23,17 @@ anim.set_speed(1.5); // increase the speed of the animation
 Once you have your settings correct, you can call the `sprite!` macro to draw the animation:
 
 ```rust
-let anim = animation::get("key_value");
+let anim = animation::get("foo");
 anim.use_sprite("turbi_idle"); // set the sprite file you want to use
 anim.set_speed(1.5); // increase the speed of the animation
 // highlight-start
-sprite!(animation_key = "key_value");
+sprite!(animation_key = "foo");
 // highlight-end
 ```
 
-:::tip Using Key Values
+:::tip Using Animation Keys
 
-The `key_value` does not set the animted sprite file that you want to render on screen. Instead, it should be a unique value for each individual object that you want to animate. So if you have 10 different instances using the same sprite, they each need a unique key value - trying giving them an ID when you instance them, and add that on to the end of the `animation_key`.
+The string `"foo"` in the prior examples does NOT set the animation sprite. It is a unique value used to identify an animation instance. So if you have 10 different sprite animations, they each need a unique animation key.
 
 :::
 
@@ -43,7 +43,7 @@ There are several ways you can transition between animations, but one of the sim
 
 ```rust
 let anim = animation::get("player_character");
-if gamepad(0).a.just_pressed(){
+if gamepad(0).a.just_pressed() {
     anim.use_sprite("player_dash");
     a.set_repeat(1); // only play the animation 1 time
 }

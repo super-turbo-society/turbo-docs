@@ -7,3 +7,9 @@ turbo init my-awesome-game
 ```
 
 This will initialize a Rust crate in a dir called `my-awesome-game` that you can open in your favorite code editor.
+
+:::tip
+
+Head over to [Getting Started](/rust-sdk/getting-started) to learn more about what to do after initializing your project.
+
+:::

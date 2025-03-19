@@ -6,17 +6,17 @@ Draws ASCII text.
 
 ```rust title="turbo::canvas"
 text!(
-    "" = &str,
-    x = i32, 
-    y = i32, 
-    color = u32, 
-    font = "size"
+    &str,
+    x = i32,
+    y = i32,
+    color = u32,
+    font = &str
 )
 ```
 
 | Param   | Type   | Default      | Description                                                  |
 | :------ | :----- | :----------- | :----------------------------------------------------------- |
-| `""`    | `&str` | -            | Text to be displayed                                         |
+| -       | `&str` | -            | Text to be displayed                                         |
 | `x`     | `i32`  | `0`          | Starting x position of the text                              |
 | `y`     | `i32`  | `0`          | Starting y position of the text                              |
 | `color` | `u32`  | `0xffffffff` | Hex color to display text in                                 |
@@ -64,6 +64,6 @@ text!("Magic Missile!!", font = "OldWizard");
 
 :::tip
 
-Head over to [Font](/rust-sdk/canvas/font) to learn more about custom fonts!
+Head over to [Use Custom Fonts](/how-to/fonts) to learn more about custom fonts!
 
 :::

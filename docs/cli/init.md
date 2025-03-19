@@ -7,12 +7,13 @@ sidebar_position: 0
 ```md
 Initializes a new Turbo project in Rust
 
-Usage: turbo init <PROJECT_NAME>
+Usage: turbo init [OPTIONS] <PROJECT_NAME>
 
 Arguments:
   <PROJECT_NAME>  The name of the project
 
 Options:
-  -h, --help     Print help
-  -V, --version  Print version
+  -p, --program-id <PROGRAM_ID>  Initialize with a Turbo OS program ID to create/update. Must be owned by your user account. Ensure this ID is globally unique to avoid ownership conflicts with existing program IDs [default: ]
+  -h, --help                     Print help
+  -V, --version                  Print version
 ```

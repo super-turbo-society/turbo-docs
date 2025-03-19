@@ -20,3 +20,7 @@ sidebar_position: 5
 - [Aseprite](https://www.aseprite.org/)
 - [Lospec](https://lospec.com/)
 - [OpenGameArt](https://opengameart.org/art-search-advanced?keys=&field_art_type_tid%5B%5D=9&sort_by=count&sort_order=DESC)
+
+## Fonts
+
+- [BitfontMaker2 Gallery](https://www.pentacom.jp/pentacom/bitfontmaker2/gallery/.)

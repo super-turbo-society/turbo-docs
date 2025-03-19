@@ -136,9 +136,9 @@ Now, open `hello-world/src/lib.rs`. You should see something like this:
 ```rust title="hello-world/src/lib.rs" showLineNumbers
 // This is where your main game loop code goes
 // The stuff in this block will run ~60x per sec
-turbo::go! {
+turbo::go!({
     text!("Hello, world!!!");
-}
+});
 ```
 
 Time for your first update. Modify the text and check out your game window:
@@ -146,11 +146,11 @@ Time for your first update. Modify the text and check out your game window:
 ```rust title="hello-world/src/lib.rs" showLineNumbers
 // This is where your main game loop code goes
 // The stuff in this block will run ~60x per sec
-turbo::go! {
+turbo::go!({
     // highlight-start
     text!("Yuuurrr!");
     // highlight-end
-}
+});
 ```
 
 ![Turbo game window with the text "yuuurrr!!!"](./img/yuuurrr.png)
@@ -160,7 +160,7 @@ If you want to keep playing around, the `text!` macro has several optional param
 ```rust title="hello-world/src/lib.rs" showLineNumbers
 // This is where your main game loop code goes
 // The stuff in this block will run ~60x per sec
-turbo::go! {
+turbo::go!({
     // highlight-start
     text!(
         "Let's gooo!",      // Text to display
@@ -170,7 +170,7 @@ turbo::go! {
         font = "large"      // Text font (other options: "small", "medium")
     );
     // highlight-end
-}
+});
 ```
 
 ## Next Steps
