@@ -19,13 +19,13 @@ pub struct Bounds {
 
 ```rust
 // create a new bounds that fills the full space of your screen
-let viewport_bounds = viewport();
+let viewport_bounds = bounds::viewport();
 ```
 
 ### Create a bounds of a set size and center it
 
 ```rust
-let viewport_bounds = viewport();
+let viewport_bounds = bounds::viewport();
 // create a new bounds that is 48 px wide and 14 px tall
 let bounds = Bounds::with_size(48, 14)
     // center it horizontally and vertically within the whole screen
@@ -49,7 +49,7 @@ let child = parent.adjust_width_by_fraction(0.5);
 Once you have your bounds in the correct position, you can access its values.
 
 ```rust
-let viewport_bounds = viewport();
+let viewport_bounds = bounds::viewport();
 // create a new bounds that is 48 px wide and 14 px tall
 let bounds = Bounds::with_size(48, 14)
     // centers it horizontally and vertically within the whole screen
@@ -97,7 +97,7 @@ Create a row of 3 buttons that use `bounds` to recognize whenever they are hover
 
 ```rust
 turbo::go!({
-    let viewport_bounds = viewport();
+    let viewport_bounds = bounds::viewport();
     let buttons = viewport_bounds
         .height(32)
         .inset_left(8)
