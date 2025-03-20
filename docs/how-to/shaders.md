@@ -8,7 +8,7 @@ Custom shaders are in an early stage of development. Breaking changes are likely
 
 Use `.wsgl` files to add visual effects to your game. To get started, create a folder in your project directory called `shaders`. Then add your `.wsgl` files there.
 
-Here's a basic template you cna use as a starting point for creating custom shaders:
+Here's a basic template you can use as a starting point for creating custom shaders:
 
 ```wgsl
 // Global uniform with viewport and tick fields
