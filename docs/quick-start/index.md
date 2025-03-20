@@ -9,7 +9,7 @@ import Admonition from '@theme/Admonition';
 
 # Quick Start
 
-<img src="/solana-superpowers.svg" style={{ height: "240px" }} />
+<img src="/turbi-plug.svg" style={{ height: "240px" }} />
 <br />
 <br />
 
