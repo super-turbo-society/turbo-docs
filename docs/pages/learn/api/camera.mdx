@@ -1,0 +1,126 @@
+# Camera
+
+## Overview
+
+The `camera` module provides methods to shift the window's viewport of your game's canvas.
+
+:::info[Coordinate System]
+By default, the camera position is in the center of the viewport in pixels. This means, the `x` position starts at half of the width and the `y` position starts at half the height of your game's resolution. The `z` position will always be `1.0` by default.
+:::
+
+## API
+
+### `camera::xyz`
+
+Gets the `x`, `y`, and `z` coordinates of the camera.
+
+```rs
+camera::xyz() -> (f32, f32, f32)
+```
+
+:::tip[Example]
+
+Basic Usage
+
+```rs
+let (x, y, z) = camera::xyz();
+```
+
+:::
+
+### `camera::set_xy`
+
+```rs
+camera::set_xy<X: NumCast, Y: NumCast>(x: X, y: Y)
+```
+
+| Param | Type     | Default | Description               |
+| :---- | :------- | :------ | :------------------------ |
+| `x`   | `number` |         | X position of the camera. |
+| `y`   | `number` |         | Y position of the camera. |
+
+:::tip[Example]
+
+Setting both the camera `x` and `y` position to `100`:
+
+```rust
+camera::set_xy(100, 100);
+```
+
+:::
+
+### `camera::move_xy`
+
+Moves the camera relative to the current camera position.
+
+```rs
+camera::set_xy<X: NumCast, Y: NumCast>(x: X, y: Y)
+```
+
+| Param | Type     | Default | Description                                       |
+| :---- | :------- | :------ | :------------------------------------------------ |
+| `x`   | `number` |         | Number of pixels to move the camera horizontally. |
+| `y`   | `number` |         | Number of pixesl to move the camera vertically.   |
+
+:::tip[Example]
+
+Moving the camera 5px to the right and 10px up:
+
+```rust
+camera::move_xy(5.0, -10);
+```
+
+:::
+
+### `camera::focus_rect`
+
+Use this to center the camera on a target rectangle, based a given position and width and height.
+
+```rs
+camera::focus_rect<X: NumCast, Y: NumCast, W: NumCast, H: NumCast>(x: X, y: Y, w: W, h: H)
+```
+
+| Param | Type     | Default | Description                                             |
+| :---- | :------- | :------ | :------------------------------------------------------ |
+| `x`   | `number` |         | The x position of the rectangle to focus the camera on. |
+| `y`   | `number` |         | The y position of the rectangle to focus the camera on. |
+| `w`   | `number` |         | The width of the rectangle to focus the camera on.      |
+| `h`   | `number` |         | The height of the rectangle to focus the camera on.     |
+
+:::tip[Example]
+
+Focusing on the camera on the center of a 16x16 rectangle at position `(0,0)`.
+
+```rust
+camera::focus_rect(0, 0, 16, 16);
+```
+
+:::
+
+### `camear::set_z`
+
+```rs
+camera::set_z(z: f32)
+```
+
+| Param | Type     | Default | Description            |
+| :---- | :------- | :------ | :--------------------- |
+| `z`   | `number` |         | The camera zoom level. |
+
+:::tip[Example]
+
+Set zoom level
+
+```rust
+camera::set_z(2.0);
+```
+
+:::
+
+### `camera::reset`
+
+Resets the camera position to the original center of the canvas.
+
+```rs
+camera::reset()
+```

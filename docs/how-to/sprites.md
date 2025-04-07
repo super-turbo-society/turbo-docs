@@ -1,3 +1,0 @@
-# Manage Sprites
-
-Coming soon...

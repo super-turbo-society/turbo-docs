@@ -1,0 +1,31 @@
+# Publishing to the Web
+
+## Walkthrough
+
+::::steps
+
+### Export the Game
+
+Run [`turbo export`](/learn/guides/cli). This will create a `www` directory with the files required to run your game on the web.
+
+```
+your-project-dir/       # Your project's root directory.
+├── www/                # The files needed to run your game on the web. <!-- [!code focus] [!code hl] [!code ++] -->
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+
+### Upload the Files
+
+Upload the `www` dir to a hosting service.
+
+:::tip[Tip: Free Web Hosting Services]
+There are many options to host websites online for free. Here are some recommendations:
+
+- **Netlify**: One simple option that lets you simply drag-and-drop the `www` directory is https://app.netlify.com/drop.
+- **Itch**: If you have an [itch.io](https://itch.io) account, you can also upload a new project at https://itch.io/game/new. Be sure to change the "Kind of project" to `HTML` and zip the `www` directory before uploading it.
+  :::
+
+::::

@@ -1,0 +1,118 @@
+# Configuring Your Game
+
+Your project will initialize with a file called `turbo.toml`. You can modify this file to change various configuration options for your game.
+
+## Metadata
+
+Basic metadata for your game.
+
+```toml [turbo.toml]
+name = "My Project Name"
+version = "0.1.0"
+authors = ["Anonymous"]
+description = "An awesome game made in Turbo!"
+```
+
+| Option        | Type       | Default      | Description                               |
+| ------------- | ---------- | ------------ | ----------------------------------------- |
+| `name`        | `string`   | `"Untitled"` | Game name. Also becomes the window title. |
+| `version`     | `string`   |              | Game version.                             |
+| `authors`     | `string[]` |              | List of authors.                          |
+| `description` | `string`   |              | Game description.                         |
+
+:::tip
+The `name` option determines the game window title. The rest are pure metadata and have no side-effects.
+:::
+
+## Canvas
+
+Adjust your game resolution and rendering behavior.
+
+:::code-group
+
+```toml [Basic]
+[canvas]
+width = 128
+height = 128
+```
+
+```toml [Auto-size]
+[canvas]
+# Dynamically resize to fill the whole window instead of maintaing a fixed aspect ratio.
+# The number given is the ratio of the window's size to your game size.
+auto-size = 1.0
+```
+
+:::
+
+| Option      | Type     | Default | Description                                                                                                    |
+| ----------- | -------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+| `width`     | `number` | `256`   | Game canvas width in pixels.                                                                                   |
+| `height`    | `number` | `144`   | Game canvas height in pixels.                                                                                  |
+| `auto-size` | `number` |         | If set, width and height are ignored and the game canvas will scale with the window by the given scale factor. |
+| `fps`       | `number` | `60`    | Game frame rate.                                                                                               |
+
+:::warning
+The `fps` option is currently experimental and may have bugs.
+:::
+
+## Font
+
+Configure default text rendering behavior and load custom fonts.
+
+:::code-group
+
+```toml [Basic]
+[font]
+default-size = 12
+```
+
+```toml [Changing Defaults]
+[font]
+default-font = "large"
+```
+
+```toml [Individual Font Settings]
+[font]
+default-size = 12
+default-font = "Bar"
+
+# You can remap the name and change the glyph size of individual fonts
+[font.settings.Bar]
+file = "Foo.ttf" # The source font file
+size = 16 # The pt size the render this font's glyphs at
+```
+
+:::
+
+| Option                  | Type   | Default    | Description                                                      |
+| ----------------------- | ------ | ---------- | ---------------------------------------------------------------- |
+| `include-builtin-fonts` | `bool` | `true`     | Whether to include system fonts: `small`, `medium`, and `large`. |
+| `default-font`          | `bool` | `"medium"` | Name of the font to use when none is specified.                  |
+| `default-size`          | `bool` | `12`       | Default font size to render font glyphs at.                      |
+
+## Shader
+
+Configure shaders.
+
+```toml [turbo.toml]
+[shader]
+default-surface-shader = "my-custom-shader"
+```
+
+| Option                   | Type     | Default | Description                              |
+| ------------------------ | -------- | ------- | ---------------------------------------- |
+| `default-surface-shader` | `string` |         | The shader your game will use by default |
+
+## Turbo OS
+
+Configure the Turbo OS network host.
+
+```toml [turbo.toml]
+[turbo-os]
+api-url = "https://os.turbo.computer"
+```
+
+| Option    | Type     | Default | Description                                                             |
+| --------- | -------- | ------- | ----------------------------------------------------------------------- |
+| `api-url` | `string` |         | The host URL to authenticate Turbo OS users with and upload programs to |

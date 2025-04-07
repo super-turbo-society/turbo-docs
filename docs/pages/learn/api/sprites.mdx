@@ -1,0 +1,184 @@
+# Sprites
+
+![Doge Sprite Screenshot](/doge_animation_screencap.gif)
+
+## Overview
+
+You can draw static sprites and animations to the game's canvas using the `sprite!` macro.
+
+:::tip[Check Your Setup]
+Check out [Working with Sprites &rarr;](/learn/guides/sprites) to ensure your project is ready to work with sprite assets.
+:::
+
+## API
+
+### `sprite!`
+
+Sprites from your project's `sprites` folder can be drawn using the `sprite` macro.
+
+```rust
+sprite!(
+    name: &str,
+    x = i32,
+    y = i32,
+    w = u32,
+    h = u32,
+    color = u32,
+    opacity = f32,
+    rotation = i32,
+    scale_x = f32,
+    scale_y = f32,
+    flip_x = bool,
+    flip_y = bool,
+)
+```
+
+| Param      | Type    | Default           | Description                                                                 |
+| :--------- | :------ | :---------------- | :-------------------------------------------------------------------------- |
+| `name`     | `&str`  |                   | The sprite's name (filename minus the extension)                            |
+| `x`        | `i32`   | `0`               | The sprite's x position.                                                    |
+| `y`        | `i32`   | `0`               | The sprite's y position.                                                    |
+| `w`        | `u32`   | `[sprite width]`  | The width to draw the sprite. By default, this is the sprite image width.   |
+| `h`        | `u32`   | `[sprite height]` | The height to draw the sprite. By default, this is the sprite image height. |
+| `color`    | `u32`   | `0xffffffff`      | Color that will overlay the sprite (multiplied) .                           |
+| `opacity`  | `f32`   | `1.0`             | Sprite opacity - `0.0` = fully transparent. `1.0` = fully opaque.           |
+| `rotation` | `i32`   | `0`               | Degrees of rotation.                                                        |
+| `scale_x`  | `f32`   | `1.0`             | Horizontal scaling - `1.0` is 100% (aka, no scaling).                       |
+| `scale_y`  | `f32`   | `1.0`             | Vertical scaling - `1.0` is 100% (aka, no scaling).                         |
+| `flip_x`   | `bool`  | `false`           | If `true`, the sprite will be flipped horizontally.                         |
+| `flip_y`   | `bool`  | `false`           | If `true`, the sprite will be flipped vertically.                           |
+| `frame`    | `usize` | `None`            | Use a specific frame from an animated file, instead of animating it.        |
+
+### `animation::get`
+
+Gets the `SpriteAnimation` data associated with a sprite animation key.
+
+```rs
+animation::get(animation_key: &str) -> &mut SpriteAnimation
+```
+
+| Param           | Type   | Default | Description              |
+| :-------------- | :----- | :------ | :----------------------- |
+| `animation_key` | `&str` |         | The sprite animation key |
+
+## Usage
+
+### Static Sprites
+
+To draw a sprite, simply call the macro and include any parameters you need. The only one that is required is the file name (minus the extension):
+
+```rust
+sprite!("goblin", x = 120, y = 50, rotate = 180);
+```
+
+And with that, we have ourselves an upside-down goblin:
+
+![Goblin Sprite Screenshot](/goblin_sprite_screenshot.png)
+
+Let's break it down:
+
+- The first parameter (`"goblin"`) is the filename of your sprite excluding the file extension.
+- Adjust the `x` and `y` parameters to position the sprite where you want it.
+- Adjust the `rotate` parameter to control the sprite's degrees of rotation.
+
+### Basic Looping Animations
+
+The sprite macro will follow any animation rules set in the file, so if you use an animated file type (like `.gif` or `.webp`), it will animate automatically.
+
+![Animated Doge](/doge.webp)
+
+So if we write some code like this:
+
+```rust
+// Display a sprite named "doge".
+sprite!("doge", x = 112, y = 50);
+```
+
+...it will be rendered like this:
+
+![Doge Sprite Screenshot](/doge_animation_screencap.gif)
+
+The speed and playback settings of the animation are determined by the settings on your file.
+
+### Advanced Animations
+
+#### Introduction
+
+A `SpriteAnimation` is the data structure that holds your animations values. Create a new `SpriteAnimation` by passing an animation key to `animation::get`:
+
+```rust
+let anim = animation::get("foo");
+```
+
+If there is no entry for the value you put in, then it will create a new animation. If the value exists already, then it will return that to you. Then, you can change the animation values, including setting the sprite that you want this animation to play:
+
+```rust
+let anim = animation::get("foo"); // [!code hl]
+anim.use_sprite("turbi_idle"); // set the sprite file you want to use [!code hl]
+anim.set_speed(1.5); // increase the speed of the animation [!code hl]
+```
+
+Once you have your settings correct, you can call the `sprite!` macro to draw the animation:
+
+```rust
+let anim = animation::get("foo");
+anim.use_sprite("turbi_idle"); // set the sprite file you want to use
+anim.set_speed(1.5); // increase the speed of the animation
+sprite!(animation_key = "foo"); // [!code hl]
+```
+
+:::tip[Using Animation Keys]
+The string `"foo"` in the prior examples does NOT set the animation sprite. It is a unique value used to identify an animation instance. So if you have 10 different sprite animations, they each need a unique animation key.
+:::
+
+#### Transitioning animations
+
+There are several ways you can transition between animations, but one of the simplest is to use the `default_sprite` field in the `sprite!` macro. If the animation's sprite isn't set, or if it's animation is finished, then it will use the `default_sprite` instead. This is great for any time you want to play an animation all the way through one time, and then immediately go back to a default. For example, if your character dashes, you could play the dash animation, but keep an idle animation as the default. Then, when the dash is done, you'll go back to idle.
+
+```rust
+let anim = animation::get("player_character");
+if gamepad(0).a.just_pressed() {
+    anim.use_sprite("player_dash");
+    a.set_repeat(1); // only play the animation 1 time
+}
+sprite!(
+    animation_key = "player_character",
+    default_sprite = "player_idle", // turbo will use this sprite once the dash animation has completed one loop
+);
+```
+
+The `default_sprite` is used if the `animation_key` doesn't have a sprite assigned to it, or if the assigned animation is finished.
+
+:::tip[Looping Animations]
+If a sprite is set to loop infinitely, it will not return true for `.done`. Make sure to use `.set_repeat(1)` or adjust your export settings on that file if you always want it to only play once.
+:::
+
+#### Animation Values
+
+`SpriteAnimation` has a number of functions you can call to change it's values. The general pattern is that you can access a value, or change it with `set_`.
+
+| Param           | Type                       | Default                         | Description                                                                                                               |
+| --------------- | -------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `repeat`        | `usize`                    | based on sprite export settings | How many times the sprite will play through it's animation before it stops.                                               |
+| `direction`     | `SpriteAnimationDirection` | `Forward`                       | Which direction to play the animation (`Forward`, `Backward`, `PingPong`, `PingPongReverse`).                             |
+| `fill_forwards` | `bool`                     | `false`                         | When this is `true`, the animation stays on the last frame when it ends. If it is `false`, it returns to the first frame. |
+| `speed`         | `f32`                      | `1.0`                           | How fast the animation plays multiplied by the speed set in the export settings.                                          |
+| `delay`         | `f32`                      | `0.0`                           | The delay (in milliseconds) before the animation starts.                                                                  |
+| `paused`        | `bool`                     | `false`                         | Pause the animation.                                                                                                      |
+
+There are also a few helpful functions you can call on your `SpriteAnimation`.
+
+| Method name        | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| `use_sprite(&str)` | The name of the sprite file to use on this animation |
+| `restart()`        | Restarts the animation from the beginning            |
+| `pause()`          | Pauses the animation                                 |
+| `resume()`         | Resumes the animation                                |
+
+#### Aseprite Tags
+
+Turbo supports working directly with aseprite files. If you use tags to organize multiple animations in your aseprite animation timeline, you can target those with a special synax:
+
+```rs
+sprite!("aseprite_file_name#tag-name");
+```

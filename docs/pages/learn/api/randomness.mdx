@@ -1,0 +1,64 @@
+# Randomness
+
+## Overview
+
+You can generate random numbers using the `rand` function.
+
+## API
+
+### `rand`
+
+Returns a random number.
+
+```rs
+rand() -> u32
+```
+
+:::note[Note]
+`rand` uses seeded randomness in developement, meaning a thread random number is generated at the start of your game and every random number generated after is derived deterministically from that initial seed. On the web, [`crypto.getRandomValues()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues) is used for every random number generated.
+:::
+
+## Usage
+
+### Get random number
+
+```rs
+let n = rand();
+```
+
+### Get random number between 1 and 100
+
+```rs
+let n = 1 + (rand() % 100);
+```
+
+### Do a "coin flip"
+
+To simulate a coin flip, you can test whether a random number is even:
+
+```rs
+let is_even = rand() % 2 == 0;
+```
+
+Or if you prefer, check that it's odd:
+
+```rs
+let is_odd = rand() % 2 != 0;
+```
+
+### Use probability ranges
+
+You can introduce probability ranges by matching a random number in a range of numbers. Here's an example:
+
+```rs
+// Get a number between 1 and 100
+let n = 1 + (rand() % 100);
+match n {
+    // Any number 1-10 (10% chance)
+    1..=10 => { ... }
+    // Any number 11-50 (40% chance)
+    11..=50 => { ... }
+    // Any other number (50% chance)
+    _ => { ... }
+}
+```

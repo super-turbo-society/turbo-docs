@@ -1,4 +1,4 @@
 .DS_Store
+.firebase
 node_modules
-build
-.docusaurus
+docs/dist

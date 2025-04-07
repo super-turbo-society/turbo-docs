@@ -1,0 +1,40 @@
+# Adding Custom Fonts
+
+## Walkthrough
+
+::::steps
+
+### Create a `fonts` folder
+
+Inside your project directory, create a folder named `fonts`. This folder will contain all your game fonts.
+
+```
+your-project-dir/       # Your project's root directory.
+├── fonts/              # The directory of your font assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+
+### Put fonts in the folder
+
+The following file formats are supported: `.bdf`, `.ttf`, and `.otf`.
+
+:::tip[Tip: Use Bitmap Fonts]
+Bitmap fonts work best with Turbo. You can find a lot of good one free online. One site we recommend is [BitfontMaker2](https://www.pentacom.jp/pentacom/bitfontmaker2/gallery/).
+:::
+
+When you run your game, Turbo will automatically include any font assets in your project's `fonts` directory. In your code, you can refer to these fonts by their file stem (the filename minus the extension).
+
+For example, let's say you added a font called `awesome.ttf` to the `fonts` directory. In your code, you would use it like this:
+
+```rs
+text!("lorem ipsum...", font = "awesome")
+```
+
+::::
+
+**Learn More**
+
+- [Text API docs &rarr;](/example)

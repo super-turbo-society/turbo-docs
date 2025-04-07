@@ -1,0 +1,151 @@
+# Writing Custom Shaders
+
+## Walkthrough
+
+Use [WebGPU Shader Language (WGSL)](https://google.github.io/tour-of-wgsl/) to add visual effects to your game.
+
+:::warning
+Custom shaders are in an early stage of development. Breaking changes are likely in future updates.
+:::
+
+::::steps
+
+### Create a `shaders` folder
+
+Inside your project directory, create a folder named `shaders`. This folder will contain all your game shaders.
+
+```
+your-project-dir/       # Your project's root directory.
+├── shaders/            # The directory of your shaders. <!-- [!code focus] [!code hl] [!code ++] -->
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+
+### Add a shader
+
+Let's add a shader called `my-awesome-shader.wgsl` to the `shaders` directory. Here's some boilerplate you can use as a starting point:
+
+```wgsl [shaders/my-awesome-shader.wgsl]
+// Global uniform with viewport and tick fields
+struct Global {
+    camera: vec3<f32>,
+    tick: u32,
+    viewport: vec2<f32>,
+}
+
+@group(0) @binding(0)
+var<uniform> global: Global;
+
+// Vertex input to the shader
+struct VertexInput {
+    @location(0) pos: vec2<f32>,
+    @location(1) uv: vec2<f32>,
+};
+
+// Output color fragment from the shader
+struct VertexOutput {
+    @builtin(position) position: vec4<f32>,
+    @location(1) uv: vec2<f32>,
+};
+
+// Main vertex shader function
+@vertex
+fn vs_main(in: VertexInput) -> VertexOutput {
+    var out: VertexOutput;
+    out.position = vec4<f32>(in.pos, 0., 1.);
+    out.uv = in.uv;
+    return out;
+}
+
+// Bindings for the texture
+@group(1) @binding(0)
+var t_canvas: texture_2d<f32>;
+
+// Sampler for the texture
+@group(1) @binding(1)
+var s_canvas: sampler;
+
+// Main fragment shader function
+@fragment
+fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
+    var color: vec4<f32> = textureSample(t_canvas, s_canvas, in.uv);
+    return color;
+}
+```
+
+### Modify the shader
+
+So far, our shader isn't doing anything custom. So let's make the cycle the intensity of red, green, and blue color channels over time. At the bottom of the shader file add the `applyColorCycle` function and use it in the `fs_main` fragment shader entrypoint to modify the existing `color` variable:
+
+```wgsl [shaders/my-awesome-shader.wgsl]
+@fragment
+fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
+    var color: vec4<f32> = textureSample(t_canvas, s_canvas, in.uv);
+    color = applyColorCycle(color, uv, global.tick); // [!code ++] [!code hl]
+    return color;
+}
+
+fn applyColorCycle(color: vec4<f32>, uv: vec2<f32>, tick: u32) -> vec4<f32> { // [!code ++] [!code hl]
+    let time: f32 = f32(tick) * 0.1; // [!code ++] [!code hl]
+    let r: f32 = 0.5 + 0.5 * sin(time + uv.x); // [!code ++] [!code hl]
+    let g: f32 = 0.5 + 0.5 * sin(time + uv.y + 2.0); // [!code ++] [!code hl]
+    let b: f32 = 0.5 + 0.5 * sin(time + uv.x + 4.0); // [!code ++] [!code hl]
+    return mix(vec4<f32>(r, g, b, color.a), color, 0.8); // [!code ++] [!code hl]
+} // [!code ++] [!code hl]
+```
+
+:::tip[Instant Updates]
+This is just a starting point. You can continue to modify your shader while your game is running. Your game will visually update immediately as you make changes.
+:::
+
+### Use the shader
+
+There are two ways to use the shader in your game. Depending on your use-case, you may even wish to use both approaches. They are not mutually-exclusive.
+
+---
+
+#### **Option A** - Set it in the config
+
+If you plan to use a single custom shader 100% of the time, this should have you covered.
+Add or modify the `shader` section of your Turbo config by setting a `default-surface-shader`:
+
+```toml [turbo.toml]
+[shader]
+default-surface-shader = "my-awesome-shader"
+```
+
+---
+
+#### **Option B** - Activate it at runtime
+
+You can dynamically swap shaders while your game is running.
+
+##### `shaders::set`
+
+Activate a custom shader:
+
+```rs
+shaders::set("my-awesome-shader");
+```
+
+##### `shaders::reset`
+
+Deactivate any active custom shaders:
+
+```rs
+shaders::reset();
+```
+
+##### `shaders::get`
+
+Get the name of the currently active custom shader:
+
+```rs
+let shader_name = shaders::get();
+```
+
+:::note
+You can only have one active shader at a time. When no custom shader is enabled, `""` will be returned.
+:::

@@ -1,0 +1,64 @@
+# Playing Music & Sounds
+
+## Walkthrough
+
+Follow these simple steps to integrate sound into your Turbo game:
+
+::::steps
+
+### Create an `audio` folder
+
+Inside your project directory, create a folder named `audio`. This folder will contain all your sound files.
+
+```
+your-project-dir/       # Your project's root directory.
+├── audio/              # The directory of your audio assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+
+### Put audio files in the folder
+
+The following file formats are supported: `.wav`, `.mp3`, `.ogg`, and `.flac`.
+
+:::warning[Pay Attention to File Sizes]
+Large and/or unused audio files can bloat your game size and cause long load times loading or even errors on the web. Make sure audio files are as small as possible. Remove audio files that aren't being used in your game.
+:::
+
+### Make some noise
+
+#### One-Shot Sound Effects
+
+Use `audio::play` to play a sound effect from your audio folder. For example, if your sound effect is named `coin.wav`:
+
+```rs
+audio::play("coin")
+```
+
+#### Looping Audio Tracks
+
+You can loop audio by checking if the audio track has stopped playing and restarting it if so:
+
+```rust
+if !audio::is_playing("background_music") {
+    audio::play("background_music");
+}
+```
+
+#### Pausing and Stopping
+
+Pausing a track, will stop it from playing. When resumed with `audio::play`, it will continue from the point at which it was paused.
+
+```rust
+audio::pause("background_music");
+```
+
+Pausing a track, will stop it from playing. When resumed with `audio::play`, it will restart from the beginning.
+
+```rust
+audio::stop("background_music");
+```
+
+::::

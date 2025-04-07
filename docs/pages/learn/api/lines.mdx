@@ -1,0 +1,53 @@
+# Lines
+
+![Path Screenshot](/path_screenshot.png)
+
+## Overview
+
+You can draw lines to your game's canvas using the `path!` macro.
+
+:::note
+Rust's std library already includes a `line!` macro, so we opted for `path!` to avoid namespace conflicts.
+:::
+
+## API
+
+### `path!`
+
+Draws lines.
+
+```rs
+path!(
+    start = (i32, i32),
+    end = (i32, i32),
+    size = u32,
+    color = u32,
+    rounded = bool,
+)
+```
+
+| Param     | Type         | Default      | Description                            |
+| :-------- | :----------- | :----------- | :------------------------------------- |
+| `start`   | `(i32, i32)` | `(0, 0)`     | The starting point of the line         |
+| `end`     | `(i32, i32)` | `(0, 0)`     | The end point of the line              |
+| `size`    | `u32`        | `1`          | The line width in pixels               |
+| `color`   | `u32`        | `0xffffffff` | Color that fills the line as RGBA hex  |
+| `rounded` | `bool`       | `false`      | Stylize the line to be square or round |
+
+:::tip[Example]
+
+Basic Usage
+
+```rs
+path!(
+    start = (0, 0),
+    end = (256, 144),
+    size = 4,
+    color = 0xff00ffff,
+);
+```
+
+:::details[Preview]
+![Path Screenshot](/path_screenshot.png)
+
+:::

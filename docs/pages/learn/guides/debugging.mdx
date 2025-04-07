@@ -1,0 +1,26 @@
+# Debugging Your Code [Ore no na wa Erā da…]
+
+## Overview
+
+Whether you're tracing logic bugs, inspecting runtime values, or verifying rendering behavior, Turbo gives you the tools to observe your game's inner state without leaving the dev loop.
+
+## Logging Data
+
+Turbo's logging system prints directly to your terminal, making it easy to trace variable values, game state, and behavior during runtime. Whether you're narrowing down a bug or watching a value evolve, `log!` is your go-to for visibility without disruption.
+
+:::code-group
+
+```rust [Your Game Code]
+let some_var = "foo";
+log!("one value: {:?}", some_var);
+
+let another_var = 42;
+log!("multiple values: {:?} {:?}", some_var, another_var);
+```
+
+```bash [Console Output]
+[turbo] one value: "foo"
+[turbo] multiple values: "foo" 42
+```
+
+:::

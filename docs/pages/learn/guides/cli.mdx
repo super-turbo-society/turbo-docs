@@ -1,0 +1,82 @@
+# Using Turbo Command-Line Interface (CLI) [From here on out... you're Big Boss.]
+
+## Overview
+
+Turbo's CLI is your command center — fast, minimal, and built for speedrunners who'd rather ship games than click through menus. Whether you're initializing your first project or exporting a fully playable web build, every command is designed to get out of your way and let you focus on the game.
+
+## Commands
+
+:::code-group
+
+```sh [help]
+Run Turbo games natively on desktop
+
+Usage: turbo <COMMAND>
+
+Commands:
+  init    Initializes a new Turbo project in Rust
+  run     Runs a Rust Turbo project
+  export  Exports a Rust Turbo project in web format
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+  -v, --version  Print version
+  -h, --help     Print help
+  -V, --version  Print version
+```
+
+```sh [init]
+Initializes a new Turbo project in Rust
+
+Usage: turbo init [OPTIONS] <PROJECT_NAME>
+
+Arguments:
+  <PROJECT_NAME>  The name of the project
+
+Options:
+  -p, --program-id <PROGRAM_ID>  Initialize with a Turbo OS program ID to create/update. Must be owned by your user account. Ensure this ID is globally unique to avoid ownership conflicts with existing program IDs [default: ]
+  -h, --help                     Print help
+  -V, --version                  Print version
+```
+
+```sh [run]
+Runs a Rust Turbo project
+
+Usage: turbo run [OPTIONS] [PROJECT_DIR]
+
+Arguments:
+  [PROJECT_DIR]  The directory where your game's code and assets live [default: .]
+
+Options:
+  -w, --watch                    Uses cargo-watch to recompile your game code automatically
+  -A, --always-on-top            Makes the game window always appear on top of other windows
+      --clippy                   Clippy mode
+      --os-api-url <OS_API_URL>  Will create and authenticate as a new a guest user [default: https://os.turbo.computer]
+  -p, --program-id <PROGRAM_ID>  The Turbo OS program ID to create/update. Must be globally unique [default: ]
+  -u, --user <USER>              The user ID to authenticate as. This will prompt for entry of a time-based code [default: ]
+      --guest                    Will create and authenticate as a new a guest user
+      --clear-cache              Removes the current cached build
+  -c, --config <CONFIG>          The path to the config file [default: ]
+  -h, --help                     Print help
+  -V, --version                  Print version
+
+```
+
+```sh [export]
+Exports a Rust Turbo project in web format
+
+Usage: turbo export [OPTIONS] [PROJECT_DIR]
+
+Arguments:
+  [PROJECT_DIR]  [default: .]
+
+Options:
+  -c, --config <CONFIG>          [default: ]
+  -o, --export-dir <EXPORT_DIR>
+  -b, --include-virtual-gamepad
+  -h, --help                     Print help
+  -V, --version                  Print version
+
+```
+
+:::

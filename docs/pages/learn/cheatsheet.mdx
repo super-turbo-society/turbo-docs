@@ -1,0 +1,347 @@
+# Cheatsheet [↑ ↑ ↓ ↓ ← → ← → B A]
+
+![Turbi happily carrying a giant power plug](/book.svg)
+
+## Starting a Project
+
+To create a new project, you can run the command `turbo init <PROJECT-NAME>`. For example, we could run the following command if we want to make a project called `hello-world`:
+
+```bash [Terminal]
+turbo init hello-world
+```
+
+This will create a new project directory with the following structure:
+
+```txt
+hello-world/      # Your project's root directory.
+├── src/          # The directory of your code.
+│   └── lib.rs    # The main file for the game.
+├── Cargo.toml    # Rust project manifest.
+└── turbo.toml    # Turbo configuration.
+```
+
+Once the project has been initialized, you can run it with `turbo run -w <PROJECT-NAME>`. For example, to run the `hello-world` project we created with the previous command:
+
+```bash [Terminal]
+turbo run -w hello-world
+```
+
+:::note
+The `-w` flag enabled watch mode so your game window will automatically reflect changes you make to game code or assets.
+:::
+
+**Learn More**
+
+- [Hello, World! Tutorial &rarr;](/learn/tutorials/hello-world)
+- [Using Turbo CLI &rarr;](/learn/guides/cli)
+
+## Updating Your Config
+
+When you initialize a project, you'll see a file called `turbo.toml` in your project directory. If you open that file, you should see something like this:
+
+```rust title="turbo.toml"
+name = "hello-world"
+version = "0.1.0"
+authors = ["Your Name"]
+description = "An awesome game made in Turbo!"
+
+[canvas]
+width = 256
+height = 144
+```
+
+**Learn More**
+
+- [Configuring Your Game &rarr;](/learn/guides/configuration)
+
+## Managing Assets
+
+Assets go special subdirectories within the project directory. All asset folders are optional, so if you don't have a certain kind of asset, there is no need to add an empty directory.
+
+```
+your-project-dir/    # Your project's root directory.
+├── sprites/         # The directory of your sprite assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── fonts/           # The directory of your font assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── audio/           # The directory of your audio assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── shaders/         # The directory of your shaders. <!-- [!code focus] [!code hl] [!code ++] -->
+├── src/             # The directory of your code. <!-- [!code focus] [!code hl] -->
+│   └── lib.rs       # The main file for the game.
+├── Cargo.toml       # Rust project manifest.
+└── turbo.toml       # Turbo configuration.
+```
+
+:::tip
+Turbo will automatically update your game if assets are added/removed/modified while running.
+:::
+
+**Learn More**
+
+- [Working with Sprites &rarr;](/learn/guides/sprites)
+- [Adding Custom Fonts &rarr;](/learn/guides/fonts)
+- [Playing Music and Sounds &rarr;](/learn/guides/audio)
+- [Making Custom Shaders &rarr;](/learn/guides/shaders)
+
+## Drawing Shapes
+
+```rs
+// Draw a 20x40px blue rectangle
+rect!(w = 20, h = 40, x = 70, y = 70, color = 0xff00ffff)
+
+// Draw an 16px diameter magenta circle
+circ!(d = 16, x = 120, y = 64, color = 0xff00ffff)
+```
+
+**Learn More**
+
+- [Rectangles API Docs &rarr;](/learn/api/rectangles)
+- [Circles API Docs &rarr;](/learn/api/circles)
+- [Ellipses API Docs &rarr;](/learn/api/ellipses)
+- [Lines API Docs &rarr;](/learn/api/lines)
+
+## Displaying Text
+
+```rs
+// Basic text
+text!("Hello, world!");
+
+// Customized text with specified position, color, and font size
+text!(
+    "Greetings, earthlings >:3",
+    x = 30,
+    y = 40,
+    color = 0x00ff00ff,
+    font = "small"
+);
+```
+
+**Learn More**
+
+- [Text API Docs &rarr;](/learn/api/text)
+- [Hello, World Tutorial &rarr;](/learn/tutorials/hello-world)
+
+## Handling Mouse & Touch Controls
+
+```rs
+// The pointer control works for both mouse and touch inputs
+let p = pointer();
+
+// Get the pointer x position
+let pointer_x = p.x;
+
+// Get the pointer y position
+let pointer_y = p.y;
+
+// Check if the pointer was just pressed this frame (mouse click or touch)
+if pointer.just_pressed() {
+    // ...
+}
+```
+
+**Learn More**
+
+- [Pointer API Docs &rarr;](/learn/api/pointer)
+
+## Handling Gamepad Controls
+
+```rs
+// Get player 1's gamepad (Pass a 1 instead of a 0 for player 2's gamepad)
+let gp = gamepad(0);
+
+// Check if the `Up` button was just pressed this frame.
+if gp.up.just_pressed() {
+    // ...
+}
+
+// Check if the `Down` button is currently being pressed.
+if gp.down.just_pressed() {
+    // ...
+}
+
+// Check if the `A` button was just released this frame.
+if gp.a.just_released() {
+    // ...
+}
+
+// Check if the `B` button is currently not being pressed.
+if gp.b.released() {
+    // ...
+}
+```
+
+
+**Learn More**
+
+- [Gamepad API Docs &rarr;](/learn/api/gamepad)
+
+## Generating Random Numbers
+
+```rs
+// Get a random number
+let n = rand();
+
+// Check if a random number is even
+let is_even = rand() % 2 == 0;
+
+// Check if a random number is odd
+let is_odd = rand() % 2 != 0;
+
+// Get a random number between 1-100
+let n = 1 + (rand() % 100);
+
+// Probability Ranges
+match n {
+    1..=10 => { ... }  // 10% chance
+    11..=50 => { ... } // 40% chance
+    _ => { ... }       // 50% chance
+}
+```
+
+**Learn More**
+
+- [Randomness API Docs &rarr;](/learn/api/randomness)
+
+## Tracking Time
+
+In most cases, using the current game "tick" is sufficient for working with time in a game. It starts at `0` and increases by one each time a new frame is rendered.
+
+```rs
+let t = tick();
+```
+
+When you need an actual unix timestamp, you can get it, we've also got you covered:
+
+```rs
+let timestamp = time::now();
+```
+
+**Learn More**
+
+- [Time API Docs &rarr;](/learn/api/time)
+
+## Adjusting the Camera
+
+```rust
+// Get the camera position
+let (x, y, z) = camera::xyz();
+
+// Set the camera position
+// The position you set here is the center of the viewport in pixels. By default the camera starts at half of the width and height of your game's resolution.
+camera::set_xy(100, 100);
+
+// Move the camera position relative to the current camera position
+camera::move_x(5.0);
+camera::move_y(8.0);
+
+// Reset the camera to its original position
+camera::reset(100,100,10,20);
+```
+
+**Learn More**
+
+- [Camera API Docs &rarr;](/learn/api/camera)
+
+## Debugging
+
+Turbo's logging system prints directly to your terminal, making it easy to trace variable values, game state, and behavior during runtime. Whether you're narrowing down a bug or watching a value evolve, `log!` is your go-to for visibility without disruption.
+
+:::code-group
+
+```rs [Your Game Code]
+// Log a static message
+log!("o hai!");
+
+// Log a single value
+let some_var = "foo";
+log!("one value: {:?}", some_var);
+
+// Log multiple values
+let another_var = 42;
+log!("multiple values: {:?} {:?}", some_var, another_var);
+
+// Log game state
+let state = GameState::load();
+log!("My game state = {:?}", state);
+```
+
+```txt [Output]
+[turbo] o hai!
+[turbo] one value: "foo"
+[turbo] multiple values: "foo" 42
+[turbo] My game state = *your game state will show up here*
+```
+
+:::
+
+:::tip[Avoid Noisy Logs]
+You probably don't want to log a value every frame of your game loop. It can clutter your console and prevent you from seeing the useful information you may be looking for. Instead, try including logs only when a specific action happens such as a keypress or mouse click.
+:::
+
+**Learn More**
+
+- [Log API Docs &rarr;](/learn/api/log)
+- [Keyboard Shortcuts &rarr;](/learn/guides/keyboard-shortcuts)
+
+## Initializing Game State
+
+Turbo provides a straightforward way to initialize the standard game state using the `turbo::init!` macro. This macro is essential for defining and setting up the game state before entering the main game loop:
+
+```rs
+turbo::init! {
+    // 1. Define the GameState struct. [!code hl]
+    struct GameState {
+        screen: enum Screen {
+            Title,
+            Level,
+        },
+        x_position: i32,
+        y_position: i32,
+    } = {
+        // 2. Return the GameState's initial value. [!code hl]
+        // You can also run initializaion code here before returning the state.
+        Self {
+            screen: Screen::Title,
+            x_position: 30,
+            y_position: 40,
+        }
+    }
+}
+```
+
+:::tip[Resetting Game State]
+In development, you can reset the state of the game to its initial state anytime by using a simple keyboard shortcut `Cmd+R` on MacOS/Linux and `Ctrl+R` on Windows.
+:::
+
+:::note
+For convenience, `turbo::init!` allows nested struct and enum definitions via the [structstruck](https://docs.rs/structstruck/latest/structstruck/) crate. `turbo::init` will derive the following traits for type each defined in the macro: `BorshSerialize`, `BorshDeserialize`, `PartialEq`, `Debug`, and `Clone`.
+:::
+
+**Learn More**
+
+- [Demos Github Repo &rarr;](http://github.com/super-turbo-society/turbo-demos)
+- [Rust SDK Docs &rarr;](https://crates.io/turbo-genesis-sdk)
+
+## Running the Game Loop
+
+Turbo games run at 60 fps and the typical game loop should follow this pattern:
+
+```rs
+turbo::go!({
+    // 1. Load State [!code hl]
+    // This hydrates state from the previous loop.
+    // The initial state's initial value will load on the first loop.
+    let mut state = GameState::load();
+
+    // 2. Update State [!code hl]
+    // The bulk of your game's logic goes here. Mutate state as-needed.
+
+    // 3. Save State [!code hl]
+    // The final thing you should do in your game loop is save your game state.
+    // This serializes state and persists it in memory so it doesn't get lost while hot-reloading
+    state.save();
+});
+```
+
+**Learn More**
+
+- [Demos Github Repo &rarr;](http://github.com/super-turbo-society/turbo-demos)
+- [Rust SDK Docs &rarr;](https://crates.io/turbo-genesis-sdk)

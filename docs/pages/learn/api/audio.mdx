@@ -1,0 +1,82 @@
+# Audio
+
+## Overview
+
+The `audio` module provides methods for playing back project's audio files.
+
+
+:::tip[Check Your Setup]
+Check out [Playing Music & Sound &rarr;](/learn/guides/audio) to ensure your project is ready to play audio.
+:::
+
+## API
+
+:::info
+The following file formats are supported: `.wav`, `.mp3`, `.ogg`, and `.flac`.
+:::
+
+### `audio::play`
+
+Plays an audio file from your project's `audio` directory,
+
+```rs
+audio::play(name: &str);
+```
+
+| Param  | Type   | Default | Description                          |
+| :----- | :----- | :------ | :----------------------------------- |
+| `name` | `&str` |         | The name of the audio asset to play. |
+
+:::tip
+Use `audio::play` to play a sound effect from your audio folder. For example, if your sound effect is named `coin.wav` you can play it with `audio:play("coin")`
+:::
+
+### `audio::is_playing`
+
+Returns `true` if the given audio track is currently being played.
+
+```rs
+audio::is_playing(name: &str) -> bool
+```
+
+| Param  | Type   | Default | Description                        |
+| :----- | :----- | :------ | :--------------------------------- |
+| `name` | `&str` |         | The name of the audio asset check. |
+
+:::tip[Looping sound]
+
+You can loop a sound like this:
+
+```rust
+if !audio::is_playing("background_music") {
+    audio::play("background_music");
+}
+```
+
+This will automatically restart the music once it ends.
+
+:::
+
+### `audio::pause`
+
+Pauses the given audio track.
+
+```rs
+audio::pause(name: &str)
+```
+
+| Param  | Type   | Default | Description                           |
+| :----- | :----- | :------ | :------------------------------------ |
+| `name` | `&str` |         | The name of the audio asset to pause. |
+
+### `audio::stop`
+
+Stops the given audio track and resets its progress to the beginning.
+
+```rs
+audio::stop(name: &str)
+```
+
+| Param  | Type   | Default | Description                          |
+| :----- | :----- | :------ | :----------------------------------- |
+| `name` | `&str` |         | The name of the audio asset to stop. |

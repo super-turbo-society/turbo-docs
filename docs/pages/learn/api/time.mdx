@@ -1,0 +1,29 @@
+# Time
+
+## Overview
+
+Turbo provides two main APIs for dealing with time: `tick` which provides monotonic time and `time::now` which provides a unix timestamp.
+
+In the context of game development and operating systems, "monotonic time" refers to a clock that always moves forward at a consistent rate, unaffected by system time adjustments or daylight saving time, ensuring accurate elapsed time measurements
+
+:::tip
+In general, `tick` is the better default choice for most game logic since it provides more granular values than unix timestamps. The monotonic values from `tick` also helps prevent and fix bugs since they are deterministic - equivalent to the number elapsed frames of your game - and have no possibility of changing mid-game-loop. Prefer `time::now` when displaying clock time to a user or calculating time relative to another unix timestamp.
+:::
+
+## API
+
+### `tick`
+
+Returns the number of times the game loop has executed so far.
+
+```rs
+tick() -> u32
+```
+
+### `time::now`
+
+Returns a unix timestamp.
+
+```rs
+time::now() -> u32
+```

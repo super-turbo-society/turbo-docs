@@ -1,0 +1,33 @@
+# Background Color
+
+## Overview
+
+You can clear your game's canvas and set the background color using the `clear` method.
+
+## API
+
+### `clear`
+
+Erases everything on the canvas and sets the background color to the given value.
+
+```rs
+clear(color: u32)
+```
+
+| Param   | Type  | Default | Description                   |
+| :------ | :---- | :------ | :---------------------------- |
+| `color` | `u32` |         | A hexdecimal code for a color |
+
+:::note
+By default, the screen will clear to black (`0x000000ff`) each frame if `clear` is not called during the game loop.
+:::
+
+:::tip[Example]
+
+Set the background color to white (`0xffffffff`):
+
+```rust
+clear(0xffffffff);
+```
+
+:::

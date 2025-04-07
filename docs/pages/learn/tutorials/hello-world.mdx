@@ -1,0 +1,126 @@
+# Hello, World! [Your very own Turbo legend is about to unfold]
+
+![Turbo game window with the text "Hello, world!!!"](/hello-world.png)
+
+## Overview
+
+:::info[Summary]
+
+> In this tutorial, you will learn the basics of Turbo game development by building a simple game that does only one thing – displays a message saying, "Hello, world!!!".
+
+**Difficulty**
+
+> ★☆☆☆☆
+
+**Time Estimate**
+
+> < 5 minutes
+
+**What You'll Learn**
+
+- [x] How to initialize a Turbo project
+- [x] How to run and auto-refresh your game
+- [x] How to modify in-game text
+- [x] Basics of positioning and styling text with Turbo macros
+
+:::
+
+## Walkthrough
+
+::::steps
+
+### Initialize the Project
+
+Begin by creating a new project called `hello-world`:
+
+```bash [Terminal]
+turbo init hello-world
+```
+
+This initializes a Rust project with the following structure:
+
+```
+hello-world/            # Your project's root directory.
+├── src/                # The directory of your code. <!-- [!code focus] [!code hl] -->
+│   └── lib.rs          # The main file for the game. <!-- [!code focus] [!code hl] -->
+├── Cargo.toml          # Rust project manifest. <!-- [!code focus] [!code hl] -->
+└── turbo.toml          # Turbo configuration. <!-- [!code focus] [!code hl] -->
+```
+
+### Run the Game
+
+Next, run your game with the following command:
+
+```bash [Terminal]
+turbo run -w hello-world
+```
+
+:::note
+
+The `-w` flag auto-refreshes your game window as you code. Just be sure to watch the console for compiler errors.
+
+:::
+
+Give it a moment to compile. Once it completes, a game window will appear.
+
+![Turbo game window with the text "Hello, world!!!"](/hello-world.png)
+
+By default, a new Turbo game will have some boilerplate code that displays, "Hello, world!!!". So our work here is done. Just kidding. We're going to jazz it up a bit. Continue on to the next step.
+
+### Update the Text
+
+Leave the `turbo run` command running. Open the `hello-world` project in your preferred editor. View `hello-world/src/lib.rs`. Inside, you should see something like this:
+
+```rust title="hello-world/src/lib.rs" showLineNumbers
+turbo::go!({
+    text!("Hello, world!!!");
+});
+```
+
+Modify the text, save the file, and check out your game window.
+
+```rust title="hello-world/src/lib.rs" showLineNumbers
+turbo::go!({
+    text!("Hello, world!!!") // [!code --]
+    text!("Yuuurrr!"); // [!code ++] [!code focus] [!code hl]
+});
+```
+    {/* text!("Yuuurrr!"); // [!code focus] [!code hl] */}
+
+It should now display your updated text.
+
+![Turbo game window with the text "yuuurrr!!!"](/yuuurrr.png)
+
+### Add Some Style
+
+The `text!` macro has several optional parameters you can experiment with:
+
+```rust title="hello-world/src/lib.rs" showLineNumbers
+turbo::go!({
+    text!( // [!code focus]
+        "Let's gooo!",      // Text to display // [!code focus]
+        font = "large"      // Font ("small", "medium", and "large" are available by default) [!code focus] [!code hl]
+        color = 0xff00ffff, // Text color (in hexadecimal) // [!code focus] [!code hl]
+        x = 32,             // Starting x position of the text // [!code focus] [!code hl]
+        y = 48,             // Starting y position of the text // [!code focus] [!code hl]
+    ); // [!code focus]
+});
+```
+
+Check out the [Text docs](/example) to see more examples of how to work with text in Turbo.
+
+::::
+
+## Conclusion
+
+You've taken your first step into the world of Turbo — initialized a project, launched a live-updating game window, and styled your very first in-game message. It might not seem like much, but this is how every great game begins: with one line of code and the will to make something fun.
+
+## Next Steps
+
+From here, you're ready to:
+
+- Build your first interactive game
+- Explore sprites, input, and sound
+- Learn how game state works in Turbo
+
+Your very own Turbo legend *has* begun — let's keep going.

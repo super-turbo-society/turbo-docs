@@ -1,0 +1,65 @@
+---
+showOutline: false
+---
+
+# Installation [It’s dangerous to go alone! Take this.]
+
+![Turbi happily carrying a giant power plug](/turbi-plug.svg)
+
+:::info
+**Note for Windows Users**
+
+Before continuing, we recommend you install [Git for Windows](https://git-scm.com/download/win) and open **Git Bash as an administrator** to run the commands described in this documentation.
+:::
+
+You can install `turbo` on the command line in 3 easy steps:
+
+::::steps
+
+### Install Rust
+
+:::code-group
+
+```bash [MacOS / Linux]
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+<div data-title="Windows">
+
+Download and run the [Rust Installer](https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-gnu/rustup-init.exe).
+
+</div>
+:::
+
+:::note
+
+<sup><p>If you already have rust installed, you can skip this step.</p></sup>
+:::
+
+### Add the WebAssembly Target
+
+```bash [Terminal]
+rustup target add wasm32-unknown-unknown
+```
+
+:::note
+
+<sup>
+  If you already have ready added the `wasm32-unknown-unknown` target with `rustup`, you can
+  skip this step.
+</sup>
+:::
+
+### Install Turbo CLI
+
+```bash [Terminal]
+curl -sSfL https://turbo.computer/install.sh | sh
+```
+
+::::
+
+You can verify your installation by running `turbo -v`. This should output `turbo 0.7.1`.
+
+:::note
+If you wish to install `turbo` by manually downloading pre-built binaries, you can check out the [archive of all releases](https://github.com/super-turbo-society/turbo-cli/releases) on Github.
+:::

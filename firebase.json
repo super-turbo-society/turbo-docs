@@ -1,0 +1,40 @@
+{
+  "hosting": {
+    "public": "docs/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.DS_Store",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/rs/**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/install.sh",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/octet-stream"
+          }
+        ]
+      },
+      {
+        "source": "/bin/**/*",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/octet-stream"
+          }
+        ]
+      }
+    ]
+  }
+}

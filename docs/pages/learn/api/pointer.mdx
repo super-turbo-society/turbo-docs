@@ -1,0 +1,54 @@
+# Pointer
+
+## Overview
+
+The `Pointer` API provides a single interface for handling both mouse and touch inputs to maximize cross-platform compatibility.
+
+## API
+
+### `pointer`
+
+Handles mouse and touch events simultaneously for easy cross-platform functionality.
+
+```rust
+pub fn pointer() -> Pointer
+```
+
+:::info
+On mobile, swipes are treated as `gamepad` direction presses. See [`gamepad`](/learn/api/gamepad) for more details.
+:::
+
+:::details[`Pointer`]
+
+```rs
+pub struct Pointer {
+    /// The x position of the mouse cursor or most recent touch event
+    pub x: i32,
+    /// The y position of the mouse cursor or most recent touch event
+    pub y: i32,
+    /// The state of the left mouse button or touch
+    state: Button,
+}
+```
+
+:::
+
+## Usage
+
+### Using the pointer
+
+```rust
+let p = pointer();
+
+// get the current mouse/touch position
+let position_x = p.x;
+let position_y = p.y;
+
+if p.just_pressed() {
+    // handle mouse click or touch event
+}
+```
+
+:::note
+Mouse clicks are treated identically to taps on mobile
+:::

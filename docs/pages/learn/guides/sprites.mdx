@@ -1,0 +1,50 @@
+# Sprites
+
+## Walkthrough
+
+::::steps
+
+### Create a `sprites` folder
+
+Inside your project directory, create a folder named `sprites`. This folder will contain all your game sprites.
+
+```
+your-project-dir/       # Your project's root directory.
+├── sprites/            # The directory of your sprite assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+
+### Put images in the folder
+
+The following image formats are supported:
+
+- `.png`
+- `.bmp`
+- `.jpg`/`.jpeg`.
+- `.gif`
+- `.webp`
+- `.ase`/`asprite`
+
+### Draw some sprites
+
+Now you're ready to draw some sprites! Use the sprite filename without the extension:
+
+```rs
+sprite!("my-sprite-name", x = 64, y = 64)
+```
+
+If you are using Asprite files, tags are supported. You can use animations from a specific tag with this syntax:
+
+```rs
+sprite!("my-sprite-name#my-tag", x = 64, y = 64)
+```
+
+::::
+
+**Learn More**
+
+- [Sprite API docs &rarr;](/example)
+- [Sprite Animation API docs &rarr;](/example)

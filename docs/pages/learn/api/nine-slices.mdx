@@ -1,0 +1,59 @@
+# Nine-Slice
+
+![Nine_Slice Screenshot](/nine_slice.png)
+
+## Overview
+
+> 9-slice scaling (also known as Scale 9 grid, 9-slicing or 9-patch) is a 2D image resizing technique to proportionally scale an image by splitting it in a grid of nine parts.
+>
+> – [Wikipedia](https://en.wikipedia.org/wiki/9-slice_scaling)
+
+You can use nine-slice sprites to create UI elements, like buttons and text boxes, that can be resized without distorting the borders.
+
+## `nine_slice!`
+
+Draws a nine-slice sprite to the game's canvas.
+
+```rs
+nine_slice!(
+    name: &str,
+    margins = (u32, u32, u32, u32)
+    x = i32,
+    y = i32,
+    w = u32,
+    h = u32,
+)
+```
+
+| Param     | Type                   | Default | Description                               |
+| :-------- | :--------------------- | :------ | :---------------------------------------- |
+| `name`    | `&str`                 |         | Name of the sprite to use as a nine-slice |
+| `margins` | `(u32, u32, u32, u32)` | `0`     | The margins of the nine-slice sprite      |
+| `x`       | `i32`                  | `0`     | X position of the nine-slice              |
+| `y`       | `i32`                  | `0`     | Y position of the nine-slice              |
+| `w`       | `u32`                  | `0`     | The width of the nine-slice               |
+| `h`       | `u32`                  | `0`     | The height of the nine-slice              |
+
+:::note
+To render a nine-slice turbo needs to know the sprite file name and the margins. The margins are the distances in pixels of each edge, starting from the left and moving clockwise.
+:::
+
+:::tip[Example]
+
+To draw a nine-slice, call the macro like this:
+
+```rust
+nine_slice!(
+    "nslice_sprite_name",
+    margins = (8, 8, 8, 8),
+    x = 28,
+    y = 20,
+    w = 200,
+    h = 50
+);
+```
+
+:::details[Preview]
+![Nine_Slice Screenshot](/nine_slice.png)
+
+:::
