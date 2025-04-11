@@ -26,7 +26,7 @@ export default defineConfig({
     },
   },
   // ogImageUrl: "https://vocs.dev/api/og?logo=%logo&title=%title&description=%description",
-  ogImageUrl: "/og.png",
+  ogImageUrl: "https://docs.turbo.computer/og.png",
   banner: {
     dismissable: false,
     backgroundColor: "#7a09fa",
