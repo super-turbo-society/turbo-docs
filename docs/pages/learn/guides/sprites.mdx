@@ -36,11 +36,16 @@ Now you're ready to draw some sprites! Use the sprite filename without the exten
 sprite!("my-sprite-name", x = 64, y = 64)
 ```
 
-If you are using Asprite files, tags are supported. You can use animations from a specific tag with this syntax:
+If you are using Aseprite files, tags are supported. You can use animations from a specific tag with this syntax:
 
 ```rs
 sprite!("my-sprite-name#my-tag", x = 64, y = 64)
 ```
+
+:::tip[Development Tip]
+You can use subfolders inside the `sprites` folder! Use `my-folder-name/my-file-name` to access those files.
+:::
+
 
 ::::
 

@@ -73,7 +73,7 @@ Add the following files to the `sprites` directory.
 
 ### Run the Game
 
-At this point, we can run our game and leave it running as we make changes.
+At this point, we can run our game and leave it running as we make changes. Don't worry, it is just a blank screen for now!
 
 ```bash [Terminal]
 turbo run -w pancake-cat
@@ -81,7 +81,7 @@ turbo run -w pancake-cat
 
 ### Game State Initialization
 
-Define the initial state of your game:
+Add this code to the top of your `lib.rs` file. We'll explain what everything does later on:
 
 ```rs [src/lib.rs]
 turbo::init! {
@@ -124,9 +124,15 @@ turbo::go!({
 });
 ```
 
+:::tip[Development Tip]
+`turbo::go!` runs 60 times per second, and is repsonsible for updating all changes to your game state. 
+
+At the start of each loop we use `let mut state = GameState::load()` to make sure all of our GameState variables are set correctly. Then at the end of the Game Loop we use `state.save();` to store the changes to those variables. 
+:::
+
 ### Cat Movement
 
-Handle player input to move the cat:
+The first thing to do is handle player input to move the cat. Add this code inbetween loading and saving the `GameState`:
 
 ```rs [src/lib.rs]
 if gamepad(0).left.pressed() {
@@ -136,6 +142,7 @@ if gamepad(0).right.pressed() {
     state.cat_x += 2.;
 }
 ```
+Now click over to your game window and press left and right on your keyboard. You should see the cat moving around!
 
 ### Pancake Generation
 
@@ -153,12 +160,21 @@ if rand() % 64 == 0 {
 }
 ```
 
+:::tip[Development Tip]
+We defined the `Pancake` struct in our `turbo::init!` function earlier. Now we are adding individual instnaces of `Pancake` to the game.
+
+Each `Pancake` has a position (`x` and `y`), a velocity (`vel`), and a size (`radius`). We use randomness so the Pancakes are all a little different.
+
+We also created a `Vec<Pancake>` in our `init`. Once we create the new `Pancake` we add it to that `Vec` so that we can track it in our `GameState`.
+:::
+
 ### Pancake Movement & Collision
 
-Move falling pancakes and detect when they're caught:
+Now we can add some code that moves the Pancakes downwards, and checks if they are overlapping the cat. When they overlap, we add 1 to `state.score`.
 
 ```rs [src/lib.rs]
 let cat_center = (state.cat_x + state.cat_r, state.cat_y + state.cat_r);
+
 state.pancakes.retain_mut(|p| {
     p.y += p.vel;
     let dx = cat_center.0 - (p.x + p.radius);
@@ -178,6 +194,12 @@ state.pancakes.retain_mut(|p| {
     }
 });
 ```
+
+:::tip[Development Tip]
+`retain_mut` is a method in Rust that lets you look through and mutate every element in a `Vec` and only **retain** the ones that pass a certain condition. Any Pancakes that return `false` are removed from the `Vec`. 
+
+In this case, we are removing any Pancakes that overlap the Cat, and also removing the ones that are below the bottom of the screen. The rest of the Pancakes will remain on screen, to give the player a chance to catch them.
+:::
 
 ### Background Tiles
 
@@ -206,7 +228,7 @@ sprite!("munch_cat", x = state.cat_x - state.cat_r, y = state.cat_y - 16.0);
 
 ### Drawing the Pancakes
 
-Render the cat sprite with animation frame logic handled by Turbo:
+Draw each Pancake by making 3 concentric circles:
 
 ```rs [src/lib.rs]
 for p in &state.pancakes {
@@ -238,6 +260,10 @@ Draw the player's score in the top-left corner:
 text!("Score: {}", state.score; x = 10, y = 10, font = "large", color = 0xffffffff);
 ```
 
+:::tip[Development Tip]
+Save your code, and then click over to your Turbo game window to see your changes! If you want to reset your score, press `ctrl+R` on Windows or `cmd+R` on Mac. That will restart your game from the initial state.
+:::
+
 ::::
 
 ## Conclusion
@@ -249,7 +275,7 @@ You've met the cat. You’ve caught the pancakes. And you’ve laid the foundati
 ## Next Steps
 
 - Swap out hearts or pancakes for your own sprite sets
-- Add sounds when the cat munches or misses
+- Add [`sounds`](/learn/api/audio) when the cat munches or misses
 - Track lives or missed pancakes for added challenge
 - Create a title screen and end state
 - Export your game to the web using [`turbo export`](/learn/guides/cli)
