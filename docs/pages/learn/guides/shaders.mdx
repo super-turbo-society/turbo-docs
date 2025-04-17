@@ -83,7 +83,7 @@ So far, our shader isn't doing anything custom. So let's make it cycle the inten
 @fragment
 fn fs_main(in: VertexOutput) -> @location(0) vec4<f32> {
     var color: vec4<f32> = textureSample(t_canvas, s_canvas, in.uv);
-    color = applyColorCycle(color, uv, global.tick); // [!code ++] [!code hl]
+    color = applyColorCycle(color, in.uv, global.tick); // [!code ++] [!code hl]
     return color;
 }
 

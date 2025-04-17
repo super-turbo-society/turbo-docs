@@ -33,7 +33,9 @@ Download and run the [Rust Installer](https://static.rust-lang.org/rustup/dist/x
 
 :::note
 
-<sup><p>If you already have rust installed, you can skip this step.</p></sup>
+<sup>
+  <p>If you already have rust installed, you can skip this step.</p>
+</sup>
 :::
 
 ### Add the WebAssembly Target
@@ -45,8 +47,8 @@ rustup target add wasm32-unknown-unknown
 :::note
 
 <sup>
-  If you already have ready added the `wasm32-unknown-unknown` target with `rustup`, you can
-  skip this step.
+  If you already have ready added the `wasm32-unknown-unknown` target with
+  `rustup`, you can skip this step.
 </sup>
 :::
 
@@ -58,8 +60,9 @@ curl -sSfL https://turbo.computer/install.sh | sh
 
 ::::
 
-You can verify your installation by running `turbo -v`. This should output `turbo 0.7.1`.
+You can verify your installation by running `turbo -v`. This should output `turbo 0.7.2`.
 
 :::note
-If you wish to install `turbo` by manually downloading pre-built binaries, you can check out the [archive of all releases](https://github.com/super-turbo-society/turbo-cli/releases) on Github.
+If you wish to install `turbo` by manually downloading pre-built binaries, you can check out the [archive of all releases](https://github.com/super-turbo-society/turbo-cli/releases) on Github. You can also install a specific version `curl -sSfL
+  https://turbo.computer/install.sh | TURBO_VERSION=0.0.0 sh`. Just replace `0.0.0` with a valid version.
 :::
