@@ -119,6 +119,10 @@ export default defineConfig({
             link: "/learn/guides/keyboard-shortcuts",
           },
           {
+            text: "Rust Language Basics",
+            link: "/learn/guides/rust-basics",
+          },
+          {
             text: "Configuring Your Game",
             link: "/learn/guides/configuration",
           },
