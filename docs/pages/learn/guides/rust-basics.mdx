@@ -1,0 +1,180 @@
+# Rust Language Basics [All your bugs are belong to Rust]
+
+![Two ghosts sharing a computer](/ghosts_at_computer.png)
+
+## Why Rust?
+
+Rust helps you build more reliable games by catching common bugs before your game even runs. Its special system for tracking who "owns" each piece of data helps prevent crashes and weird glitches that would be hard to find otherwise. Plus, Rust code runs fast and efficiently, making it great for games that need smooth performance even with lots of action on screen.
+
+With that said, the syntax can look strange at first! Let's look at some common Rust coding patterns to get you started.
+
+:::tip[Development Tip]
+If you are using VS Code for your project, we recommend installing the [Rust Analyzer](https://rust-analyzer.github.io/) extension. It can solve lots of syntax-related errors and gives helpful tips to get around some of Rust's trickier eccentricities.
+:::
+
+## Rust Terminology
+
+### Variables and Mutability
+Use `let` to define a variable. If you want that variable to be changed later on, use `mut` when you define it:
+
+```rust
+let score = 0;  // This can't be changed later
+
+// Add 'mut' to make a variable changeable
+let mut health = 100;
+health = health - 10;  // This works because health is mutable
+```
+
+### Number Types
+In Rust, every number has a specific type. If you want to do operations between numbers, they need to be the same type.
+```rust
+let player_count: u32 = 4;     // Unsigned integer (no negatives)
+let score_diff: i32 = -10;     // Signed integer (can be negative)
+let x_pos: f32 = 13.5;         // Floating point number
+
+// Converting between types
+let integer_position = x_pos as i32;  // Converts 13.5 to 13
+```
+
+### Collections
+`Vec<T>` creates a dynamic array of any data type.
+```rust
+let mut players = Vec::new();  // Empty vector
+players.push("Player 1");      // Add elements
+players.push("Player 2");
+
+// You can also initialize with values
+let scores = vec![100, 85, 90];
+```
+
+### Strings
+There are two different text types in Rust: `String` and `&str`. Generally you'll use `String` for data that needs to exist for multiple frames, but you'll use `&str` when you want to display text on screen.
+```rust
+let message: String = "Game Over";             // Owned string
+let title: &str = "Space Adventure";           // String slice
+
+```
+
+## Struct and Impl
+
+**Structs** in Rust function similarly to **Classes** in other languages. They group different types of data together in one place. 
+Here is an example for a `Player` struct in a platformer game.
+
+```rust
+// Define game entities with structs
+#[derive(BorshSerialize, BorshDeserialize, PartialEq, Debug, Clone)] //Turbo structs need to derive these 5 traits to serialize properly
+struct Player {
+    position: (f32, f32),
+    velocity: (f32, f32),
+    health: u32,
+    is_jumping: bool,
+}
+```
+:::warning
+Any `struct` included in the **Turbo** `GameState` needs to derive the 5 traits mentioned above. You don't have to worry too much about how they work, just be sure to include them or else your game will not compile.
+:::
+
+
+Add an `impl` below your struct to create **functions**.
+
+```rust
+// Add functions to your structs with impl
+impl Player {
+    // Constructor
+    fn new(start_x: f32, start_y: f32) -> Self {
+        Self {
+            position: (start_x, start_y),
+            velocity: (0.0, 0.0),
+            health: 100,
+            is_jumping: false,
+        }
+    }
+    
+    // Method with mutable access
+    fn jump(&mut self) {
+        if !self.is_jumping {
+            self.velocity.y = -10.0;
+            self.is_jumping = true;
+        }
+    }
+    
+    // Method with immutable access
+    fn is_alive(&self) -> bool {
+        self.health > 0
+    }
+}
+```
+:::note
+Use `->` to denote a return type for your functions. In Rust, if the final line of your function ends without a semicolon, it will be read as the `return` value. You can also use the `return` keyword for the same purpose.
+:::
+
+
+## Ownership and Borrowing
+Every piece of data in your game has exactly one owner. When you pass data around, you're either transferring ownership or temporarily borrowing it. Borrowing can be read-only `&` or read-write `&mut`. While this system can seem rigid, it prevents lots of bugs that would be difficult to track down later on.
+
+
+```rust
+// Ownership - each value has exactly one owner
+let player_position = (10.0, 20.0);
+let current_position = player_position; // ownership moved here
+// player_position is no longer valid!
+
+// Borrowing - temporarily access without taking ownership
+fn update_player(player: &mut Player) { // mutable borrow
+    player.position.0 += player.velocity.x;
+}
+
+fn render_player(player: &Player) { // immutable borrow
+    // Draw at player.position (can read but not modify)
+    sprite!("player_sprite", x = player.position.0, y = player.position.1);
+}
+
+// You can have either:
+// - Multiple immutable borrows (&T)
+// - OR exactly one mutable borrow (&mut T)
+// But never both at the same time!
+```
+:::tip
+It is fairly common to run into issues trying to borrow the same data multiple times. You can usually use `.clone()` to create a fresh instance that you can borrow again. Since Turbo games are generally very performance light, you don't have to worry about doing this! 
+:::
+
+
+## Vec and Iteration
+
+In Rust, the functionality for a collection of objects is done through **Vectors** (shortened to `Vec`). We can initialize a `Vec` to hold any type of data. Rust supplies us with lots of powerful tools to iterate and manipulate the data inside of a `Vec`, making them incredibly useful for game development - perfect for storing collections of enemies, items or particles!
+
+```rust
+let mut enemies = Vec::new();
+enemies.push(Enemy::new(100.0, 200.0));
+enemies.push(Enemy::new(150.0, 250.0));
+
+// Access elements
+if !enemies.is_empty() {
+    let first_enemy = &enemies[0]; // borrowing the first enemy
+}
+
+// Iteration - process all game objects
+for enemy in &mut enemies {
+    enemy.update(); // update each enemy
+}
+
+// Common patterns for game development
+enemies.retain(|enemy| enemy.is_alive()); // removes dead enemies from the enemies vec
+
+// Modify items while filtering with retain_mut
+enemies.retain_mut(|enemy| {
+    if enemy.health < 20 {
+        enemy.set_retreat_mode(); // make low-health enemies retreat
+        true // keep this enemy
+    } else {
+        enemy.health > 0 // only keep enemies that are still alive
+    }
+});
+```
+**Learn More**
+
+Now that you have the basics down, it's time to start working on a game. After all, the best way to learn any coding langauge is by coding!
+
+- [Demos Github Repo &rarr;](http://github.com/super-turbo-society/turbo-demos)
+- [Pancake Cat Walkthrough &rarr;](/learn/tutorials/pancake-cat)
+- [Video Tutorials &rarr;](https://www.youtube.com/@makegamesfast)
