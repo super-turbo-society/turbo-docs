@@ -83,6 +83,7 @@ if [[ "$url" == *.zip ]]; then
         exit 1
     }
     rm -rf turbo.zip
+    mv turbo/**/* turbo
     echo "Moving turbo to executables dir (/usr/local/bin)..."
     chmod +x turbo/${bin}.exe || exit 1
     mkdir -p /usr/local/bin || exit 1
