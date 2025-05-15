@@ -18,8 +18,8 @@ if [ $(tput cols) -gt 99 ]; then
 fi
 
 bin="turbo"
-# Use TURBO_VERSION if set, otherwise default to 0.7.2
-version="${TURBO_VERSION:-0.7.2}"
+# Use TURBO_VERSION if set, otherwise default to 0.7.3
+version="${TURBO_VERSION:-0.7.3}"
 
 echo "Installing v${version}..."
 
