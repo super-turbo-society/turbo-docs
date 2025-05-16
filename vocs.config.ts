@@ -167,6 +167,7 @@ export default defineConfig({
           { text: "Rectangles", link: "/learn/api/rectangles" },
           { text: "Sprites", link: "/learn/api/sprites" },
           { text: "Text", link: "/learn/api/text" },
+          { text: "Text Boxes", link: "/learn/api/text_box" },
           { text: "Time", link: "/learn/api/time" },
           { text: "Tween", link: "/learn/api/tween" },
         ],
