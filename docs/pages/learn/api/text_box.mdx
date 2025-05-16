@@ -1,0 +1,91 @@
+# Text Box
+
+![Make Games Fast Screenshot](/make_games_fast_screenshot.png)
+
+
+## Overview
+
+Draw a rectangle into your games canvas that contains text. Wrap, align, and position the textbox by using the `text_box!` macro.
+
+:::tip[Typography Tip]
+Three alignments are available by default: `"left"`, `"center"`, and `"right"`. Be sure to check out [text](https://docs.turbo.computer/learn/api/text) for more clarity on the basic text macro!.
+:::
+
+## API
+
+### `text_box!`
+
+Draws a text box with the ability to align, wrap, and position text
+
+```rs
+text_box!(
+    &str,
+    font = &str,
+    scale = f32,
+    start = usize,
+    end = usize,
+    width = u32,
+    height = u32,
+    x = i32,
+    y = i32,
+    color = u32,
+    allign = &str,
+)
+```
+
+| Param   | Type   | Default      | Description                                                  |
+| :------ | :----- | :----------- | :----------------------------------------------------------- |
+| -       | `&str` | -            | Text to be displayed                                         |
+| `font`  | `&str` | `"medium"`   | Size to display text in: `"small"`, `"medium"`, or `"large"` |
+| `scale` | `f32`  | `1.0`        | Line spacing and scale of text box                           |
+| `start` | `usize`| `0`          | Starting character to be displayed                           |
+| `end`   | `usize`| `text.len()` | Ending character to be displayed, defaults to entire text    |
+| `width` | `u32`  | `0`          | Width of the text box in pixels                              |
+| `height`| `u32`  | `0`          | Height of the text box in pixels                             |
+| `x`     | `i32`  | `0`          | Starting x position of the text                              |
+| `y`     | `i32`  | `0`          | Starting y position of the text                              |
+| `color` | `u32`  | `0xffffffff` | Hex color to display text in                                 |
+| `allign`| `&str` | `"left"`     | Text allignment in: `"left"`, `"center"`, or `"right"`       |
+
+## Usage
+
+### Basic Usage
+
+```rs
+    text_box!(
+        "Welcome to Turbo!",
+        font = "medium",
+        width = 50,
+        height = 20,
+    );
+```
+:::details[Preview]
+![Welcome To Turbo](/welcome_to_turbo_screenshot.png)
+
+:::
+
+### Advanced Usage
+
+Wrap and adjust the `text_box` by declaring different `width`, `height`, and `align` values. Position it with different `x` and `y` values:
+
+```rs
+    text_box!(
+        "Turbo makes UI elements easy and fast!",
+        font = "medium",
+        scale = 1.2,
+        start = 0,
+        end = 100,
+        width = 100,
+        height = 80,
+        x = 80,
+        y = 40,
+        align = "center",
+        color = 0x000000ff
+    );
+```
+
+![Turbo Makes UI Easy Screenshot](/turbo_makes_ui_easy_screenshot.png)
+
+:::tip
+Changing the `scale` increases the distance between individual characters and line spacing!
+:::
