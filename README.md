@@ -1,3 +1,6 @@
+![logo](./banner.png)
+
+
 # Turbo Docs
 
 This repository contains the source files for [docs.turbo.computer](https://docs.turbo.computer), the official documentation portal for Turbo.
