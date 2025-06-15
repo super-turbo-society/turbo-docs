@@ -36,11 +36,11 @@ jobs:
             --arg timestamp "$TIMESTAMP" \
             '{
               "embeds": [{
-                "title": "🚀 Docs updated!",
-                "description": ("Project **" + $repo + "** has been deployed."),
+                "title": "🚀 Deploy completed",
+                "description": ("Project **\($repo)** has been deployed."),
                 "color": 7506394,
                 "fields": [
-                  {"name": "Commit", "value": "[" + $commit + "](" + $url + ")"}
+                  {"name": "Commit", "value": "[\($commit)](\($url))"}
                 ],
                 "footer": { "text": "Firebase Deploy" },
                 "timestamp": $timestamp
