@@ -130,6 +130,14 @@ turbo::go!({
 At the start of each loop we use `let mut state = GameState::load()` to make sure all of our GameState variables are set correctly. Then at the end of the Game Loop we use `state.save();` to store the changes to those variables. 
 :::
 
+### Drawing the Cat
+
+Render the cat sprite with animation frame logic handled by Turbo:
+
+```rs [src/lib.rs]
+sprite!("munch_cat", x = state.cat_x - state.cat_r, y = state.cat_y - 16.0);
+```
+
 ### Cat Movement
 
 The first thing to do is handle player input to move the cat. Add this code inbetween loading and saving the `GameState`:
@@ -216,14 +224,6 @@ for col in 0..9 {
     }
 }
 state.frame += 1;
-```
-
-### Drawing the Cat
-
-Render the cat sprite with animation frame logic handled by Turbo:
-
-```rs [src/lib.rs]
-sprite!("munch_cat", x = state.cat_x - state.cat_r, y = state.cat_y - 16.0);
 ```
 
 ### Drawing the Pancakes
