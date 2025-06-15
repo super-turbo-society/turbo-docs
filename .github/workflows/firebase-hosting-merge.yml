@@ -36,7 +36,7 @@ jobs:
             --arg timestamp "$TIMESTAMP" \
             '{
               "embeds": [{
-                "title": "🚀 Deploy completed",
+                "title": "🚀 Docs updated!",
                 "description": ("Project **\($repo)** has been deployed."),
                 "color": 7506394,
                 "fields": [
