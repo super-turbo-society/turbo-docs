@@ -24,6 +24,7 @@ jobs:
           projectId: turbo-164d0
 
       - name: Send PR deploy notification to Discord
+        if: ${{ github.event.action == 'opened' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
