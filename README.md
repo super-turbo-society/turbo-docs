@@ -8,7 +8,6 @@ Turbo is a modern multiplayer game engine and real-time backend platform designe
 * WebGPU rendering
 * WebAssembly runtime sandboxing
 * Trustless game state with verifiable simulation
-* Seamless Web2 and Web3 integrations
 
 ## Repository Purpose
 
