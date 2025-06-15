@@ -125,7 +125,7 @@ turbo::go!({
 ```
 
 :::tip[Development Tip]
-`turbo::go!` runs 60 times per second, and is repsonsible for updating all changes to your game state. 
+`turbo::go!` runs 60 times per second, and is responsible for updating all changes to your game state. 
 
 At the start of each loop we use `let mut state = GameState::load()` to make sure all of our GameState variables are set correctly. Then at the end of the Game Loop we use `state.save();` to store the changes to those variables. 
 :::
