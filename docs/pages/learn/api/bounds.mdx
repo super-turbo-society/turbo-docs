@@ -98,8 +98,8 @@ Create a row of 3 buttons that use `bounds` to recognize whenever they are hover
 ```rs
  fn update(&mut Self){
     let p = pointer();
-    let viewport_bounds = bounds::viewport();
-    let buttons = viewport_bounds
+    let canvas_bounds = bounds::canvas();
+    let buttons = canvas_bounds
         .height(32)
         .inset_left(8)
         .inset_right(8)
