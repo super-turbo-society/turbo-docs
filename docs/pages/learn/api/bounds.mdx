@@ -102,7 +102,7 @@ rect!(
 Create a row of 3 buttons that use `bounds` to recognize whenever they are hovered or clicked
 
 ```rs
-turbo::go!({
+ fn update(&mut Self){
     let viewport_bounds = bounds::viewport();
     let buttons = viewport_bounds
         .height(32)
@@ -142,7 +142,7 @@ turbo::go!({
         let btn_inner = btn.inset_left(4).inset_top(4);
         text!(label, x = btn_inner.x(), y = btn_inner.y(), font = "medium");
     }
-});
+};
 ```
 
 ![Bounds example showing a simple button row](/bounds_example.gif)

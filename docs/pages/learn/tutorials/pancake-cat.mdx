@@ -84,8 +84,8 @@ turbo run -w pancake-cat
 Add this code to the top of your `lib.rs` file. We'll explain what everything does later on:
 
 ```rs [src/lib.rs]
-turbo::init! {
-    struct GameState {
+
+ struct GameState {
         frame: u32,
         last_munch_at: u32,
         cat_x: f32,
@@ -98,36 +98,30 @@ turbo::init! {
             radius: f32,
         }>,
         score: u32,
-    } = Self {
-        frame: 0,
-        last_munch_at: 0,
-        cat_x: 128.0,
-        cat_y: 112.0,
-        cat_r: 8.0,
-        pancakes: vec![],
-        score: 0,
+    }
+
+impl GameState{
+    fn new()->Self{
+        Self {
+            frame: 0,
+            last_munch_at: 0,
+            cat_x: 128.0,
+            cat_y: 112.0,
+            cat_r: 8.0,
+            pancakes: vec![],
+            score: 0,
+        }
     }
 }
+
 ```
 
 ### Update the Game Loop
 
-Use the Turbo game loop to run your game logic:
-
-```rs [src/lib.rs]
-turbo::go!({
-    let mut state = GameState::load();
-
-    // The code in the following steps will go here [!code hl]
-
-    state.save();
-});
-```
+Use the Turbo game loop to run your game logic.
 
 :::tip[Development Tip]
-`turbo::go!` runs 60 times per second, and is repsonsible for updating all changes to your game state. 
-
-At the start of each loop we use `let mut state = GameState::load()` to make sure all of our GameState variables are set correctly. Then at the end of the Game Loop we use `state.save();` to store the changes to those variables. 
+`update()` runs 60 times per second, and is repsonsible for updating all changes to your game state. 
 :::
 
 ### Cat Movement
@@ -136,10 +130,10 @@ The first thing to do is handle player input to move the cat. Add this code inbe
 
 ```rs [src/lib.rs]
 if gamepad(0).left.pressed() {
-    state.cat_x -= 2.;
+    self.cat_x -= 2.;
 }
 if gamepad(0).right.pressed() {
-    state.cat_x += 2.;
+    self.cat_x += 2.;
 }
 ```
 Now click over to your game window and press left and right on your keyboard. You should see the cat moving around!
@@ -156,16 +150,16 @@ if rand() % 64 == 0 {
         vel: (rand() % 3 + 1) as f32,
         radius: (rand() % 10 + 5) as f32,
     };
-    state.pancakes.push(pancake);
+    self.pancakes.push(pancake);
 }
 ```
 
 :::tip[Development Tip]
-We defined the `Pancake` struct in our `turbo::init!` function earlier. Now we are adding individual instnaces of `Pancake` to the game.
+We defined the `Pancake` struct in our `new` function earlier. Now we are adding individual instnaces of `Pancake` to the game.
 
 Each `Pancake` has a position (`x` and `y`), a velocity (`vel`), and a size (`radius`). We use randomness so the Pancakes are all a little different.
 
-We also created a `Vec<Pancake>` in our `init`. Once we create the new `Pancake` we add it to that `Vec` so that we can track it in our `GameState`.
+We also created a `Vec<Pancake>` in our `new` function. Once we create the new `Pancake` we add it to that `Vec` so that we can track it in our `GameState`.
 :::
 
 ### Pancake Movement & Collision
@@ -207,7 +201,7 @@ Draw a simple animated background:
 
 ```rs [src/lib.rs]
 clear(0x00ffffff);
-let frame = (state.frame as i32) / 2;
+let frame = (self.frame as i32) / 2;
 for col in 0..9 {
     for row in 0..6 {
         let x = ((col * 32 + frame) % (272 + 16)) - 32;
@@ -215,7 +209,7 @@ for col in 0..9 {
         sprite!("heart", x = x, y = y);
     }
 }
-state.frame += 1;
+self.frame += 1;
 ```
 
 ### Drawing the Cat
@@ -223,7 +217,7 @@ state.frame += 1;
 Render the cat sprite with animation frame logic handled by Turbo:
 
 ```rs [src/lib.rs]
-sprite!("munch_cat", x = state.cat_x - state.cat_r, y = state.cat_y - 16.0);
+sprite!("munch_cat", x = self.cat_x - self.cat_r, y = self.cat_y - 16.0);
 ```
 
 ### Drawing the Pancakes
@@ -231,7 +225,7 @@ sprite!("munch_cat", x = state.cat_x - state.cat_r, y = state.cat_y - 16.0);
 Draw each Pancake by making 3 concentric circles:
 
 ```rs [src/lib.rs]
-for p in &state.pancakes {
+for p in &self.pancakes {
     circ!(x = p.x, y = p.y + 1.0, d = p.radius + 2., color = 0x000000aa);
     circ!(x = p.x, y = p.y, d = p.radius + 1., color = 0xf4d29cff);
     circ!(x = p.x, y = p.y, d = p.radius, color = 0xdba463ff);
@@ -243,12 +237,12 @@ for p in &state.pancakes {
 Display a speech bubble with “MUNCH!” when the cat catches a pancake:
 
 ```rs [src/lib.rs]
-if state.frame >= 64 && state.frame.saturating_sub(state.last_munch_at) <= 60 {
-    rect!(w = 30, h = 10, x = state.cat_x + 32.0, y = state.cat_y);
-    circ!(d = 10, x = state.cat_x + 28.0, y = state.cat_y);
-    rect!(w = 10, h = 5, x = state.cat_x + 28.0, y = state.cat_y + 5.0);
-    circ!(d = 10, x = state.cat_x + 56.0, y = state.cat_y);
-    text!("MUNCH!", x = state.cat_x + 33.0, y = state.cat_y + 3.0, font = "small", color = 0x000000ff);
+if self.frame >= 64 && self.frame.saturating_sub(self.last_munch_at) <= 60 {
+    rect!(w = 30, h = 10, x = self.cat_x + 32.0, y = self.cat_y);
+    circ!(d = 10, x = self.cat_x + 28.0, y = self.cat_y);
+    rect!(w = 10, h = 5, x = self.cat_x + 28.0, y = self.cat_y + 5.0);
+    circ!(d = 10, x = self.cat_x + 56.0, y = self.cat_y);
+    text!("MUNCH!", x = self.cat_x + 33.0, y = self.cat_y + 3.0, font = "small", color = 0x000000ff);
 }
 ```
 
@@ -257,7 +251,7 @@ if state.frame >= 64 && state.frame.saturating_sub(state.last_munch_at) <= 60 {
 Draw the player's score in the top-left corner:
 
 ```rs [src/lib.rs]
-text!("Score: {}", state.score; x = 10, y = 10, font = "large", color = 0xffffffff);
+text!("Score: {}", self.score; x = 10, y = 10, font = "large", color = 0xffffffff);
 ```
 
 :::tip[Development Tip]

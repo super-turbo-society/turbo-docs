@@ -283,21 +283,24 @@ You probably don't want to log a value every frame of your game loop. It can clu
 
 ## Initializing Game State
 
-Turbo provides a straightforward way to initialize the standard game state using the `turbo::init!` macro. This macro is essential for defining and setting up the game state before entering the main game loop:
+Turbo provides a straightforward way to initialize the standard game state. After creating a new struct with GameState values, initialize the state in the 'new' function:
 
 ```rs
-turbo::init! {
-    // 1. Define the GameState struct. [!code hl]
-    struct GameState {
-        screen: enum Screen {
+
+struct GameState {
+       screen: enum Screen {
             Title,
             Level,
         },
         x_position: i32,
         y_position: i32,
-    } = {
-        // 2. Return the GameState's initial value. [!code hl]
-        // You can also run initializaion code here before returning the state.
+}
+
+impl GameState{
+    fn new()->Self{
+
+         // Return the GameState's initial value. [!code hl]
+        // You can also run initialization code here before returning the state.
         Self {
             screen: Screen::Title,
             x_position: 30,
@@ -305,6 +308,7 @@ turbo::init! {
         }
     }
 }
+
 ```
 
 :::tip[Resetting Game State]
@@ -325,20 +329,16 @@ For convenience, `turbo::init!` allows nested struct and enum definitions via th
 Turbo games run at 60 fps and the typical game loop should follow this pattern:
 
 ```rs
-turbo::go!({
-    // 1. Load State [!code hl]
-    // This hydrates state from the previous loop.
-    // The initial state's initial value will load on the first loop.
-    let mut state = GameState::load();
 
-    // 2. Update State [!code hl]
+fn update(&mut self){
+
+
+    // Update State [!code hl]
     // The bulk of your game's logic goes here. Mutate state as-needed.
 
-    // 3. Save State [!code hl]
-    // The final thing you should do in your game loop is save your game state.
-    // This serializes state and persists it in memory so it doesn't get lost while hot-reloading
-    state.save();
-});
+   
+}
+
 ```
 
 **Learn More**
