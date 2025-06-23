@@ -23,11 +23,13 @@ On mobile, swipes are treated as `gamepad` direction presses. See [`gamepad`](/l
 ```rs
 pub struct Pointer {
     /// The x position of the mouse cursor or most recent touch event
-    pub x: i32,
+    x: i32,
     /// The y position of the mouse cursor or most recent touch event
-    pub y: i32,
+    y: i32,
     /// The state of the left mouse button or touch
     state: Button,
+    /// The scroll delta
+    scroll: (i32, i32),
 }
 ```
 
@@ -35,20 +37,81 @@ pub struct Pointer {
 
 ## Usage
 
-### Using the pointer
+### Reading Pointer Position & State
 
 ```rust
 let p = pointer();
 
-// get the current mouse/touch position
-let position_x = p.x;
-let position_y = p.y;
+// World‐space position (accounts for camera zoom & pan)
+let (world_x, world_y) = p.xy();
 
+// Fixed‐canvas position (e.g. for UI)
+let (canvas_x, canvas_y) = p.xy_fixed();
+
+// Button & touch states
 if p.just_pressed() {
-    // handle mouse click or touch event
+    // Fired at the instant the button/touch goes down
+}
+if p.pressed() {
+    // True every frame the button/touch is held
+}
+if p.just_released() {
+    // Fired at the instant the button/touch goes up
+}
+if p.released() {
+    // True every frame the button/touch is up
+}
+
+// Scroll wheel or two‐finger swipe delta
+let (scroll_dx, scroll_dy) = p.scroll_delta();
+```
+:::tip
+The best way to detect a button "click/press" is to use the `just_pressed()` method AND one of the intersection techniques described in the following sections.
+For example...
+```rs
+let left_half_of_screen = bounds::canvas().adjust_width_by_fraction(0.5);
+let p = pointer();
+if p.just_pressed() && p.xy().intersects_bounds(left_half_of_screen) {
+    // Detected a click/press on the left half of the screen
+}
+```
+:::
+
+### Hit-Testing Arbitrary Rectangles
+
+#### World-space regions
+
+```rs
+// Suppose you have an in-world sprite at (50, 30) sized 100×20:
+if p.intersects(50, 30, 100, 20) {
+    // Pointer is over that sprite in world coordinates
 }
 ```
 
-:::note
-Mouse clicks are treated identically to taps on mobile
-:::
+#### Fixed UI elements
+
+```rs
+// A button drawn at (10,10) sized 200×50 in screen space:
+if p.intersects_fixed(10, 10, 200, 50) {
+    // Pointer is over that UI button
+}
+```
+
+### Hit-Testing Bounds
+
+The `(i32, i32)` tuple implements the `IntersectBounds` trait to make detecting `Bounds` intersection more ergonomic/flexible.
+
+#### World-space bounds intersection
+
+```rs
+let pointer_world_xy = p.xy();
+let pointer_fixed_xy = p.xy_fixed();
+let some_bounds = Bounds::new(100, 100, 64, 64);
+
+if pointer_world_xy.intersects_bounds(some_bounds) {
+    // Pointer position relative to the camera is inside `some_bounds`
+}
+if pointer_fixed_xy.intersects_bounds(some_bounds) {
+    // Pointer position relative to the canvas is inside `some_bounds`
+}
+```

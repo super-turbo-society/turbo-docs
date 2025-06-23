@@ -18,8 +18,8 @@ if [ $(tput cols) -gt 99 ]; then
 fi
 
 bin="turbo"
-# Use TURBO_VERSION if set, otherwise default to 0.7.2
-version="${TURBO_VERSION:-0.7.2}"
+# Use TURBO_VERSION if set, otherwise default to 0.7.4
+version="${TURBO_VERSION:-0.7.4}"
 
 echo "Installing v${version}..."
 
@@ -83,6 +83,7 @@ if [[ "$url" == *.zip ]]; then
         exit 1
     }
     rm -rf turbo.zip
+    mv turbo/**/* turbo
     echo "Moving turbo to executables dir (/usr/local/bin)..."
     chmod +x turbo/${bin}.exe || exit 1
     mkdir -p /usr/local/bin || exit 1

@@ -131,6 +131,14 @@ Use the Turbo game loop to run your game logic.
 `update()` runs 60 times per second, and is repsonsible for updating all changes to your game state. 
 :::
 
+### Drawing the Cat
+
+Render the cat sprite with animation frame logic handled by Turbo:
+
+```rs [src/lib.rs]
+sprite!("munch_cat", x = state.cat_x - state.cat_r, y = state.cat_y - 16.0);
+```
+
 ### Cat Movement
 
 The first thing to do is handle player input to move the cat. Add this code in the update() function:
