@@ -89,6 +89,7 @@ use turbo::*;
 
 
 #[turbo::game]
+#[derive(Debug, Clone, PartialEq, BorshSerialize, BorshDeserialize)]
 struct GameState {
         frame: u32,
         last_munch_at: u32,

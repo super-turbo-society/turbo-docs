@@ -295,6 +295,7 @@ use turbo::*;
 
 // Turbo procedural macro
 #[turbo::game]
+#[derive(Debug, Clone, PartialEq, BorshSerialize, BorshDeserialize)]
 struct GameState { 
         x_position: i32,
         y_position: i32,

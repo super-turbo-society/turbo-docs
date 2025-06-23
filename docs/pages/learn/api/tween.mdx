@@ -76,7 +76,10 @@ tween.add(10.0);
 Create a tween that moves across the screen horizontally.
 
 ```rs
+use turbo::*;
 
+#[turbo::game]
+#[derive(Debug, Clone, PartialEq, BorshSerialize, BorshDeserialize)]
 struct GameState{
  position: Tween<f32>,
 }
