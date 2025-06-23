@@ -85,7 +85,11 @@ Add this code to the top of your `lib.rs` file. We'll explain what everything do
 
 ```rs [src/lib.rs]
 
- struct GameState {
+use turbo::*;
+
+
+#[turbo::game]
+struct GameState {
         frame: u32,
         last_munch_at: u32,
         cat_x: f32,
@@ -98,10 +102,10 @@ Add this code to the top of your `lib.rs` file. We'll explain what everything do
             radius: f32,
         }>,
         score: u32,
-    }
+ }
 
-impl GameState{
-    fn new()->Self{
+impl GameState {
+    fn new()->Self {
         Self {
             frame: 0,
             last_munch_at: 0,
@@ -111,6 +115,9 @@ impl GameState{
             pancakes: vec![],
             score: 0,
         }
+    }
+    fn update(&mut self){
+        // We Will come back to this later.
     }
 }
 
@@ -126,7 +133,7 @@ Use the Turbo game loop to run your game logic.
 
 ### Cat Movement
 
-The first thing to do is handle player input to move the cat. Add this code inbetween loading and saving the `GameState`:
+The first thing to do is handle player input to move the cat. Add this code in the update() function:
 
 ```rs [src/lib.rs]
 if gamepad(0).left.pressed() {
@@ -155,7 +162,7 @@ if rand() % 64 == 0 {
 ```
 
 :::tip[Development Tip]
-We defined the `Pancake` struct in our `new` function earlier. Now we are adding individual instnaces of `Pancake` to the game.
+We defined the `Pancake` struct in our `new` function earlier. Now we are adding individual instances of `Pancake` to the game.
 
 Each `Pancake` has a position (`x` and `y`), a velocity (`vel`), and a size (`radius`). We use randomness so the Pancakes are all a little different.
 

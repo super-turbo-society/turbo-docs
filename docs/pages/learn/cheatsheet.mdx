@@ -259,8 +259,7 @@ let another_var = 42;
 log!("multiple values: {:?} {:?}", some_var, another_var);
 
 // Log game state
-let state = GameState::load();
-log!("My game state = {:?}", state);
+log!("My game state = {:?}", self);
 ```
 
 ```txt [Output]
@@ -281,32 +280,39 @@ You probably don't want to log a value every frame of your game loop. It can clu
 - [Log API Docs &rarr;](/learn/api/log)
 - [Keyboard Shortcuts &rarr;](/learn/guides/keyboard-shortcuts)
 
-## Initializing Game State
+## Turbo Game Structure
 
-Turbo provides a straightforward way to initialize the standard game state. After creating a new struct with GameState values, initialize the state in the 'new' function:
+Turbo provides a straightforward way to initialize the standard game state. 
+
+-Create a new struct with GameState values.
+-Initialize the state in the new() function.
+-Run the game loop from the update() function. Turbo games run at 60 fps. 
+
+Here is an example using the appropriate format. 
 
 ```rs
+use turbo::*;
 
-struct GameState {
-       screen: enum Screen {
-            Title,
-            Level,
-        },
+// Turbo procedural macro
+#[turbo::game]
+struct GameState { 
         x_position: i32,
         y_position: i32,
 }
 
 impl GameState{
     fn new()->Self{
-
-         // Return the GameState's initial value. [!code hl]
+        // Return the GameState's initial value. [!code hl]
         // You can also run initialization code here before returning the state.
         Self {
-            screen: Screen::Title,
             x_position: 30,
             y_position: 40,
         }
     }
+    fn update(&mut self){
+    // Update State [!code hl]
+    // The bulk of your game's logic goes here. Mutate state as-needed.
+    }   
 }
 
 ```
@@ -314,32 +320,6 @@ impl GameState{
 :::tip[Resetting Game State]
 In development, you can reset the state of the game to its initial state anytime by using a simple keyboard shortcut `Cmd+R` on MacOS/Linux and `Ctrl+R` on Windows.
 :::
-
-:::note
-For convenience, `turbo::init!` allows nested struct and enum definitions via the [structstruck](https://docs.rs/structstruck/latest/structstruck/) crate. `turbo::init` will derive the following traits for type each defined in the macro: `BorshSerialize`, `BorshDeserialize`, `PartialEq`, `Debug`, and `Clone`.
-:::
-
-**Learn More**
-
-- [Demos Github Repo &rarr;](http://github.com/super-turbo-society/turbo-demos)
-- [Rust SDK Docs &rarr;](https://docs.rs/turbo-genesis-sdk)
-
-## Running the Game Loop
-
-Turbo games run at 60 fps and the typical game loop should follow this pattern:
-
-```rs
-
-fn update(&mut self){
-
-
-    // Update State [!code hl]
-    // The bulk of your game's logic goes here. Mutate state as-needed.
-
-   
-}
-
-```
 
 **Learn More**
 
