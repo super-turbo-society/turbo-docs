@@ -92,7 +92,7 @@ impl GameState{
     }
     fn update(&mut self){
         // Get the current value of the tween
-        let val = state.position.get();
+        let val = self.position.get();
         // Draw a circle using that value
         circ!(x = val, y = 72, d=8, color = 0x32CD32ff);
     }

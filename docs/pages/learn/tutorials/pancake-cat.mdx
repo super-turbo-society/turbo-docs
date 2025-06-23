@@ -136,7 +136,7 @@ Use the Turbo game loop to run your game logic.
 Render the cat sprite with animation frame logic handled by Turbo:
 
 ```rs [src/lib.rs]
-sprite!("munch_cat", x = state.cat_x - state.cat_r, y = state.cat_y - 16.0);
+sprite!("munch_cat", x = self.cat_x - self.cat_r, y = self.cat_y - 16.0);
 ```
 
 ### Cat Movement
@@ -179,22 +179,22 @@ We also created a `Vec<Pancake>` in our `new` function. Once we create the new `
 
 ### Pancake Movement & Collision
 
-Now we can add some code that moves the Pancakes downwards, and checks if they are overlapping the cat. When they overlap, we add 1 to `state.score`.
+Now we can add some code that moves the Pancakes downwards, and checks if they are overlapping the cat. When they overlap, we add 1 to `self.score`.
 
 ```rs [src/lib.rs]
-let cat_center = (state.cat_x + state.cat_r, state.cat_y + state.cat_r);
+let cat_center = (self.cat_x + self.cat_r, self.cat_y + self.cat_r);
 
-state.pancakes.retain_mut(|p| {
+self.pancakes.retain_mut(|p| {
     p.y += p.vel;
     let dx = cat_center.0 - (p.x + p.radius);
     let dy = cat_center.1 - (p.y + p.radius);
     let distance = (dx * dx + dy * dy).sqrt();
-    let radii_sum = state.cat_r + p.radius;
-    let radii_diff = (state.cat_r - p.radius).abs();
+    let radii_sum = self.cat_r + p.radius;
+    let radii_diff = (self.cat_r - p.radius).abs();
 
     if radii_diff <= distance && distance <= radii_sum {
-        state.score += 1;
-        state.last_munch_at = state.frame;
+        self.score += 1;
+        self.last_munch_at = self.frame;
         false
     } else if p.y < 144. + (p.radius * 2.) {
         true
