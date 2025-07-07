@@ -76,10 +76,16 @@ tween.add(10.0);
 Create a tween that moves across the screen horizontally.
 
 ```rs
-turbo::init! {
-    struct GameState {
-        position: Tween<f32>,
-    } = {
+use turbo::*;
+
+#[turbo::game]
+#[derive(Debug, Clone, PartialEq, BorshSerialize, BorshDeserialize)]
+struct GameState{
+ position: Tween<f32>,
+}
+
+impl GameState{
+    fn new()->Self {
         Self {
             position: Tween::new(0.0) //start value
                 .duration(120) //duration in frames
@@ -87,16 +93,14 @@ turbo::init! {
                 .set(220.0) //end value
         }
     }
+    fn update(&mut self){
+        // Get the current value of the tween
+        let val = self.position.get();
+        // Draw a circle using that value
+        circ!(x = val, y = 72, d=8, color = 0x32CD32ff);
+    }
 }
 
-turbo::go!({
-    let mut state = GameState::load();
-    // Get the current value of the tween
-    let val = state.position.get();
-    // Draw a circle using that value
-    circ!(x = val, y = 72, d=8, color = 0x32CD32ff);
-    state.save();
-});
 ```
 
 ![Tween example showing smooth animation](/tween-example.gif)
