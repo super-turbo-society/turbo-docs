@@ -28,15 +28,14 @@ Options:
 ```sh [init]
 Initializes a new Turbo project in Rust
 
-Usage: turbo init [OPTIONS] <PROJECT_NAME>
+Usage: turbo init <PROJECT_NAME>
 
 Arguments:
   <PROJECT_NAME>  The name of the project
 
 Options:
-  -p, --program-id <PROGRAM_ID>  Initialize with a Turbo OS program ID to create/update. Must be owned by your user account. Ensure this ID is globally unique to avoid ownership conflicts with existing program IDs [default: ]
-  -h, --help                     Print help
-  -V, --version                  Print version
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
 ```sh [run]
@@ -45,21 +44,19 @@ Runs a Rust Turbo project
 Usage: turbo run [OPTIONS] [PROJECT_DIR]
 
 Arguments:
-  [PROJECT_DIR]  The directory where your game's code and assets live [default: .]
+  [PROJECT_DIR]  Path to the root of your Turbo project [default: .]
 
 Options:
-  -w, --watch                    Uses cargo-watch to recompile your game code automatically
-  -A, --always-on-top            Makes the game window always appear on top of other windows
-      --clippy                   Clippy mode
-      --os-api-url <OS_API_URL>  Will create and authenticate as a new a guest user [default: https://os.turbo.computer]
-  -p, --program-id <PROGRAM_ID>  The Turbo OS program ID to create/update. Must be globally unique [default: ]
-  -u, --user <USER>              The user ID to authenticate as. This will prompt for entry of a time-based code [default: ]
-      --guest                    Will create and authenticate as a new a guest user
-      --clear-cache              Removes the current cached build
-  -c, --config <CONFIG>          The path to the config file [default: ]
+  -w, --watch                    Rebuild automatically on file changes
+  -A, --always-on-top            Keep game window on top of other windows
+      --clippy                   Experimental "Clippy" mode (makes the window transparent and removes the title bar if possible)
+  -p, --program-id <PROGRAM_ID>  Program ID for uploading to Turbo OS [default: ]
+  -u, --user <USER>              Turbo OS user ID (will prompt for one-time code) [default: ]
+      --guest                    Authenticate anonymously
+      --clear-cache              Remove target/ to force clean build
+  -c, --config <CONFIG>          Override default path to turbo.toml config [default: ]
   -h, --help                     Print help
   -V, --version                  Print version
-
 ```
 
 ```sh [export]
@@ -72,11 +69,10 @@ Arguments:
 
 Options:
   -c, --config <CONFIG>          [default: ]
-  -o, --export-dir <EXPORT_DIR>
-  -b, --include-virtual-gamepad
+  -o, --export-dir <EXPORT_DIR>  
+  -b, --include-virtual-gamepad  
   -h, --help                     Print help
   -V, --version                  Print version
-
 ```
 
 :::
