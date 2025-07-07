@@ -72,21 +72,47 @@ By default, a new Turbo game will have some boilerplate code that displays, "Hel
 Leave the `turbo run` command running. Open the `hello-world` project in your preferred editor. View `hello-world/src/lib.rs`. Inside, you should see something like this:
 
 ```rust title="hello-world/src/lib.rs" showLineNumbers
-fn update(&mut self){
-   text!("Hello, world!!!");
+use turbo::*;
+
+#[turbo::game]
+struct GameState {
+    // Add fields here
+}
+impl GameState {
+    pub fn new() -> Self {
+        // initialize your game state
+        Self { }
+    }
+    pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
+        text!("Hello, world!!!");
+    }
 }
 ```
 
 Modify the text, save the file, and check out your game window.
 
 ```rust title="hello-world/src/lib.rs" showLineNumbers
-fn update(&mut self){
-    text!("Hello, world!!!") // [!code --]
-    text!("Yuuurrr!"); // [!code ++] [!code focus] [!code hl]
-}
+use turbo::*;
 
+#[turbo::game]
+struct GameState {
+    // Add fields here
+}
+impl GameState {
+    pub fn new() -> Self {
+        // initialize your game state
+        Self { }
+    }
+    pub fn update(&mut self) { // [!code focus] 
+        // This is where your main game loop code goes [!code focus] 
+        // The stuff in this block will run ~60x per sec [!code focus] 
+        text!("Hello, world!!!") // [!code --] [!code focus] 
+        text!("Yuuurrr!"); // [!code ++] [!code focus] [!code hl]
+    } // [!code focus] 
+}
 ```
-    {/* text!("Yuuurrr!"); // [!code focus] [!code hl] */}
 
 It should now display your updated text.
 
@@ -97,15 +123,30 @@ It should now display your updated text.
 The `text!` macro has several optional parameters you can experiment with:
 
 ```rust title="hello-world/src/lib.rs" showLineNumbers
-fn update(&mut self){
-    text!( // [!code focus]
-        "Let's gooo!",      // Text to display // [!code focus]
-        font = "large",      // Font ("small", "medium", and "large" are available by default) [!code focus] [!code hl]
-        color = 0xff00ffff, // Text color (in hexadecimal) // [!code focus] [!code hl]
-        x = 32,             // Starting x position of the text // [!code focus] [!code hl]
-        y = 48,             // Starting y position of the text // [!code focus] [!code hl]
-    ); // [!code focus]
-};
+use turbo::*;
+
+#[turbo::game]
+struct GameState {
+    // Add fields here
+}
+impl GameState {
+    pub fn new() -> Self {
+        // initialize your game state
+        Self { }
+    }
+    pub fn update(&mut self) { // [!code focus] 
+        // This is where your main game loop code goes [!code focus] 
+        // The stuff in this block will run ~60x per sec [!code focus] 
+        text!("Yuuurrr!"); // [!code --] [!code focus] [!code hl]
+        text!( // [!code ++] [!code focus] [!code hl]
+            "Let's gooo!",      // Text to display [!code ++] [!code focus] [!code hl]
+            font = "large",     // Font ("small", "medium", and "large" are available by default) [!code ++] [!code focus] [!code hl]
+            color = 0xff00ffff, // Text color (in hexadecimal) // [!code ++] [!code focus] [!code hl]
+            x = 32,             // Starting x position of the text // [!code ++] [!code focus] [!code hl]
+            y = 48,             // Starting y position of the text // [!code ++] [!code focus] [!code hl]
+        ); // [!code ++] [!code focus] [!code hl]
+    } // [!code focus] 
+}
 ```
 
 Check out the [Text docs](/example) to see more examples of how to work with text in Turbo.
