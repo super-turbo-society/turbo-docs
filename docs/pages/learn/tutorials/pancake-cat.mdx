@@ -84,29 +84,29 @@ turbo run -w pancake-cat
 Add this code to the top of your `lib.rs` file. We'll explain what everything does later on:
 
 ```rs [src/lib.rs]
-
 use turbo::*;
 
+#[turbo::serialize]
+struct Pancake {
+    x: f32,
+    y: f32,
+    vel: f32,
+    radius: f32,
+}
 
 #[turbo::game]
-#[derive(Debug, Clone, PartialEq, BorshSerialize, BorshDeserialize)]
 struct GameState {
-        frame: u32,
-        last_munch_at: u32,
-        cat_x: f32,
-        cat_y: f32,
-        cat_r: f32,
-        pancakes: Vec<struct Pancake {
-            x: f32,
-            y: f32,
-            vel: f32,
-            radius: f32,
-        }>,
-        score: u32,
- }
+    frame: u32,
+    last_munch_at: u32,
+    cat_x: f32,
+    cat_y: f32,
+    cat_r: f32,
+    pancakes: Vec<Pancake>,
+    score: u32,
+}
 
 impl GameState {
-    fn new()->Self {
+    fn new() -> Self {
         Self {
             frame: 0,
             last_munch_at: 0,
@@ -117,7 +117,7 @@ impl GameState {
             score: 0,
         }
     }
-    fn update(&mut self){
+    fn update(&mut self) {
         // we will come back to this later.
     }
 }
@@ -129,7 +129,7 @@ impl GameState {
 Use the Turbo game loop to run your game logic.
 
 :::tip[Development Tip]
-`update()` runs 60 times per second, and is repsonsible for updating all changes to your game state. 
+`update()` runs 60 times per second, and is repsonsible for updating all changes to your game state.
 :::
 
 ### Drawing the Cat
@@ -145,13 +145,14 @@ sprite!("munch_cat", x = self.cat_x - self.cat_r, y = self.cat_y - 16.0);
 The first thing to do is handle player input to move the cat. Add this code in the update() function:
 
 ```rs [src/lib.rs]
-if gamepad(0).left.pressed() {
+if gamepad::get(0).left.pressed() {
     self.cat_x -= 2.;
 }
-if gamepad(0).right.pressed() {
+if gamepad::get(0).right.pressed() {
     self.cat_x += 2.;
 }
 ```
+
 Now click over to your game window and press left and right on your keyboard. You should see the cat moving around!
 
 ### Pancake Generation
@@ -159,7 +160,7 @@ Now click over to your game window and press left and right on your keyboard. Yo
 Randomly spawn pancakes:
 
 ```rs [src/lib.rs]
-if rand() % 64 == 0 {
+if random::rand() % 64 == 0 {
     let pancake = Pancake {
         x: (rand() % 256) as f32,
         y: 0.0,
@@ -206,7 +207,7 @@ self.pancakes.retain_mut(|p| {
 ```
 
 :::tip[Development Tip]
-`retain_mut` is a method in Rust that lets you look through and mutate every element in a `Vec` and only **retain** the ones that pass a certain condition. Any Pancakes that return `false` are removed from the `Vec`. 
+`retain_mut` is a method in Rust that lets you look through and mutate every element in a `Vec` and only **retain** the ones that pass a certain condition. Any Pancakes that return `false` are removed from the `Vec`.
 
 In this case, we are removing any Pancakes that overlap the Cat, and also removing the ones that are below the bottom of the screen. The rest of the Pancakes will remain on screen, to give the player a chance to catch them.
 :::
