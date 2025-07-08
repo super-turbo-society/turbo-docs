@@ -24,30 +24,51 @@ sprite!(
     w = u32,
     h = u32,
     color = u32,
+    background_color = u32,
     opacity = f32,
     rotation = i32,
     scale_x = f32,
     scale_y = f32,
     flip_x = bool,
     flip_y = bool,
+    animation_key = &str,
+    animation_speed = f32,
+    default_sprite = &str,
+    frame = usize,
+    tx = i32,
+    ty = i32,
+    repeat = bool,
+    cover = bool,
+    fixed = bool,
+    bounds = Bounds,
 )
 ```
 
-| Param      | Type    | Default           | Description                                                                 |
-| :--------- | :------ | :---------------- | :-------------------------------------------------------------------------- |
-| `name`     | `&str`  |                   | The sprite's name (filename minus the extension)                            |
-| `x`        | `i32`   | `0`               | The sprite's x position.                                                    |
-| `y`        | `i32`   | `0`               | The sprite's y position.                                                    |
-| `w`        | `u32`   | `[sprite width]`  | The width to draw the sprite. By default, this is the sprite image width.   |
-| `h`        | `u32`   | `[sprite height]` | The height to draw the sprite. By default, this is the sprite image height. |
-| `color`    | `u32`   | `0xffffffff`      | Color that will overlay the sprite (multiplied) .                           |
-| `opacity`  | `f32`   | `1.0`             | Sprite opacity - `0.0` = fully transparent. `1.0` = fully opaque.           |
-| `rotation` | `i32`   | `0`               | Degrees of rotation.                                                        |
-| `scale_x`  | `f32`   | `1.0`             | Horizontal scaling - `1.0` is 100% (aka, no scaling).                       |
-| `scale_y`  | `f32`   | `1.0`             | Vertical scaling - `1.0` is 100% (aka, no scaling).                         |
-| `flip_x`   | `bool`  | `false`           | If `true`, the sprite will be flipped horizontally.                         |
-| `flip_y`   | `bool`  | `false`           | If `true`, the sprite will be flipped vertically.                           |
-| `frame`    | `usize` | `None`            | Use a specific frame from an animated file, instead of animating it.        |
+| Param              | Type     | Default           | Description                                                                                                                   |
+| :----------------- | :------- | :---------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| `name`             | `&str`   |                   | The sprite's name (filename minus the extension). `name` and `animation_key` are mutually exclusive - _use one or the other._ |
+| `x`                | `i32`    | `0`               | The sprite's x position.                                                                                                      |
+| `y`                | `i32`    | `0`               | The sprite's y position.                                                                                                      |
+| `w`                | `u32`    | `[sprite width]`  | The width to draw the sprite. By default, this is the sprite image width.                                                     |
+| `h`                | `u32`    | `[sprite height]` | The height to draw the sprite. By default, this is the sprite image height.                                                   |
+| `color`            | `u32`    | `0xffffffff`      | Color that will overlay the sprite (multiplied) .                                                                             |
+| `background_color` | `u32`    | `0x00000000`      | Color that will fill transparent pixels within the given `w` and `h`.                                                         |
+| `opacity`          | `f32`    | `1.0`             | Sprite opacity - `0.0` = fully transparent. `1.0` = fully opaque.                                                             |
+| `rotation`         | `i32`    | `0`               | Degrees of rotation.                                                                                                          |
+| `scale_x`          | `f32`    | `1.0`             | Horizontal scaling - `1.0` is 100% (aka, no scaling).                                                                         |
+| `scale_y`          | `f32`    | `1.0`             | Vertical scaling - `1.0` is 100% (aka, no scaling).                                                                           |
+| `flip_x`           | `bool`   | `false`           | If `true`, the sprite will be flipped horizontally.                                                                           |
+| `flip_y`           | `bool`   | `false`           | If `true`, the sprite will be flipped vertically.                                                                             |
+| `animation_key`    | `&str`   |                   | The animation to associate with the sprite. `name` and `animation_key` are mutually exclusive - _use one or the other._       |
+| `animation_speed`  | `f32`    | `1.0`             | The playback speed of the animation as a percentage (`1.0` is normal speed).                                                  |
+| `default_sprite`   | `&str`   |                   | The default sprite to use when an animation completes. Use in tandem with `animation_key`.                                    |
+| `frame`            | `usize`  |                   | Use a specific frame from an animated file, instead of animating it.                                                          |
+| `tx`               | `i32`    | `0`               | The `x` position of the texture within the given `w` and `h`.                                                                 |
+| `ty`               | `i32`    | `0`               | The `y` position of the texture within the given `w` and `h`.                                                                 |
+| `repeat`           | `bool`   | `false`           | Whether to repeat/tile the sprite within the given `w` and `h`.                                                               |
+| `cover`            | `bool`   | `true`            | If `true`, the sprite will scale to the given `w` and `h`.                                                                    |
+| `fixed`            | `bool`   | `false`           | If `true`, the sprite's size and position are unaffected by the camera.                                                       |
+| `bounds`           | `Bounds` |                   | Sets the `x`, `y`, `w`, `h` of the sprite.                                                                                    |
 
 ### `animation::get`
 
