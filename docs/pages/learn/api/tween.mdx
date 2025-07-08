@@ -4,20 +4,7 @@
 
 ## Overview
 
-### `Tween<T>`
-
-A generic struct that handles smooth transitions between values over time.
-
-```rs
-pub struct Tween<T> {
-    pub start: T,
-    pub end: T,
-    pub duration: usize,
-    pub elapsed: usize,
-    pub easing: Easing,
-    pub start_tick: Option<usize>,
-}
-```
+`Tween` is a generic struct that handles smooth transitions between values over time.
 
 ## Usage
 
@@ -79,21 +66,19 @@ Create a tween that moves across the screen horizontally.
 use turbo::*;
 
 #[turbo::game]
-#[derive(Debug, Clone, PartialEq, BorshSerialize, BorshDeserialize)]
-struct GameState{
- position: Tween<f32>,
+struct GameState {
+    position: Tween<f32>,
 }
-
 impl GameState{
-    fn new()->Self {
+    fn new() -> Self {
         Self {
-            position: Tween::new(0.0) //start value
-                .duration(120) //duration in frames
-                .ease(Easing::EaseInOutQuad) //easing type
-                .set(220.0) //end value
+            position: Tween::new(0.0) // Start value
+                .duration(120) // Duration in frames
+                .ease(Easing::EaseInOutQuad) // Easing type
+                .set(220.0) // End value
         }
     }
-    fn update(&mut self){
+    fn update(&mut self) {
         // Get the current value of the tween
         let val = self.position.get();
         // Draw a circle using that value
