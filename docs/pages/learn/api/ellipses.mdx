@@ -22,19 +22,21 @@ ellipse!(
     rotation = u32,
     border_size = i32,
     border_color = u32,
+    bounds = Bounds,
 )
 ```
 
-| Param          | Type  | Default      | Description                                                         |
-| :------------- | :---- | :----------- | :------------------------------------------------------------------ |
-| `x`            | `i32` | `0`          | X position of the ellipse                                           |
-| `y`            | `i32` | `0`          | Y position of the ellipse                                           |
-| `w`            | `u32` | `0`          | Width of the ellipse in pixels                                      |
-| `h`            | `u32` | `0`          | Height of the ellipse in pixels                                     |
-| `color`        | `u32` | `0xffffffff` | Hex color to fill ellipse with                                      |
-| `rotation`     | `u32` | `0`          | Degrees of rotation. Positive clockwise. Negative counter-clockwise |
-| `border_size`  | `i32` | `0`          | Border width in pixels                                              |
-| `border_color` | `u32` | `0x000000`   | Border color as RGBA hex                                            |
+| Param          | Type     | Default      | Description                                                         |
+| :------------- | :------- | :----------- | :------------------------------------------------------------------ |
+| `x`            | `i32`    | `0`          | X position of the ellipse                                           |
+| `y`            | `i32`    | `0`          | Y position of the ellipse                                           |
+| `w`            | `u32`    | `0`          | Width of the ellipse in pixels                                      |
+| `h`            | `u32`    | `0`          | Height of the ellipse in pixels                                     |
+| `color`        | `u32`    | `0xffffffff` | Hex color to fill ellipse with                                      |
+| `rotation`     | `u32`    | `0`          | Degrees of rotation. Positive clockwise. Negative counter-clockwise |
+| `border_size`  | `i32`    | `0`          | Border width in pixels                                              |
+| `border_color` | `u32`    | `0x000000`   | Border color as RGBA hex                                            |
+| `bounds`       | `Bounds` | N/A          | Sets the `x`, `y`, `w`, `h` of the ellipse                          |
 
 :::tip[Example - Basic]
 
