@@ -4,7 +4,7 @@
 
 ## Overview
 
-Use `Bounds` to arrange your canvas into rectangular regions. It is a great way to set up your UI and create buttons and menus on your screen.
+`Bounds` represents a rectangular region in 2D space. It is the core primitive for low-res immediate-mode graphics, providing essential methods for positioning, sizing, and geometric operations.
 
 ## API
 
@@ -110,7 +110,7 @@ for (i, btn) in buttons.into_iter().enumerate() {
         2 => ("Three", 0x33CCFFff, 0x66DDFFFF, 0x00FFFFFF),
         _ => continue,
     };
-    
+
     // Determine the button color based on pointer state and position
     let color = if p.pressed() && p.intersects_bounds(btn) {
         pressed_color
@@ -119,7 +119,7 @@ for (i, btn) in buttons.into_iter().enumerate() {
     } else {
         regular_color
     };
-    
+
     // Use the bounds and pointer state to draw the button
     rect!(
         bounds = btn,
