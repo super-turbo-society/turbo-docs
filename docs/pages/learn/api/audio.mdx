@@ -4,7 +4,6 @@
 
 The `audio` module provides methods for playing back project's audio files.
 
-
 :::tip[Check Your Setup]
 Check out [Playing Music & Sound &rarr;](/learn/guides/audio) to ensure your project is ready to play audio.
 :::
@@ -80,3 +79,65 @@ audio::stop(name: &str)
 | Param  | Type   | Default | Description                          |
 | :----- | :----- | :------ | :----------------------------------- |
 | `name` | `&str` |         | The name of the audio asset to stop. |
+
+### `audio::get_volume`
+
+Gets the current volume of the sound identified by `name`, expressed as a percentage (`0.0` to `1.0`).
+
+```rs
+audio::get_volume(name: &str) -> f32
+```
+
+:::note
+Converts the internal decibel value to a linear scale using: `P = 10^(AdB / 10)`.
+:::
+
+| Param  | Type   | Default | Description                                       |
+| :----- | :----- | :------ | :------------------------------------------------ |
+| `name` | `&str` |         | The name of the audio asset to get the volume of. |
+
+### `audio::set_volume`
+
+Sets the volume of the sound identified by `name`, using a `0.0` to `1.0` linear scale.
+
+```rs
+audio::set_volume(name: &str, volume: f32)
+```
+
+:::note
+Converts to decibels using: `AdB = 10 * log10(P)`. Values `<= 0.0` are clamped to `-80.0dB`.
+:::
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to set the volume of. |
+| `volume` | `f32`  |         | Percentage of max volume (between 0.0-1.0)        |
+
+### `audio::mute`
+
+Mutes the sound identified by `name`.
+
+```rs
+audio::mute(name: &str)
+```
+
+:::note
+`-60db` or lower is consider muted
+:::
+
+
+| Param  | Type   | Default | Description                          |
+| :----- | :----- | :------ | :----------------------------------- |
+| `name` | `&str` |         | The name of the audio asset to mute. |
+
+### `audio::unmute`
+
+Resets the sound's volume to the last volume before it was muted.
+
+```rs
+audio::is_muted(name: &str) -> bool
+```
+
+| Param  | Type   | Default | Description                                    |
+| :----- | :----- | :------ | :--------------------------------------------- |
+| `name` | `&str` |         | The name of the audio asset to check if muted. |
