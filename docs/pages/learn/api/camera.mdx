@@ -30,6 +30,8 @@ let (x, y, z) = camera::xyz();
 
 ### `camera::set_xy`
 
+Sets the `x` and `y` coordinates of the camera.
+
 ```rs
 camera::set_xy<X: NumCast, Y: NumCast>(x: X, y: Y)
 ```
@@ -124,3 +126,32 @@ Resets the camera position to the original center of the canvas.
 ```rs
 camera::reset()
 ```
+
+### `camera::shake`
+
+Applies a screen-space shake around the last known stable camera position.
+
+```rust
+camera::shake(amount: usize)
+```
+
+| Param    | Type    | Description                                     |
+| -------- | ------- | ----------------------------------------------- |
+| `amount` | `usize` | Maximum pixel offset in any direction per axis. |
+
+:::note
+Automatically updates the origin if the last shake was more than 1 frame ago.
+:::
+
+### `camera::shake_at`
+
+Applies screen-space jitter around a target position.
+
+```rust
+camera::shake_at(origin: (i32, i32), amount: usize)
+```
+
+| Param    | Type         | Description                               |
+| -------- | ------------ | ----------------------------------------- |
+| `origin` | `(i32, i32)` | The center point to shake around.         |
+| `amount` | `usize`      | Maximum offset in any direction per axis. |

@@ -1,0 +1,104 @@
+# Keyboard
+
+## Overview
+
+The `Keyboard` API provides access to the full set of tracked keys, including standard input, modifiers, and extended function keys. Each key provides per-frame state transitions for ergonomic game or UI input handling.
+
+## API
+
+### `keyboard::get`
+
+Returns the current keyboard state.
+
+```rust
+keyboard::get() -> Keyboard
+```
+
+## Usage
+
+### Reading Key State
+
+```rust
+let keyboard = keyboard::get();
+
+if keyboard.key_a().just_pressed() {
+    // 'A' key was just pressed
+}
+
+if keyboard.space().pressed() {
+    // Space is being held
+}
+
+if keyboard.digit_8().just_released() {
+    // `8` is not being pressed
+}
+
+if keyboard.enter().just_released() {
+    // Enter was just released
+}
+```
+
+:::tip
+Each key on the keyboard has a dedicated method named using the pattern `key*<name>()`, `digit*<number>()`, or `<category>\_<name>()` (e.g. `arrow_left()`, `numpad_enter()`), matching its semantic role. These methods return the current state for that key, enabling direct and readable access without manual key code lookups.
+:::
+
+### Input Text & Characters
+
+Use `.chars()` to get typed characters (including Shift transformations).
+
+```rust
+let keyboard = keyboard::get();
+let typed_chars: Vec<char> = keyboard.chars();
+let typed_text: String = keyboard.text();
+```
+
+### Example: Typing to a Text Field
+
+Because Turbo uses immediate mode, you must store any text input across frames inside your game state. For example:
+
+```rs
+#[turbo::game]
+struct GameState {
+    buffer: String
+}
+```
+
+You could place the following in your `update` method to collect keyboard input from multiple frames into a `String`:
+
+```rust
+let keyboard = keyboard::get();
+
+// Append keyboard input to the buffer
+for c in keyboard.chars() {
+    match c {
+        // Clear the buffer when Enter is pressed
+        '\n' => self.buffer.clear(),
+        // Append all other chars to the buffer
+        ch => self.buffer.push(ch),
+    }
+}
+
+// Remove the last character when backspace is pressed
+if keyboard.backspace().just_pressed() {
+    self.buffer.pop();
+}
+```
+
+If you want to include line breaks, you can simply extend the buffer without looping over each `char` and pushing them individually:
+
+```rs
+self.buffer.extend(keyboard.chars());
+```
+
+You would just need to come up with some other way to clear the buffer.
+
+:::note[Note]
+
+- `Keyboard` and `KeyCode` are local ergonomic wrappers around low-level data from the runtime.
+- Button state is frame-based: use `just_pressed()`, `pressed()`, `just_released()`, or `released()` for typical interactions.
+- Some keys do not have a valid representation as a `char` or `String`
+- The key state map includes all keys tracked by the platform, including browser/media keys and international layout variants.
+
+Use `keyboard::get()` once per frame and cache the result to avoid redundant FFI calls.
+
+:::

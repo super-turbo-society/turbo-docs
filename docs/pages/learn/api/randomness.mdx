@@ -2,63 +2,294 @@
 
 ## Overview
 
-You can generate random numbers using the `rand` function.
+Turbo's `random` module provides high-quality random number generation using the system's entropy source. It offers uniform distribution across various numeric types and includes utilities for common randomization tasks like shuffling and selection.
 
 ## API
 
-### `rand`
+### `random::u8`
 
-Returns a random number.
+Returns a random `u8`.
 
-```rs
-rand() -> u32
+```rust
+random::u8() -> u8
 ```
 
-:::note[Note]
-`rand` uses seeded randomness in developement, meaning a thread random number is generated at the start of your game and every random number generated after is derived deterministically from that initial seed. On the web, [`crypto.getRandomValues()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues) is used for every random number generated.
+### `random::u16`
+
+Returns a random `u16`.
+
+```rust
+random::u16() -> u16
+```
+
+### `random::u32`
+
+Returns a random `u32`.
+
+```rust
+random::u32() -> u32
+```
+
+### `random::u64`
+
+Returns a random `u64`.
+
+```rust
+random::u64() -> u64
+```
+
+### `random::i8`
+
+Returns a random `i8`.
+
+```rs
+random::i8() -> i8
+```
+
+### `random::i16`
+
+Returns a random `i16`.
+
+```rs
+random::i16() -> i16
+```
+
+### `random::i32`
+
+Returns a random `i32`.
+
+```rs
+random::i32() -> i32
+```
+
+### `random::i64`
+
+Returns a random `i64`.
+
+```rs
+random::i64() -> i64
+```
+
+### `random::f32`
+
+Returns a random `f32`.
+
+```rs
+random::f32() -> f32
+```
+
+### `random::f64`
+
+Returns a random `f64`.
+
+```rs
+random::f64() -> f64
+```
+
+### `random::between`
+
+Returns a random number between two values (both bounds inclusive).
+
+```rust
+random::between<T>(lower: T, upper: T) -> T
+```
+
+:::note
+`T` has the following constraints
+```
+where
+    T: NumCast + Copy + PartialOrd + Default + Debug,
+    T: Add<Output = T> + Sub<Output = T> + Rem<Output = T> + One + Zero,
+    T: ToPrimitive + FromPrimitive,
+```
+
+...basically, integers and floats.
 :::
+
+### `random::within_range`
+
+Returns a random `usize` within flexible range bounds:
+
+```rust
+random::within_range(bounds: impl RangeBounds<usize>) -> usize
+```
+
+### `random::bool`
+
+Returns `true` or `false` with 50/50 probability:
+
+```rust
+random::bool() -> bool
+```
+
+### `random::shuffle`
+
+Randomly shuffles a slice in-place using Fisher-Yates algorithm:
+
+```rust
+random::shuffle<T>(slice: &mut [T])
+```
+
+### `random::pick`
+
+Returns a random reference from a slice, or `None` if empty:
+
+```rust
+ranodm::pick<'a, T>(slice: &'a [T]) -> Option<&'a T>
+```
 
 ## Usage
 
-### Get random number
+### Percentages
 
-```rs
-let n = rand();
-```
+```rust
+// Generates an f32 between 0.0 and 1.0. (random::f64 is also available)
+let percentage = random::f32();
 
-### Get random number between 1 and 100
-
-```rs
-let n = 1 + (rand() % 100);
-```
-
-### Do a "coin flip"
-
-To simulate a coin flip, you can test whether a random number is even:
-
-```rs
-let is_even = rand() % 2 == 0;
-```
-
-Or if you prefer, check that it's odd:
-
-```rs
-let is_odd = rand() % 2 != 0;
-```
-
-### Use probability ranges
-
-You can introduce probability ranges by matching a random number in a range of numbers. Here's an example:
-
-```rs
-// Get a number between 1 and 100
-let n = 1 + (rand() % 100);
-match n {
-    // Any number 1-10 (10% chance)
-    1..=10 => { ... }
-    // Any number 11-50 (40% chance)
-    11..=50 => { ... }
-    // Any other number (50% chance)
-    _ => { ... }
+// Basically a coin toss
+if random::bool() {
+    // 50% chance true
+} else {
+    // 50% change false
 }
 ```
+
+### Dice and Game Mechanics
+
+```rust
+// Roll a 6-sided die
+let roll: u8 = random::between(1, 6);
+
+// Critical hit chance (5% chance)
+let critical = random::between(1, 100) <= 5;
+
+// Random spawn position
+let x: f32 = random::between(-50.0, 50.0);
+let y: f32 = random::between(-30.0, 30.0);
+```
+
+### Index Within a Range
+
+```rust
+random::within_range(0..100)    // Half-open range (0 - 99)
+random::within_range(10..=20)   // Closed range (10 - 20)
+random::within_range(..50)      // Unbounded start (0 - 49)
+random::within_range(10..)      // Unbounded end (10 - (usize::MAX - 1))
+```
+
+### Probability Distributions
+
+```rust
+// Weighted random events
+match random::between(1, 100) {
+    1..=10 => { /* 10% chance - rare event */ }
+    11..=30 => { /* 20% chance - uncommon event */ }
+    31..=80 => { /* 50% chance - common event */ }
+    _ => { /* 20% chance - normal event */ }
+}
+```
+
+### Array Operations
+
+```rust
+// Pick random enemy type
+let enemy_types = ["goblin", "orc", "skeleton", "dragon"];
+if let Some(enemy) = random::pick(&enemy_types) {
+    spawn_enemy(enemy);
+}
+
+// Shuffle deck of cards
+let mut deck = (1..=52).collect::<Vec<u8>>();
+random::shuffle(&mut deck);
+```
+
+### Floating Point Percentages
+
+```rust
+// Random percentage for effects
+let opacity: f32 = random::f32(); // 0.0 to 1.0
+let scale: f32 = random::between(0.8, 1.2);
+
+// Random angle in radians
+let angle: f64 = random::between(0.0, 2.0 * std::f64::consts::PI);
+```
+
+### Particle System
+
+```rust
+// Create a particle with random properties
+struct Particle {
+    x: f32,
+    y: f32,
+    vel_x: f32,
+    vel_y: f32,
+    life: f32,
+    color: u32,
+    size: f32,
+}
+
+// Spawn explosion particles
+fn spawn_explosion_particles(origin_x: f32, origin_y: f32) {
+    for _ in 0..50 {
+        let particle = Particle {
+            x: origin_x + random::between(-5.0, 5.0),
+            y: origin_y + random::between(-5.0, 5.0),
+            vel_x: random::between(-200.0, 200.0),
+            vel_y: random::between(-250.0, -50.0), // Upward bias
+            life: random::between(1.0, 3.0),
+            color: {
+                let r = random::between(200, 255);
+                let g = random::between(100, 200);
+                let b = random::between(0, 50);
+                (r << 16) | (g << 8) | b
+            },
+            size: random::between(2.0, 8.0),
+        };
+        particles.push(particle);
+    }
+}
+
+// Fire particle system
+fn update_fire_particles() {
+    if random::between(1, 100) <= 80 { // 80% chance each frame
+        let particle = Particle {
+            x: fire_x + random::between(-10.0, 10.0),
+            y: fire_y,
+            vel_x: random::between(-20.0, 20.0),
+            vel_y: random::between(-80.0, -40.0),
+            life: random::between(0.5, 1.5),
+            color: {
+                let r = 255;
+                let g = random::between(150, 255);
+                let b = random::between(0, 100);
+                (r << 16) | (g << 8) | b
+            },
+            size: random::between(1.0, 4.0),
+        };
+        fire_particles.push(particle);
+    }
+}
+
+// Snow particles
+fn spawn_snow_particle() -> Particle {
+    Particle {
+        x: random::between(-50.0, screen_width + 50.0),
+        y: -10.0,
+        vel_x: random::between(-5.0, 5.0),
+        vel_y: random::between(30.0, 60.0),
+        life: random::between(5.0, 10.0),
+        color: 0xFFFFFF, // White
+        size: random::between(1.0, 3.0),
+    }
+}
+```
+
+:::info[Technical Notes]
+
+- **Quality**: Uses system RNG (`turbo_genesis_ffi::sys::rand()`) for high-quality entropy
+- **Performance**: Optimized for game development use cases
+- **Precision**: `f32()` and `f64()` can return exactly `1.0`, useful for percentage calculations
+- **Bias**: Minor statistical bias may occur with very large `usize` ranges or non-power-of-2 integer spans
+- **Full Range Support**: `between()` handles full-domain ranges (e.g., `0..u64::MAX`) efficiently
+
+:::

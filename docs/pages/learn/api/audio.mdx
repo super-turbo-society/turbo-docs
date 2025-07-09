@@ -121,18 +121,17 @@ Mutes the sound identified by `name`.
 audio::mute(name: &str)
 ```
 
-:::note
-`-60db` or lower is consider muted
-:::
-
-
 | Param  | Type   | Default | Description                          |
 | :----- | :----- | :------ | :----------------------------------- |
 | `name` | `&str` |         | The name of the audio asset to mute. |
 
-### `audio::unmute`
+:::note
+Sets the volume to `-80db`.
+:::
 
-Resets the sound's volume to the last volume before it was muted.
+### `audio::is_muted`
+
+Returns `true` if the sound identified by `name` is currently muted.
 
 ```rs
 audio::is_muted(name: &str) -> bool
@@ -141,3 +140,19 @@ audio::is_muted(name: &str) -> bool
 | Param  | Type   | Default | Description                                    |
 | :----- | :----- | :------ | :--------------------------------------------- |
 | `name` | `&str` |         | The name of the audio asset to check if muted. |
+
+:::note
+This checks whether the effective linear volume is `-60db` or lower which is considered 0%.
+:::
+
+### `audio::unmute`
+
+Resets the sound's volume to the last volume before it was muted.
+
+```rs
+audio::unmute(name: &str)
+```
+
+| Param  | Type   | Default | Description                            |
+| :----- | :----- | :------ | :------------------------------------- |
+| `name` | `&str` |         | The name of the audio asset to unmute. |
