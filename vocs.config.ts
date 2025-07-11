@@ -57,7 +57,7 @@ export default defineConfig({
     // },
     // { text: "Blog", link: "/blog" },
     {
-      text: "0.7.4",
+      text: "0.8.0-alpha.4",
       items: [
         {
           text: "Changelog",
