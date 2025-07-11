@@ -51,7 +51,7 @@ In most cases, you can adjust your bounds with set pixel amounts, or by fraction
 
 ```rs
 // Create a bounds that is 200px wide and 100px tall
-let parent = bounds::size(0, 0, 200, 100);
+let parent = bounds::size(200, 100);
 
 // Create a new bounds, half as wide as the parent
 let child = parent.adjust_width_by_fraction(0.5);
@@ -112,9 +112,9 @@ for (i, btn) in buttons.into_iter().enumerate() {
     };
 
     // Determine the button color based on pointer state and position
-    let color = if p.pressed() && p.intersects_bounds(btn) {
+    let color = if p.just_pressed_bounds(btn) {
         pressed_color
-    } else if is_btn_hovered {
+    } else if p.intersects_bounds(btn) {
         hover_color
     } else {
         regular_color
