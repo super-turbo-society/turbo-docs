@@ -33,19 +33,33 @@ camera::focus(bounds.center());
 
 :::
 
-### `camera::pan`
+### `camera::pan_xyz`
 
 Eases the camera toward `target` over `duration` ticks using `easing`.
 
 ```rs
-camera::pan(target: (i32, i32), duration: usize, easing: Easing)
+camera::pan_xyz<X: NumCast, Y: NumCast>(target: (X, Y, f32), duration: usize, easing: Easing)
 ```
 
-| Param      | Type         | Default | Description                                                                             |
-| :--------- | :----------- | :------ | :-------------------------------------------------------------------------------------- |
-| `target`   | `(i32, i32)` |         | The target x and y position to ease the camera to.                                      |
-| `duration` | `usize`      |         | The duration of the camera movement.                                                    |
-| `easing`   | `Easing`     |         | The easing curve used to interpolate from the previous position to the target position. |
+| Param      | Type          | Default | Description                                                                             |
+| :--------- | :------------ | :------ | :-------------------------------------------------------------------------------------- |
+| `target`   | `(X, Y, f32)` |         | The target x and y position and zoom to ease the camera to.                             |
+| `duration` | `usize`       |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing`      |         | The easing curve used to interpolate from the previous position to the target position. |
+
+### `camera::pan_xy`
+
+Eases the camera toward `target` over `duration` ticks using `easing`, preserving the current zoom.
+
+```rs
+camera::pan_xy<X: NumCast, Y: NumCast>(target: (X, Y), duration: usize, easing: Easing)
+```
+
+| Param      | Type     | Default | Description                                                                             |
+| :--------- | :------- | :------ | :-------------------------------------------------------------------------------------- |
+| `target`   | `(X, Y)` |         | The target x and y position to ease the camera to.                                      |
+| `duration` | `usize`  |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing` |         | The easing curve used to interpolate from the previous position to the target position. |
 
 :::tip[Example]
 
@@ -53,10 +67,52 @@ Focusing the camera within the center of a bounds:
 
 ```rust
 let bounds = bounds::size(16, 16).position(32, 64);
-camera::pan(bounds.center(), 30, Easing::EaseOutQuad);
+camera::pan_xy(bounds.center(), 30, Easing::EaseOutQuad);
 ```
 
 :::
+
+### `camera::pan_x`
+
+Eases the camera's x coordinate toward `x`, preserving y and zoom.
+
+```rs
+camera::pan_x<X: NumCast>(x: X, duration: usize, easing: Easing)
+```
+
+| Param      | Type     | Default | Description                                                                             |
+| :--------- | :------- | :------ | :-------------------------------------------------------------------------------------- |
+| `x`        | `X`      |         | The target x position to ease the camera to.                                            |
+| `duration` | `usize`  |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing` |         | The easing curve used to interpolate from the previous position to the target position. |
+
+### `camera::pan_y`
+
+Eases the camera's y coordinate toward `y`, preserving y and zoom.
+
+```rs
+camera::pan_y<Y: NumCast>(y: Y, duration: usize, easing: Easing)
+```
+
+| Param      | Type     | Default | Description                                                                             |
+| :--------- | :------- | :------ | :-------------------------------------------------------------------------------------- |
+| `y`        | `Y`      |         | The target x position to ease the camera to.                                            |
+| `duration` | `usize`  |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing` |         | The easing curve used to interpolate from the previous position to the target position. |
+
+### `camera::pan_z`
+
+Eases the camera’s zoom to the `z` zoom level, preserving x and y position.
+
+```rs
+camera::pan_z(z: f32, duration: usize, easing: Easing)
+```
+
+| Param      | Type     | Default | Description                                                                             |
+| :--------- | :------- | :------ | :-------------------------------------------------------------------------------------- |
+| `z`        | `f32`    |         | The target zoom to ease the camera to.                                                  |
+| `duration` | `usize`  |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing` |         | The easing curve used to interpolate from the previous position to the target position. |
 
 ### `camera::shake`
 
@@ -182,11 +238,11 @@ Sets the camera's position to (x, y, z). The z value is clamped to a minimum of 
 camera::set_xyz<X: NumCast, Y: NumCast>(x: X, y: Y, z: f32)
 ```
 
-| Param | Type     | Default | Description                      |
-| :---- | :------- | :------ | :------------------------------- |
-| `x`   | `number` |         | X position of the camera.        |
-| `y`   | `number` |         | Y position of the camera.        |
-| `z`   | `f32`    |         | Z position (zoom) of the camera. |
+| Param | Type  | Default | Description                      |
+| :---- | :---- | :------ | :------------------------------- |
+| `x`   | `X`   |         | X position of the camera.        |
+| `y`   | `Y`   |         | Y position of the camera.        |
+| `z`   | `f32` |         | Z position (zoom) of the camera. |
 
 :::tip[Example]
 
@@ -206,10 +262,10 @@ Sets the `x` and `y` coordinates of the camera while retaining the current z (zo
 camera::set_xy<X: NumCast, Y: NumCast>(x: X, y: Y)
 ```
 
-| Param | Type     | Default | Description               |
-| :---- | :------- | :------ | :------------------------ |
-| `x`   | `number` |         | X position of the camera. |
-| `y`   | `number` |         | Y position of the camera. |
+| Param | Type | Default | Description               |
+| :---- | :--- | :------ | :------------------------ |
+| `x`   | `X`  |         | X position of the camera. |
+| `y`   | `Y`  |         | Y position of the camera. |
 
 :::tip[Example]
 
@@ -229,9 +285,9 @@ Sets the camera's x coordinate, leaving y and z unchanged.
 camera::set_x<X: NumCast>(x: X)
 ```
 
-| Param | Type     | Default | Description               |
-| :---- | :------- | :------ | :------------------------ |
-| `x`   | `number` |         | X position of the camera. |
+| Param | Type | Default | Description               |
+| :---- | :--- | :------ | :------------------------ |
+| `x`   | `X`  |         | X position of the camera. |
 
 :::tip[Example]
 
@@ -251,9 +307,9 @@ Sets the camera's y coordinate, leaving x and z unchanged.
 camera::set_y<Y: NumCast>(y: Y)
 ```
 
-| Param | Type     | Default | Description               |
-| :---- | :------- | :------ | :------------------------ |
-| `y`   | `number` |         | Y position of the camera. |
+| Param | Type | Default | Description               |
+| :---- | :--- | :------ | :------------------------ |
+| `y`   | `Y`  |         | Y position of the camera. |
 
 :::tip[Example]
 
@@ -295,11 +351,11 @@ Moves the camera by the specified deltas in x, y, and z.
 camera::move_xyz<X: NumCast, Y: NumCast>(delta_x: X, delta_y: Y, delta_z: f32)
 ```
 
-| Param     | Type     | Default | Description                                       |
-| :-------- | :------- | :------ | :------------------------------------------------ |
-| `delta_x` | `number` |         | Number of pixels to move the camera horizontally. |
-| `delta_y` | `number` |         | Number of pixels to move the camera vertically.   |
-| `delta_z` | `f32`    |         | Amount to change the zoom level.                  |
+| Param     | Type  | Default | Description                                       |
+| :-------- | :---- | :------ | :------------------------------------------------ |
+| `delta_x` | `X`   |         | Number of pixels to move the camera horizontally. |
+| `delta_y` | `Y`   |         | Number of pixels to move the camera vertically.   |
+| `delta_z` | `f32` |         | Amount to change the zoom level.                  |
 
 :::tip[Example]
 
@@ -319,10 +375,10 @@ Moves the camera in the x and y directions by the specified deltas.
 camera::move_xy<X: NumCast, Y: NumCast>(delta_x: X, delta_y: Y)
 ```
 
-| Param     | Type     | Default | Description                                       |
-| :-------- | :------- | :------ | :------------------------------------------------ |
-| `delta_x` | `number` |         | Number of pixels to move the camera horizontally. |
-| `delta_y` | `number` |         | Number of pixels to move the camera vertically.   |
+| Param     | Type | Default | Description                                       |
+| :-------- | :--- | :------ | :------------------------------------------------ |
+| `delta_x` | `X`  |         | Number of pixels to move the camera horizontally. |
+| `delta_y` | `Y`  |         | Number of pixels to move the camera vertically.   |
 
 :::tip[Example]
 
@@ -342,9 +398,9 @@ Moves the camera in the x direction by the specified delta.
 camera::move_x<X: NumCast>(delta_x: X)
 ```
 
-| Param     | Type     | Default | Description                                       |
-| :-------- | :------- | :------ | :------------------------------------------------ |
-| `delta_x` | `number` |         | Number of pixels to move the camera horizontally. |
+| Param     | Type | Default | Description                                       |
+| :-------- | :--- | :------ | :------------------------------------------------ |
+| `delta_x` | `X`  |         | Number of pixels to move the camera horizontally. |
 
 :::tip[Example]
 
@@ -364,9 +420,9 @@ Moves the camera in the y direction by the specified delta.
 camera::move_y<Y: NumCast>(delta_y: Y)
 ```
 
-| Param     | Type     | Default | Description                                     |
-| :-------- | :------- | :------ | :---------------------------------------------- |
-| `delta_y` | `number` |         | Number of pixels to move the camera vertically. |
+| Param     | Type | Default | Description                                     |
+| :-------- | :--- | :------ | :---------------------------------------------- |
+| `delta_y` | `Y`  |         | Number of pixels to move the camera vertically. |
 
 :::tip[Example]
 
@@ -492,23 +548,32 @@ camera::reset_z();
 
 ## Usage
 
-### Basic Camera Movement
+### Basic Camera Positioning
 
 ```rust
 // Instantly move camera to a position
 let player_x = 100;
 let player_y = 150;
 camera::set_xy(player_x, player_y);
+```
 
-// Using Bounds to snap to a 16x16 player sprite
+### Focusing on a Position
+
+```rust
+// Using Bounds to snap to the center of a 16x16 player sprite
 let player_bounds = bounds::size(16, 16).position(player_x, player_y);
 let player_center = player_bounds.center();
 camera::focus(player_center);
+```
 
+### Panning to a Position with Easing
+
+```rust
 // Smoothly move camera towards the player sprite;
 let duration = 120; // frames
 let easing = Easing::EaseOutQuad;
-camera::pan(player_center, duration, easing);
+let is_done = camera::pan_xy(player_center, duration, easing);
+// is_done is `true` when the camera has reaced the target destination
 ```
 
 ### Camera Zoom and Effects
@@ -536,10 +601,11 @@ camera::shake(8);
 // Smaller shake for footsteps
 camera::shake(1);
 
-// Continuous shake (like earthquake)
-if earthquake_active {
-    camera::shake(5);
+// Reset if the camera is shaking and the start button is pressed
+if camera::is_shaking() && gamepad::get(0).start.just_pressed() {
+    camera::reset_shake(); // Same as camera::shake(0)
 }
+
 ```
 
 ### Camera Controls
