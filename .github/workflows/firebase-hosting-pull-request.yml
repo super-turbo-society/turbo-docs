@@ -20,7 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
-      - id: deploy
+      - name: Deploy to Firebase Hosting
+        id: deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
@@ -33,9 +34,6 @@ jobs:
           echo expire_time ${{steps.deploy.outputs.expire_time}}
           echo details_url ${{steps.deploy.outputs.details_url}}
 
-      - name: Log deploy URL
-        run: echo '🚀[Preview URL](${{ steps.deploy.outputs.details_url }})'
-
       - name: Send PR deploy notification to Discord
         if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' }}
         env:
@@ -47,7 +45,6 @@ jobs:
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-          ACTION="${{ github.event.action }}"
 
           jq -n \
             --arg repo "$GITHUB_REPOSITORY" \
@@ -55,7 +52,6 @@ jobs:
             --arg pr_title "$PR_TITLE" \
             --arg pr_url "$PR_URL" \
             --arg pr_author "$PR_AUTHOR" \
-            --arg action "$ACTION" \
             --arg deploy_url "$DEPLOY_URL" \
             --arg timestamp "$TIMESTAMP" \
             '{
@@ -65,7 +61,6 @@ jobs:
                 "color": 3447003,
                 "fields": [
                   {"name": "Author", "value": $pr_author},
-                  {"name": "Event", "value": $action},
                   {"name": "Preview URL", "value": $deploy_url}
                 ],
                 "footer": { "text": "Firebase PR Deploy" },
