@@ -1,6 +1,11 @@
 name: Deploy to Firebase Hosting on PR
 
-on: pull_request
+on:
+  pull_request:
+    types:
+      - opened # PR created
+      - synchronize # commits pushed to the PR
+      - reopened # PR reopened
 
 permissions:
   checks: write
@@ -24,15 +29,17 @@ jobs:
           projectId: turbo-164d0
 
       - name: Send PR deploy notification to Discord
-        if: ${{ github.event.action == 'opened' }}
+        if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.details_url }}
         run: |
           TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           PR_NUMBER="${{ github.event.pull_request.number }}"
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          ACTION="${{ github.event.action }}"
 
           jq -n \
             --arg repo "$GITHUB_REPOSITORY" \
@@ -40,6 +47,8 @@ jobs:
             --arg pr_title "$PR_TITLE" \
             --arg pr_url "$PR_URL" \
             --arg pr_author "$PR_AUTHOR" \
+            --arg action "$ACTION" \
+            --arg deploy_url "$DEPLOY_URL" \
             --arg timestamp "$TIMESTAMP" \
             '{
               "embeds": [{
@@ -47,7 +56,9 @@ jobs:
                 "description": ("Pull Request \($pr_number): [\($pr_title)](\($pr_url))"),
                 "color": 3447003,
                 "fields": [
-                  {"name": "Author", "value": $pr_author}
+                  {"name": "Author", "value": $pr_author},
+                  {"name": "Event", "value": $action},
+                  {"name": "Preview URL", "value": $deploy_url}
                 ],
                 "footer": { "text": "Firebase PR Deploy" },
                 "timestamp": $timestamp
