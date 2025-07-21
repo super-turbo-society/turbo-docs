@@ -4,10 +4,13 @@
 Make sure your have the latest CLI and SDK versions:
 
 1. Install the latest CLI:
+
 ```sh
 curl -sSfL https://turbo.computer/install.sh | TURBO_VERSION=0.8.0-alpha.10 sh
 ```
+
 2. Update your `Cargo.toml` dependencies:
+
 ```toml
 [dependencies]
 turbo = { version = "4.0.0-alpha.35", package = "turbo-genesis-sdk" }
@@ -21,84 +24,159 @@ turbo = { version = "4.0.0-alpha.35", package = "turbo-genesis-sdk" }
 
 The client-side `channel` API lets your game subscribe to a Turbo OS channel, send and receive incoming messages asynchronously. Channels are good for fast-paced multiplayer gameplay.
 
-## Creating a Channel
-
-To create a channel, you must first create structs or enums that your channel will receive and send.
+## Creating a Channel (Server)
 
 To demonstrate, let's make a "ping pong" channel that accepts "ping" messages and sends back "pong" messages in response:
 
+::::steps
+
+### Create Send and Recv types for the channel
+
+Let's define our `Ping` and `Pong` structs:
+
 ```rs
-// We will send this one to the channel
+use turbo::*;
+
 #[turbo::serialize]
 pub struct Ping;
 
-// We will get this one back from the channel
 #[turbo::serialize]
 pub struct Pong;
 ```
 
+We will send `Ping` to the channel and receive `Pong` from the channel.
+
+### Use the Channel macro
+
+Here, we use the `turbo::os::channel` macro to tag our ChannelHandler with program and channel names.
+
+```rs
+use turbo::*;
+
+#[turbo::serialize]
+pub struct Ping;
+
+#[turbo::serialize]
+pub struct Pong;
+
+#[turbo::os::channel(program = "pingpong", name = "main")] // [!code focus] [!code hl]
+pub struct PingPongChannel; // [!code focus] [!code hl]
+```
+
+:::note
+The macro will ensure our program is uploaded and will add an additional `subscribe` method to `PingPongChannel` which will be useful when interacting with the channel on the client side.
+:::
+
+### Implement `ChannelHandler`
+
 Next, we have to implement the `ChannelHandler` trait:
 
 ```rs
+use turbo::*;
+
+#[turbo::serialize]
+pub struct Ping;
+
+#[turbo::serialize]
+pub struct Pong;
+
 #[turbo::os::channel(program = "pingpong", name = "main")]
 pub struct PingPongChannel;
-impl ChannelHandler for PingPongChannel {
-    type Recv = Ping; // incoming from client
-    type Send = Pong; // outgoing to client
-    fn new() -> Self {
-        Self
-    }
-    fn on_data(&mut self, user_id: &str, data: Self::Recv) -> Result<(), std::io::Error> {
-        log!("Got {:?} from {:?}", data, user_id);
-        Self::send(user_id, Pong)
-    }
-}
+impl ChannelHandler for PingPongChannel { // [!code focus] [!code hl]
+    type Recv = Ping; // incoming from client [!code focus] [!code hl]
+    type Send = Pong; // outgoing to client [!code focus] [!code hl]
+    fn new() -> Self { // [!code focus] [!code hl]
+        Self // [!code focus] [!code hl]
+    } // [!code focus] [!code hl]
+    fn on_data(&mut self, user_id: &str, data: Self::Recv) -> Result<(), std::io::Error> { // [!code focus] [!code hl]
+        log!("Got {:?} from {:?}", data, user_id); // [!code focus] [!code hl]
+        Self::send(user_id, Pong) // [!code focus] [!code hl]
+    } // [!code focus] [!code hl]
+} // [!code focus] [!code hl]
 ```
 
-Here, we use the `turbo::os::channel` macro to tag our ChannelHandler with program and channel names. The macro will ensure our program is uploaded and will add an additional `subscribe` method to `PingPongChannel` which will be useful when interacting with the channel on the client side.
+The `new` method is called when our channel first opens, and the `on_data` method is called whenever we receive a message from a player.
 
-## Connecting to a Channel
+::::
 
-Last, we can hook up the client:
+## Connecting to a Channel (Client)
+
+Last, we can hook up the client
+
+::::steps
+
+### Subscribe to the channel
+
+Subscribe to the "ping pong" channel to get a `ChannelConnection` which we will call `conn`:
 
 ```rs
 use turbo::*;
 
 #[turbo::game]
-struct GameState;
+struct GameState {}
 impl GameState {
+    fn new() -> Self {
+        Self {}
+    }
     fn update(&mut self) {
-        // Subscribe to the "ping pong" channel to get a `ChannelConnection`
+        if let Some(mut conn) = PingPongChannel::subscribe("default") { // [!code focus] [!code hl]
+            // If we're in here, that means we connected the channel! [!code focus] [!code hl]
+        } // [!code focus] [!code hl]
+    }
+}
+```
+
+### Receive messages from the channel
+
+Pull Pong messages using the `ChannelConnection::recv` method:
+
+```rs
+use turbo::*;
+
+#[turbo::game]
+struct GameState {}
+impl GameState {
+    fn new() -> Self {
+        Self {}
+    }
+    fn update(&mut self) {
         if let Some(mut conn) = PingPongChannel::subscribe("default") {
-            // Pull Pong messages using the `ChannelConnection::recv` method
-            while let Ok(msg) = conn.recv() {
-                log!("Received pong from server!");
-            }
-            if gamepad::get(0).start.just_pressed() {
-                // Send a Ping message using the `ChannelConnection::send` method
-                let _ = conn.send(&Ping);
-                log!("Sent ping to the server!");
-            }
+            while let Ok(msg) = conn.recv() { // [!code focus] [!code hl]
+                log!("Received pong from server!"); // [!code focus] [!code hl]
+            } // [!code focus] [!code hl]
         }
     }
 }
 ```
 
+### Send messages to the channel
+
+Send a Ping message to the channel whenever the start button is pressed using the `ChannelConnection::send` method:
+
 ```rs
 use turbo::*;
 
 #[turbo::game]
-struct GameState;
+struct GameState {}
 impl GameState {
+    fn new() -> Self {
+        Self {}
+    }
     fn update(&mut self) {
-        // Subscribe to the "ping pong" channel to get a `ChannelConnection` // [!code focus] [!code hl]
-        if let Some(mut conn) = PingPongChannel::subscribe("default") { // [!code focus] [!code hl]
-            // The ChannelConnection (`conn`) is within scope, // [!code focus] [!code hl]
-            // It may be used to receive and send messages from the channel // [!code focus] [!code hl]
-        } // [!code focus] [!code hl]
+        if let Some(mut conn) = PingPongChannel::subscribe("default") {
+            while let Ok(msg) = conn.recv() {
+                log!("Received pong from server!");
+            }
+            if gamepad::get(0).start.just_pressed() { // [!code focus] [!code hl]
+                let _ = conn.send(&Ping); // [!code focus] [!code hl]
+                log!("Sent ping to the server!"); // [!code focus] [!code hl]
+            } // [!code focus] [!code hl]
+        }
     }
 }
 ```
+
+::::
 
 ## Running your game
 
