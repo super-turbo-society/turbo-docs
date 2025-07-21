@@ -27,6 +27,9 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TURBO_164D0 }}
           projectId: turbo-164d0
+      
+      - name: Log deploy URL
+        run: echo '🚀[Preview URL](${{ steps.deploy.outputs.details_url }})'
 
       - name: Send PR deploy notification to Discord
         if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' }}
@@ -64,6 +67,8 @@ jobs:
                 "timestamp": $timestamp
               }]
             }' > payload.json
+
+          cat payload.json
 
           curl -H "Content-Type: application/json" \
             -X POST \
