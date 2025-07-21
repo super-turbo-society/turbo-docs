@@ -57,7 +57,7 @@ export default defineConfig({
     // },
     // { text: "Blog", link: "/blog" },
     {
-      text: "0.8.0-alpha.4",
+      text: "0.8.0-alpha.10",
       items: [
         {
           text: "Changelog",
@@ -172,6 +172,14 @@ export default defineConfig({
           { text: "Text Boxes", link: "/learn/api/text_box" },
           { text: "Time", link: "/learn/api/time" },
           { text: "Tween", link: "/learn/api/tween" },
+          {
+            text: "Networking",
+            items: [
+              { text: "Channels", link: "/learn/api/networking/channels" },
+              // { text: "Commands", link: "/learn/cheatsheet" },
+              // { text: "Filesystem", link: "/learn/cheatsheet" },
+            ],
+          },
         ],
       },
     ],
