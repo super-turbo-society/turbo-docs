@@ -19,10 +19,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - run: npm ci && npm run build
-
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - id: deploy
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TURBO_164D0 }}
@@ -30,9 +29,9 @@ jobs:
 
       - name: Check outputs
         run: |
-          echo urls ${{steps.firebase_hosting_preview.outputs.url}}
-          echo expire_time ${{steps.firebase_hosting_preview.outputs.expire_time}}
-          echo details_url ${{steps.firebase_hosting_preview.outputs.details_url}}
+          echo urls ${{steps.deploy.outputs.url}}
+          echo expire_time ${{steps.deploy.outputs.expire_time}}
+          echo details_url ${{steps.deploy.outputs.details_url}}
 
       - name: Log deploy URL
         run: echo '🚀[Preview URL](${{ steps.deploy.outputs.details_url }})'
@@ -41,7 +40,7 @@ jobs:
         if: ${{ github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          DEPLOY_URL: ${{ steps.firebase_hosting_preview.outputs.details_url }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.details_url }}
         run: |
           TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           PR_NUMBER="${{ github.event.pull_request.number }}"
