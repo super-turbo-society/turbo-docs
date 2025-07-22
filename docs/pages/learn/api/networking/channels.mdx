@@ -19,7 +19,7 @@ curl -sSfL https://turbo.computer/install.sh | TURBO_VERSION=0.8.0-alpha.10 sh
 
 ```toml
 [dependencies]
-turbo = { version = "4.0.0-alpha.35", package = "turbo-genesis-sdk" }
+turbo = { version = "4.0.0-alpha.36", package = "turbo-genesis-sdk" }
 ```
 
 :::
@@ -27,8 +27,6 @@ turbo = { version = "4.0.0-alpha.35", package = "turbo-genesis-sdk" }
 ## Creating a Channel (Server)
 
 To demonstrate, let's make a "ping pong" channel that accepts "ping" messages and sends back "pong" messages in response:
-
-::::steps
 
 ### Create Send and Recv types for the channel
 
@@ -180,6 +178,61 @@ impl GameState {
 
 ## Running your game
 
+::::steps
+
+### Review Your Code
+
+Ensure that your `src/lib.rs` file is correct:
+
+:::details[See full src/lib.rs source code]
+
+```rs [src/lib.rs]
+use turbo::*;
+
+#[turbo::serialize]
+pub struct Ping;
+
+#[turbo::serialize]
+pub struct Pong;
+
+#[turbo::os::channel(program = "pingpong", name = "main")]
+pub struct PingPongChannel;
+impl ChannelHandler for PingPongChannel {
+    type Recv = Ping; // incoming from client
+    type Send = Pong; // outgoing to client
+    fn new() -> Self {
+        Self
+    }
+    fn on_data(&mut self, user_id: &str, data: Self::Recv) -> Result<(), std::io::Error> {
+        log!("Got {:?} from {:?}", data, user_id);
+        Self::send(user_id, Pong)
+    }
+}
+
+#[turbo::game]
+struct GameState;
+impl GameState {
+    fn update(&mut self) {
+        // Subscribe to the "ping pong" channel to get a `ChannelConnection`
+        if let Some(conn) = PingPongChannel::subscribe("default") {
+            // Pull Pong messages using the `ChannelConnection::recv` method
+            while let Ok(msg) = conn.recv() {
+                log!("Received pong from server!");
+            }
+            if gamepad::get(0).start.just_pressed() {
+                // Send a Ping message using the `ChannelConnection::send` method
+                let _ = conn.send(&Ping);
+                log!("Sent ping to the server!");
+            }
+        }
+    }
+}
+```
+
+:::
+
+### Update your config
+
 Update your `turbo.toml` file to include the following section:
 
 ```toml
@@ -219,6 +272,8 @@ If you press the start button on a gamepad or space on a keyboard, you will see 
 [turbo] Received pong from server!
 ```
 
+### Check the Channel Inspector
+
 You can visit that "inspector url" to view the channel inspector page. There, you can observe messages sent to/from the server, user connection/disconnection events, and logs:
 
 ![Channel inspector screenshot](/pingpong-inspector.png)
@@ -228,3 +283,5 @@ You can visit that "inspector url" to view the channel inspector page. There, yo
 **This page is essential for debugging.** Use it to track server logs and channel activity.
 
 :::
+
+::::

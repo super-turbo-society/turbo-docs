@@ -17,9 +17,9 @@ curl -sSfL https://turbo.computer/install.sh | TURBO_VERSION=0.8.0-alpha.10 sh
 
 2. **Update your `Cargo.toml` dependencies:**
 
-```toml
+```toml [Cargo.toml]
 [dependencies]
-turbo = { version = "4.0.0-alpha.35", package = "turbo-genesis-sdk" }
+turbo = { version = "4.0.0-alpha.36", package = "turbo-genesis-sdk" }
 ```
 
 :::
@@ -30,9 +30,8 @@ turbo = { version = "4.0.0-alpha.35", package = "turbo-genesis-sdk" }
 
 ### The Counter document
 
-```rs
+```rs [src/lib.rs]
 #[turbo::os::document(program = "counter")]
-#[derive(Default, Copy)]
 pub struct Counter {
     /// Current counter value
     pub value: i32,
@@ -43,7 +42,7 @@ pub struct Counter {
 
 The `add` command reads the `counter` program file (creating it if it doesn't exist), updates the stored `Counter`, increments its value, and writes it back.
 
-```rs
+```rs [src/lib.rs]
 use turbo::os::server::*;
 
 #[turbo::os::command(program = "counter", name = "add")]
@@ -53,7 +52,6 @@ pub struct Add {
 }
 impl CommandHandler for Add {
     fn run(&mut self, user_id: &str) -> Result<(), std::io::Error> {
-        log!("{user_id}, {self:?}");
         // Read existing counter or default to 0
         let mut counter = fs::read("counter")
             .unwrap_or(Counter { value: 0 });
@@ -71,7 +69,7 @@ impl CommandHandler for Add {
 
 The `reset` command overwrites the `counter` file with a `Counter` initialized to `0`.
 
-```rs
+```rs [src/lib.rs]
 #[turbo::os::command(program = "counter", name = "reset")]
 pub struct Reset;
 impl CommandHandler for Reset {
@@ -95,18 +93,15 @@ Now let's use the commands to update the `counter` document and display its valu
 
 The counter data is stored in a program file named `counter`.
 
-```rs
+```rs [src/lib.rs]
 #[turbo::game]
-struct GameState {}
+struct GameState;
 impl GameState {
-    fn new() -> Self {
-        Self {}
-    }
     fn update(&mut self) {
         // Watch the counter file and parse its contents when it loads [!code focus] [!code hl]
         let counter = Counter::watch("counter") // [!code focus] [!code hl]
             .parse() // [!code focus] [!code hl]
-            .unwrap_or_default(); // [!code focus] [!code hl]
+            .unwrap_or(Counter { value: 0 }); // [!code focus] [!code hl]
         // Draw the counter data [!code focus] [!code hl]
         text!("{:#?}", counter); // [!code focus] [!code hl]
     }
@@ -117,18 +112,15 @@ impl GameState {
 
 Let's allow the player to add a random value or reset the counter file.
 
-```rs
+```rs [src/lib.rs]
 #[turbo::game]
-struct GameState {}
+struct GameState;
 impl GameState {
-    fn new() -> Self {
-        Self {}
-    }
     fn update(&mut self) {
         // Watch the counter file and parse its contents when it loads
         let counter = Counter::watch("counter")
             .parse()
-            .unwrap_or_default();
+            .unwrap_or(Counter { value: 0 });
         // Draw the counter data
         text!("{:#?}", counter);
 
@@ -137,7 +129,6 @@ impl GameState {
             let cmd = Add { value: random::i32() }; // [!code focus] [!code hl]
             cmd.exec(); // [!code focus] [!code hl]
         } // [!code focus] [!code hl]
-
         // When the "b" button (X on keyboard) is pressed, send a Reset command [!code focus] [!code hl]
         if gamepad::get(0).b.just_pressed() { // [!code focus] [!code hl]
             let cmd = Reset; // [!code focus] [!code hl]
@@ -151,18 +142,96 @@ impl GameState {
 
 ## Running your game
 
+::::steps
+
+### Review Your Code
+
+Ensure that your `src/lib.rs` file is correct:
+
+:::details[See full src/lib.rs source code]
+
+```rs [src/lib.rs]
+use turbo::*;
+use turbo::os::server::*;
+
+#[turbo::os::document(program = "counter")]
+pub struct Counter {
+    /// Current counter value
+    pub value: i32,
+}
+
+#[turbo::os::command(program = "counter", name = "add")]
+pub struct Add {
+    /// Amount to add to the counter
+    amount: i32,
+}
+impl CommandHandler for Add {
+    fn run(&mut self, user_id: &str) -> Result<(), std::io::Error> {
+        // Read existing counter or default to 0
+        let mut counter = fs::read("counter")
+            .unwrap_or(Counter { value: 0 });
+        // Apply increment
+        counter.value += self.amount;
+        log!("Incremented = {:?}", counter);
+        // Persist updated counter
+        fs::write("counter", &counter)?;
+        Ok(())
+    }
+}
+
+#[turbo::os::command(program = "counter", name = "reset")]
+pub struct Reset;
+impl CommandHandler for Reset {
+    fn run(&mut self, user_id: &str) -> Result<(), std::io::Error> {
+        // Overwrite the counter file with a Counter set to 0
+        fs::write("counter", &Counter { value: 0 })?;
+        Ok(())
+    }
+}
+
+#[turbo::game]
+struct GameState;
+impl GameState {
+    fn update(&mut self) {
+        // Watch the counter file and parse its contents when it loads
+        let counter = Counter::watch("counter")
+            .parse()
+            .unwrap_or(Counter { value: 0 });
+        // Draw the counter data
+        text!("{:#?}", counter);
+
+        // When the "a" button (Z on keyboard) is pressed, send an Add command
+        if gamepad::get(0).a.just_pressed() {
+            let cmd = Add { value: random::i32() };
+            cmd.exec();
+        }
+        // When the "b" button (X on keyboard) is pressed, send a Reset command
+        if gamepad::get(0).b.just_pressed() {
+            let cmd = Reset;
+            cmd.exec();
+        }
+    }
+}
+```
+
+:::
+
+### Update your config
+
 Update your `turbo.toml` file to include the following section:
 
-```toml
+```toml [turbo.toml]
 [turbo-os]
 api-url = "https://os.turbo.computer"
 ```
+
+### Run with a user ID
 
 Next, create a free dev account at [https://os.turbo.computer](https://os.turbo.computer). Your dashboard will display your user ID.
 
 Run your game with:
 
-```sh
+```bash [command line]
 turbo run -w --user <YOUR_USER_ID>
 ```
 
@@ -170,10 +239,12 @@ It will prompt you for a one-time password, which you'll find on your Turbo OS d
 
 When your game launches, it will upload the program:
 
-```sh
+```bash [command line]
 [turbo] Uploading "counter" (YOUR_PROGRAM_ID)...
 [turbo] Uploaded "counter" (YOUR_PROGRAM_ID) ✨
 ```
+
+### Check your dashboard
 
 On your [Turbo OS Dashboard](https://os.turbo.computer/dashboard), scroll to the bottom to see uploaded programs. The `counter` program will appear there.
 
@@ -194,3 +265,4 @@ As you send `add` and `reset` commands, you can inspect the live activity feed t
 **This page is essential for debugging.** Use it to track your commands' behavior and server responses.
 :::
 
+::::
