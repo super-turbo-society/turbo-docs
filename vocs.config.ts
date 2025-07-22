@@ -176,7 +176,7 @@ export default defineConfig({
             text: "Networking",
             items: [
               { text: "Channels", link: "/learn/api/networking/channels" },
-              // { text: "Commands", link: "/learn/cheatsheet" },
+              { text: "Commands", link: "/learn/api/networking/commands" },
               // { text: "Filesystem", link: "/learn/cheatsheet" },
             ],
           },
