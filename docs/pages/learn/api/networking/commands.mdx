@@ -126,7 +126,7 @@ impl GameState {
 
         // When the "a" button (Z on keyboard) is pressed, send an Add command [!code focus] [!code hl]
         if gamepad::get(0).a.just_pressed() { // [!code focus] [!code hl]
-            let cmd = Add { amount: random::i32() }; // [!code focus] [!code hl]
+            let cmd = Add { amount: random::between(-100, 100) }; // [!code focus] [!code hl]
             cmd.exec(); // [!code focus] [!code hl]
         } // [!code focus] [!code hl]
         // When the "b" button (X on keyboard) is pressed, send a Reset command [!code focus] [!code hl]
@@ -202,7 +202,7 @@ impl GameState {
 
         // When the "a" button (Z on keyboard) is pressed, send an Add command
         if gamepad::get(0).a.just_pressed() {
-            let cmd = Add { amount: random::i32() };
+            let cmd = Add { amount: random::between(-100, 100) };
             cmd.exec();
         }
         // When the "b" button (X on keyboard) is pressed, send a Reset command
