@@ -156,3 +156,67 @@ audio::unmute(name: &str)
 | Param  | Type   | Default | Description                            |
 | :----- | :----- | :------ | :------------------------------------- |
 | `name` | `&str` |         | The name of the audio asset to unmute. |
+
+
+### `audio::get_duration`
+
+Gets the current duration of the sound identified by `name`, expressed as seconds.
+
+```rs
+audio::get_duration(name: &str) -> f64
+```
+
+| Param  | Type   | Default | Description                                       |
+| :----- | :----- | :------ | :------------------------------------------------ |
+| `name` | `&str` |         | The name of the audio asset to get the volume of. |
+
+### `audio::set_panning`
+
+Sets the volume of the sound identified by `name`, using a `-1.0` to `1.0` linear scale.
+
+```rs
+audio::set_panning(name: &str, panning: f32)
+```
+
+:::note
+Pans sound to the left or right with 0 as the center. Defaults to 0.
+:::
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `panning`| `f32`  |         | Sets the panning (between -1.0-1.0)               |
+
+### `audio::seek_to`
+
+Sets the location of the playback of the sound to the seconds passed. The sound identified by `name`.
+
+```rs
+audio::seek_to(name: &str, seconds: f32)
+```
+
+:::note
+ Note: if seconds exceed duration will not work.
+:::
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `seconds`| `f32`  |         | Sets the playback to respective seconds           |
+
+### `audio::seek_by`
+
+Moves the location of playback by the seconds passed. The sound identified by `name`.
+
+```rs
+audio::seek_by(name: &str, seconds: f32)
+```
+
+:::note
+ Note: if seconds exceed duration will not work.
+:::
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `seconds`| `f32`  |         | Moves the playback to respective seconds          |
