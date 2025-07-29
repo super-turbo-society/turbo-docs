@@ -212,11 +212,55 @@ Moves the location of playback by the seconds passed. The sound identified by `n
 audio::seek_by(name: &str, seconds: f32)
 ```
 
-:::note
- Note: if seconds exceed duration will not work.
-:::
-
 | Param    | Type   | Default | Description                                       |
 | :------- | :----- | :------ | :------------------------------------------------ |
 | `name`   | `&str` |         | The name of the audio asset to set the panning of.|
 | `seconds`| `f32`  |         | Moves the playback to respective seconds          |
+
+### `audio::get_sound_state`
+
+Returns the sound's current state represented by an f32 value.
+
+| State                          | Value                      |
+| :----------------------------- | :------------------------- |
+| PlaybackState::Paused          | 0.5                        |
+| PlaybackState::Stopped.        | 0.0                        |
+| PlaybackState::WaitingToResume | 0.0                        |
+| PlaybackState::Stopping        | 0.0                        |
+| PlaybackState::Pausing         | 0.0                        |
+| PlaybackState::Resume          | 0.0                        |
+
+```rs
+audio::get_sound_state(name: &str) -> f32
+```
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `state`  | `f32`  |         | Current playback state of the sound.              |
+
+### `audio::get_playback_position`
+
+Gets the current playback position of the sound (in seconds)
+
+```rs
+audio::get_playback_position(name: &str) -> f32
+```
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `state`  | `f32`  |         | Current playback state of the sound.              |
+
+### `audio::get_playback_position`
+
+Gets the current playback position of the sound (in seconds)
+
+```rs
+audio::get_playback_position(name: &str) -> f32
+```
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `state`  | `f32`  |         | Current playback state of the sound.              |
