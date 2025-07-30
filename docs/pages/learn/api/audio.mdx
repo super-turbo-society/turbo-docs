@@ -264,3 +264,30 @@ audio::get_playback_position(name: &str) -> f32
 | :------- | :----- | :------ | :------------------------------------------------ |
 | `name`   | `&str` |         | The name of the audio asset to set the panning of.|
 | `state`  | `f32`  |         | Current playback state of the sound.              |
+
+
+### `audio::set_playback_rate_semitones`
+
+Gets the current playback rate based on raising or lowering semitones. 
+
+```rs
+audio::set_playback_rate_semitones(name: &str, semitones: f64)
+```
+
+| Param       | Type   | Default | Description                                               |
+| :---------- | :----- | :------ | :-------------------------------------------------------- |
+| `name`      | `&str` |         | The name of the audio asset to set the panning of.        |
+| `semitones` | `f64`  |         | Value of semitones to shift. Clamped between -12 and 12   |
+
+### `audio::set_playback_rate_factor`
+
+Gets the current playback rate based on factor. Clamped between 0.5 and 2.
+
+```rs
+audio::set_playback_rate_factor(name: &str, factor: f64)
+```
+
+| Param     | Type   | Default | Description                                         |
+| :-------- | :----- | :------ | :-------------------------------------------------- |
+| `name`    | `&str` |         | The name of the audio asset to set the panning of.  |
+| `factor`  | `f64`  |         | Value of factor to multiply playback by.            |
