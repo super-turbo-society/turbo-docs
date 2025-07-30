@@ -146,6 +146,10 @@ export default defineConfig({
             text: "Publishing to the Web",
             link: "/learn/guides/web-publishing",
           },
+          {
+            text: "Understanding Network Code",
+            link: "/learn/guides/netcode",
+          },
         ],
       },
       {
