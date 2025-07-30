@@ -10,6 +10,156 @@ By default, the camera position is in the center of the viewport in pixels. This
 
 ## API
 
+### `camera::focus`
+
+Use this to center the camera on a target position.
+
+```rs
+camera::focus(xy: (i32, i32))
+```
+
+| Param | Type         | Default | Description                                  |
+| :---- | :----------- | :------ | :------------------------------------------- |
+| `xy`  | `(i32, i32)` |         | The x and y position to focus the camera on. |
+
+:::tip[Example]
+
+Focusing the camera within the center of a bounds:
+
+```rust
+let bounds = bounds::size(16, 16).position(32, 64);
+camera::focus(bounds.center());
+```
+
+:::
+
+### `camera::pan_xyz`
+
+Eases the camera toward `target` over `duration` ticks using `easing`.
+
+```rs
+camera::pan_xyz<X: NumCast, Y: NumCast>(target: (X, Y, f32), duration: usize, easing: Easing)
+```
+
+| Param      | Type          | Default | Description                                                                             |
+| :--------- | :------------ | :------ | :-------------------------------------------------------------------------------------- |
+| `target`   | `(X, Y, f32)` |         | The target x and y position and zoom to ease the camera to.                             |
+| `duration` | `usize`       |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing`      |         | The easing curve used to interpolate from the previous position to the target position. |
+
+### `camera::pan_xy`
+
+Eases the camera toward `target` over `duration` ticks using `easing`, preserving the current zoom.
+
+```rs
+camera::pan_xy<X: NumCast, Y: NumCast>(target: (X, Y), duration: usize, easing: Easing)
+```
+
+| Param      | Type     | Default | Description                                                                             |
+| :--------- | :------- | :------ | :-------------------------------------------------------------------------------------- |
+| `target`   | `(X, Y)` |         | The target x and y position to ease the camera to.                                      |
+| `duration` | `usize`  |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing` |         | The easing curve used to interpolate from the previous position to the target position. |
+
+:::tip[Example]
+
+Focusing the camera within the center of a bounds:
+
+```rust
+let bounds = bounds::size(16, 16).position(32, 64);
+camera::pan_xy(bounds.center(), 30, Easing::EaseOutQuad);
+```
+
+:::
+
+### `camera::pan_x`
+
+Eases the camera's x coordinate toward `x`, preserving y and zoom.
+
+```rs
+camera::pan_x<X: NumCast>(x: X, duration: usize, easing: Easing)
+```
+
+| Param      | Type     | Default | Description                                                                             |
+| :--------- | :------- | :------ | :-------------------------------------------------------------------------------------- |
+| `x`        | `X`      |         | The target x position to ease the camera to.                                            |
+| `duration` | `usize`  |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing` |         | The easing curve used to interpolate from the previous position to the target position. |
+
+### `camera::pan_y`
+
+Eases the camera's y coordinate toward `y`, preserving y and zoom.
+
+```rs
+camera::pan_y<Y: NumCast>(y: Y, duration: usize, easing: Easing)
+```
+
+| Param      | Type     | Default | Description                                                                             |
+| :--------- | :------- | :------ | :-------------------------------------------------------------------------------------- |
+| `y`        | `Y`      |         | The target x position to ease the camera to.                                            |
+| `duration` | `usize`  |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing` |         | The easing curve used to interpolate from the previous position to the target position. |
+
+### `camera::pan_z`
+
+Eases the camera’s zoom to the `z` zoom level, preserving x and y position.
+
+```rs
+camera::pan_z(z: f32, duration: usize, easing: Easing)
+```
+
+| Param      | Type     | Default | Description                                                                             |
+| :--------- | :------- | :------ | :-------------------------------------------------------------------------------------- |
+| `z`        | `f32`    |         | The target zoom to ease the camera to.                                                  |
+| `duration` | `usize`  |         | The duration of the camera movement.                                                    |
+| `easing`   | `Easing` |         | The easing curve used to interpolate from the previous position to the target position. |
+
+### `camera::shake`
+
+Applies a screen-space shake amount (in pixels) around the last known stable camera position.
+
+```rust
+camera::shake(amount: usize)
+```
+
+| Param    | Type    | Description                                     |
+| -------- | ------- | ----------------------------------------------- |
+| `amount` | `usize` | Maximum pixel offset in any direction per axis. |
+
+:::tip[Example]
+
+Applying a moderate shake effect:
+
+```rust
+camera::shake(2);
+```
+
+:::
+
+### `camera::is_shaking`
+
+Returns `true` if a shake effect is currently active.
+
+```rust
+camera::is_shaking() -> bool
+```
+
+### `camera::shake_amount`
+
+Returns the current shake intensity (in pixels).
+
+```rust
+camera::shake_amount() -> usize
+```
+
+### `camera::remove_shake`
+
+Stops any ongoing camera shake and restores the stable position.
+
+```rust
+camera::remove_shake()
+```
+
 ### `camera::xyz`
 
 Gets the `x`, `y`, and `z` coordinates of the camera.
@@ -28,16 +178,114 @@ let (x, y, z) = camera::xyz();
 
 :::
 
+### `camera::xy`
+
+Gets the `x` and `y` coordinates of the camera, ignoring the z coordinate.
+
+```rs
+camera::xy() -> (f32, f32)
+```
+
+:::tip[Example]
+
+Getting just the x and y position
+
+```rs
+let (x, y) = camera::xy();
+```
+
+:::
+
+### `camera::x`
+
+Returns the current camera's x coordinate.
+
+```rs
+camera::x() -> f32
+```
+
+:::tip[Example]
+
+Getting just the x position
+
+```rs
+let x = camera::x();
+```
+
+:::
+
+### `camera::y`
+
+Returns the current camera's y coordinate.
+
+```rs
+camera::y() -> f32
+```
+
+:::tip[Example]
+
+Getting just the y position
+
+```rs
+let y = camera::y();
+```
+
+:::
+
+### `camera::z`
+
+Returns the current camera's z coordinate, which represents the zoom level.
+
+```rs
+camera::z() -> f32
+```
+
+:::tip[Example]
+
+Getting the zoom level
+
+```rs
+let zoom = camera::z();
+```
+
+:::
+
+### `camera::set_xyz`
+
+Sets the camera's position to (x, y, z). The z value is clamped to a minimum of 0.0.
+
+```rs
+camera::set_xyz<X: NumCast, Y: NumCast>(x: X, y: Y, z: f32)
+```
+
+| Param | Type  | Default | Description                      |
+| :---- | :---- | :------ | :------------------------------- |
+| `x`   | `X`   |         | X position of the camera.        |
+| `y`   | `Y`   |         | Y position of the camera.        |
+| `z`   | `f32` |         | Z position (zoom) of the camera. |
+
+:::tip[Example]
+
+Setting the camera position and zoom
+
+```rust
+camera::set_xyz(100, 100, 2.0);
+```
+
+:::
+
 ### `camera::set_xy`
+
+Sets the `x` and `y` coordinates of the camera while retaining the current z (zoom) value.
 
 ```rs
 camera::set_xy<X: NumCast, Y: NumCast>(x: X, y: Y)
 ```
 
-| Param | Type     | Default | Description               |
-| :---- | :------- | :------ | :------------------------ |
-| `x`   | `number` |         | X position of the camera. |
-| `y`   | `number` |         | Y position of the camera. |
+| Param | Type | Default | Description               |
+| :---- | :--- | :------ | :------------------------ |
+| `x`   | `X`  |         | X position of the camera. |
+| `y`   | `Y`  |         | Y position of the camera. |
 
 :::tip[Example]
 
@@ -49,63 +297,61 @@ camera::set_xy(100, 100);
 
 :::
 
-### `camera::move_xy`
+### `camera::set_x`
 
-Moves the camera relative to the current camera position.
+Sets the camera's x coordinate, leaving y and z unchanged.
 
 ```rs
-camera::set_xy<X: NumCast, Y: NumCast>(x: X, y: Y)
+camera::set_x<X: NumCast>(x: X)
 ```
 
-| Param | Type     | Default | Description                                       |
-| :---- | :------- | :------ | :------------------------------------------------ |
-| `x`   | `number` |         | Number of pixels to move the camera horizontally. |
-| `y`   | `number` |         | Number of pixesl to move the camera vertically.   |
+| Param | Type | Default | Description               |
+| :---- | :--- | :------ | :------------------------ |
+| `x`   | `X`  |         | X position of the camera. |
 
 :::tip[Example]
 
-Moving the camera 5px to the right and 10px up:
+Setting just the x position
 
 ```rust
-camera::move_xy(5.0, -10);
+camera::set_x(150);
 ```
 
 :::
 
-### `camera::focus_rect`
+### `camera::set_y`
 
-Use this to center the camera on a target rectangle, based a given position and width and height.
+Sets the camera's y coordinate, leaving x and z unchanged.
 
 ```rs
-camera::focus_rect<X: NumCast, Y: NumCast, W: NumCast, H: NumCast>(x: X, y: Y, w: W, h: H)
+camera::set_y<Y: NumCast>(y: Y)
 ```
 
-| Param | Type     | Default | Description                                             |
-| :---- | :------- | :------ | :------------------------------------------------------ |
-| `x`   | `number` |         | The x position of the rectangle to focus the camera on. |
-| `y`   | `number` |         | The y position of the rectangle to focus the camera on. |
-| `w`   | `number` |         | The width of the rectangle to focus the camera on.      |
-| `h`   | `number` |         | The height of the rectangle to focus the camera on.     |
+| Param | Type | Default | Description               |
+| :---- | :--- | :------ | :------------------------ |
+| `y`   | `Y`  |         | Y position of the camera. |
 
 :::tip[Example]
 
-Focusing on the camera on the center of a 16x16 rectangle at position `(0,0)`.
+Setting just the y position
 
 ```rust
-camera::focus_rect(0, 0, 16, 16);
+camera::set_y(200);
 ```
 
 :::
 
 ### `camera::set_z`
 
+Sets the camera's z coordinate (zoom), leaving x and y unchanged.
+
 ```rs
 camera::set_z(z: f32)
 ```
 
-| Param | Type     | Default | Description            |
-| :---- | :------- | :------ | :--------------------- |
-| `z`   | `number` |         | The camera zoom level. |
+| Param | Type  | Default | Description            |
+| :---- | :---- | :------ | :--------------------- |
+| `z`   | `f32` |         | The camera zoom level. |
 
 :::tip[Example]
 
@@ -117,10 +363,355 @@ camera::set_z(2.0);
 
 :::
 
+### `camera::move_xyz`
+
+Moves the camera by the specified deltas in x, y, and z.
+
+```rs
+camera::move_xyz<X: NumCast, Y: NumCast>(delta_x: X, delta_y: Y, delta_z: f32)
+```
+
+| Param     | Type  | Default | Description                                       |
+| :-------- | :---- | :------ | :------------------------------------------------ |
+| `delta_x` | `X`   |         | Number of pixels to move the camera horizontally. |
+| `delta_y` | `Y`   |         | Number of pixels to move the camera vertically.   |
+| `delta_z` | `f32` |         | Amount to change the zoom level.                  |
+
+:::tip[Example]
+
+Moving the camera 5px to the right, 10px up, and zooming in by 0.5:
+
+```rust
+camera::move_xyz(5.0, -10.0, 0.5);
+```
+
+:::
+
+### `camera::move_xy`
+
+Moves the camera in the x and y directions by the specified deltas.
+
+```rs
+camera::move_xy<X: NumCast, Y: NumCast>(delta_x: X, delta_y: Y)
+```
+
+| Param     | Type | Default | Description                                       |
+| :-------- | :--- | :------ | :------------------------------------------------ |
+| `delta_x` | `X`  |         | Number of pixels to move the camera horizontally. |
+| `delta_y` | `Y`  |         | Number of pixels to move the camera vertically.   |
+
+:::tip[Example]
+
+Moving the camera 5px to the right and 10px up:
+
+```rust
+camera::move_xy(5.0, -10);
+```
+
+:::
+
+### `camera::move_x`
+
+Moves the camera in the x direction by the specified delta.
+
+```rs
+camera::move_x<X: NumCast>(delta_x: X)
+```
+
+| Param     | Type | Default | Description                                       |
+| :-------- | :--- | :------ | :------------------------------------------------ |
+| `delta_x` | `X`  |         | Number of pixels to move the camera horizontally. |
+
+:::tip[Example]
+
+Moving the camera 10px to the right:
+
+```rust
+camera::move_x(10);
+```
+
+:::
+
+### `camera::move_y`
+
+Moves the camera in the y direction by the specified delta.
+
+```rs
+camera::move_y<Y: NumCast>(delta_y: Y)
+```
+
+| Param     | Type | Default | Description                                     |
+| :-------- | :--- | :------ | :---------------------------------------------- |
+| `delta_y` | `Y`  |         | Number of pixels to move the camera vertically. |
+
+:::tip[Example]
+
+Moving the camera 5px down:
+
+```rust
+camera::move_y(5);
+```
+
+:::
+
+### `camera::move_z`
+
+Moves the camera's zoom by the specified delta.
+
+```rs
+camera::move_z(delta_z: f32)
+```
+
+| Param     | Type  | Default | Description                      |
+| :-------- | :---- | :------ | :------------------------------- |
+| `delta_z` | `f32` |         | Amount to change the zoom level. |
+
+:::tip[Example]
+
+Zooming in by 0.5:
+
+```rust
+camera::move_z(0.5);
+```
+
+:::
+
 ### `camera::reset`
 
-Resets the camera position to the original center of the canvas.
+Resets the camera position to the original center of the canvas with zoom level 1.0.
 
 ```rs
 camera::reset()
+```
+
+:::tip[Example]
+
+Resetting the camera to default position:
+
+```rust
+camera::reset();
+```
+
+:::
+
+### `camera::reset_xy`
+
+Resets both the camera's x and y coordinates to the center of the screen.
+
+```rs
+camera::reset_xy()
+```
+
+:::tip[Example]
+
+Resetting position but keeping zoom:
+
+```rust
+camera::reset_xy();
+```
+
+:::
+
+### `camera::reset_x`
+
+Resets the camera's x coordinate to the horizontal center of the screen.
+
+```rs
+camera::reset_x()
+```
+
+:::tip[Example]
+
+Resetting just the x position:
+
+```rust
+camera::reset_x();
+```
+
+:::
+
+### `camera::reset_y`
+
+Resets the camera's y coordinate to the vertical center of the screen.
+
+```rs
+camera::reset_y()
+```
+
+:::tip[Example]
+
+Resetting just the y position:
+
+```rust
+camera::reset_y();
+```
+
+:::
+
+### `camera::reset_z`
+
+Resets the camera's z coordinate (zoom) to 1.0 while keeping x and y centered.
+
+```rs
+camera::reset_z()
+```
+
+:::tip[Example]
+
+Resetting zoom to default:
+
+```rust
+camera::reset_z();
+```
+
+:::
+
+## Usage
+
+### Basic Camera Positioning
+
+```rust
+// Instantly move camera to a position
+let player_x = 100;
+let player_y = 150;
+camera::set_xy(player_x, player_y);
+```
+
+### Focusing on a Position
+
+```rust
+// Using Bounds to snap to the center of a 16x16 player sprite
+let player_bounds = bounds::size(16, 16).position(player_x, player_y);
+let player_center = player_bounds.center();
+camera::focus(player_center);
+```
+
+### Panning to a Position with Easing
+
+```rust
+// Smoothly move camera towards the player sprite;
+let duration = 120; // frames
+let easing = Easing::EaseOutQuad;
+let is_done = camera::pan_xy(player_center, duration, easing);
+// is_done is `true` when the camera has reaced the target destination
+```
+
+### Camera Zoom and Effects
+
+```rust
+// Zoom in for dramatic effect
+camera::set_zoom(2.0);
+
+// Smooth zoom transition
+let current_zoom = camera::zoom();
+let target_zoom = 1.5;
+let zoom_speed = 0.02;
+camera::set_zoom(current_zoom + (target_zoom - current_zoom) * zoom_speed);
+
+// Reset to default view
+camera::reset();
+```
+
+### Screen Shake Effects
+
+```rust
+// Explosion shake
+camera::shake(8);
+
+// Smaller shake for footsteps
+camera::shake(1);
+
+// Reset if the camera is shaking and the start button is pressed
+if camera::is_shaking() && gamepad::get(0).start.just_pressed() {
+    camera::reset_shake(); // Same as camera::shake(0)
+}
+
+```
+
+### Camera Controls
+
+```rust
+// Keyboard camera movement
+let kb = keyboard::get();
+let move_speed = 2.0;
+if kb.arrow_left().pressed() {
+    camera::move_x(-move_speed);
+}
+if kb.arrow_right().pressed() {
+    camera::move_x(move_speed);
+}
+if kb.arrow_up().pressed() {
+    camera::move_y(-move_speed);
+}
+if kb.arrow_down().pressed() {
+    camera::move_y(move_speed);
+}
+
+// Mouse wheel zoom
+let m = mouse::get();
+let zoom_amount = 0.001;
+if m.delta_y > 0.0 {
+    camera::move_zoom(zoom_amount);
+}
+if m.delta_y < 0.0 {
+    camera::move_zoom(-zoom_amount);
+}
+
+// Reset camera with key
+if kb.key_r().just_pressed() {
+    camera::reset();
+}
+```
+
+### Dynamic Camera Behaviors
+
+```rust
+// Look-ahead camera (shows more space in movement direction)
+let player_vel_x = player.velocity_x;
+let player_vel_y = player.velocity_y;
+let look_ahead_distance = 50.0;
+
+camera::set_xy(
+    player.x + player_vel_x * look_ahead_distance,
+    player.y + player_vel_y * look_ahead_distance
+);
+
+// Camera that follows with deadzone
+let (cam_x, cam_y) = camera::xy();
+let deadzone_size = 32.0;
+let follow_speed = 0.03;
+
+let dx = player.x - cam_x;
+let dy = player.y - cam_y;
+
+if dx.abs() > deadzone_size {
+    camera::move_x(dx.signum() * (dx.abs() - deadzone_size) * follow_speed);
+}
+if dy.abs() > deadzone_size {
+    camera::move_y(dy.signum() * (dy.abs() - deadzone_size) * follow_speed);
+}
+```
+
+### Multi-Target Camera
+
+```rust
+// Camera that shows all players
+fn focus_on_players(players: &[Player]) {
+    if players.is_empty() { return; }
+
+    // Find bounding box of all players
+    let min_x = players.iter().map(|p| p.x).fold(f32::INFINITY, f32::min);
+    let max_x = players.iter().map(|p| p.x).fold(f32::NEG_INFINITY, f32::max);
+    let min_y = players.iter().map(|p| p.y).fold(f32::INFINITY, f32::min);
+    let max_y = players.iter().map(|p| p.y).fold(f32::NEG_INFINITY, f32::max);
+
+    // Focus on the center of all players
+    let center_x = (min_x + max_x) / 2.0;
+    let center_y = (min_y + max_y) / 2.0;
+    camera::set_xy(center_x, center_y);
+
+    // Adjust zoom based on spread
+    let spread = ((max_x - min_x).max(max_y - min_y) / 200.0).max(0.5).min(2.0);
+    camera::set_zoom(1.0 / spread);
+}
 ```

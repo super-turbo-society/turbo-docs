@@ -57,7 +57,7 @@ export default defineConfig({
     // },
     // { text: "Blog", link: "/blog" },
     {
-      text: "0.7.4",
+      text: "0.8.0-alpha.12",
       items: [
         {
           text: "Changelog",
@@ -146,6 +146,10 @@ export default defineConfig({
             text: "Publishing to the Web",
             link: "/learn/guides/web-publishing",
           },
+          {
+            text: "Understanding Network Code",
+            link: "/learn/guides/netcode",
+          },
         ],
       },
       {
@@ -159,8 +163,10 @@ export default defineConfig({
           { text: "Background Color", link: "/learn/api/clear" },
           { text: "Ellipses", link: "/learn/api/ellipses" },
           { text: "Gamepad", link: "/learn/api/gamepad" },
+          { text: "Keyboard", link: "/learn/api/keyboard" },
           { text: "Lines", link: "/learn/api/lines" },
           { text: "Log", link: "/learn/api/log" },
+          { text: "Mouse", link: "/learn/api/mouse" },
           { text: "Nine-Slices", link: "/learn/api/nine-slices" },
           { text: "Pointer", link: "/learn/api/pointer" },
           { text: "Randomness", link: "/learn/api/randomness" },
@@ -170,6 +176,14 @@ export default defineConfig({
           { text: "Text Boxes", link: "/learn/api/text_box" },
           { text: "Time", link: "/learn/api/time" },
           { text: "Tween", link: "/learn/api/tween" },
+          {
+            text: "Networking",
+            items: [
+              { text: "Channels", link: "/learn/api/networking/channels" },
+              { text: "Commands", link: "/learn/api/networking/commands" },
+              // { text: "Filesystem", link: "/learn/cheatsheet" },
+            ],
+          },
         ],
       },
     ],

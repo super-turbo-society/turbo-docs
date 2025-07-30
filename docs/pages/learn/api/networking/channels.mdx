@@ -1,0 +1,269 @@
+# Channels
+
+![Two ghosts sharing a computer](/ghosts_at_computer.png)
+
+## Overview
+
+The `channel` API lets your game subscribe to a Turbo OS channel to send and receive incoming messages asynchronously. Channels are good for fast-paced multiplayer gameplay and other features that require low latency + group broadcasts such as chat.
+
+## Creating a Channel (Server)
+
+To demonstrate, let's make a "ping pong" channel that accepts "ping" messages and sends back "pong" messages in response:
+
+### Create Send and Recv types for the channel
+
+Let's define our `Ping` and `Pong` structs:
+
+```rs
+use turbo::*;
+
+#[turbo::serialize]
+pub struct Ping;
+
+#[turbo::serialize]
+pub struct Pong;
+```
+
+We will send `Ping` to the channel and receive `Pong` from the channel.
+
+### Use the Channel macro
+
+Here, we use the `turbo::os::channel` macro to tag our ChannelHandler with program and channel names.
+
+```rs
+use turbo::*;
+
+#[turbo::serialize]
+pub struct Ping;
+
+#[turbo::serialize]
+pub struct Pong;
+
+#[turbo::os::channel(program = "pingpong", name = "main")] // [!code focus] [!code hl]
+pub struct PingPongChannel; // [!code focus] [!code hl]
+```
+
+:::note
+The macro will ensure our program is uploaded and will add an additional `subscribe` method to `PingPongChannel` which will be useful when interacting with the channel on the client side.
+:::
+
+### Implement `ChannelHandler`
+
+Next, we have to implement the `ChannelHandler` trait:
+
+```rs
+use turbo::*;
+
+#[turbo::serialize]
+pub struct Ping;
+
+#[turbo::serialize]
+pub struct Pong;
+
+#[turbo::os::channel(program = "pingpong", name = "main")]
+pub struct PingPongChannel;
+impl ChannelHandler for PingPongChannel { // [!code focus] [!code hl]
+    type Recv = Ping; // incoming from client [!code focus] [!code hl]
+    type Send = Pong; // outgoing to client [!code focus] [!code hl]
+    fn new() -> Self { // [!code focus] [!code hl]
+        Self // [!code focus] [!code hl]
+    } // [!code focus] [!code hl]
+    fn on_data(&mut self, user_id: &str, data: Self::Recv) -> Result<(), std::io::Error> { // [!code focus] [!code hl]
+        log!("Got {:?} from {:?}", data, user_id); // [!code focus] [!code hl]
+        Self::send(user_id, Pong) // [!code focus] [!code hl]
+    } // [!code focus] [!code hl]
+} // [!code focus] [!code hl]
+```
+
+The `new` method is called when our channel first opens, and the `on_data` method is called whenever we receive a message from a player.
+
+::::
+
+## Connecting to a Channel (Client)
+
+Last, we can hook up the client
+
+::::steps
+
+### Subscribe to the channel
+
+Subscribe to the "ping pong" channel to get a `ChannelConnection` which we will call `conn`:
+
+```rs
+use turbo::*;
+
+#[turbo::game]
+struct GameState {}
+impl GameState {
+    fn new() -> Self {
+        Self {}
+    }
+    fn update(&mut self) {
+        if let Some(conn) = PingPongChannel::subscribe("default") { // [!code focus] [!code hl]
+            // If we're in here, that means we connected the channel! [!code focus] [!code hl]
+        } // [!code focus] [!code hl]
+    }
+}
+```
+
+### Receive messages from the channel
+
+Pull Pong messages using the `ChannelConnection::recv` method:
+
+```rs
+use turbo::*;
+
+#[turbo::game]
+struct GameState {}
+impl GameState {
+    fn new() -> Self {
+        Self {}
+    }
+    fn update(&mut self) {
+        if let Some(conn) = PingPongChannel::subscribe("default") {
+            while let Ok(msg) = conn.recv() { // [!code focus] [!code hl]
+                log!("Received pong from server!"); // [!code focus] [!code hl]
+            } // [!code focus] [!code hl]
+        }
+    }
+}
+```
+
+### Send messages to the channel
+
+Send a Ping message to the channel whenever the start button is pressed using the `ChannelConnection::send` method:
+
+```rs
+use turbo::*;
+
+#[turbo::game]
+struct GameState {}
+impl GameState {
+    fn new() -> Self {
+        Self {}
+    }
+    fn update(&mut self) {
+        if let Some(conn) = PingPongChannel::subscribe("default") {
+            while let Ok(msg) = conn.recv() {
+                log!("Received pong from server!");
+            }
+            if gamepad::get(0).start.just_pressed() { // [!code focus] [!code hl]
+                let _ = conn.send(&Ping); // [!code focus] [!code hl]
+                log!("Sent ping to the server!"); // [!code focus] [!code hl]
+            } // [!code focus] [!code hl]
+        }
+    }
+}
+```
+
+::::
+
+## Running your game
+
+::::steps
+
+### Review Your Code
+
+Ensure that your `src/lib.rs` file is correct:
+
+:::details[See full src/lib.rs source code]
+
+```rs [src/lib.rs]
+use turbo::*;
+
+#[turbo::serialize]
+pub struct Ping;
+
+#[turbo::serialize]
+pub struct Pong;
+
+#[turbo::os::channel(program = "pingpong", name = "main")]
+pub struct PingPongChannel;
+impl ChannelHandler for PingPongChannel {
+    type Recv = Ping; // incoming from client
+    type Send = Pong; // outgoing to client
+    fn new() -> Self {
+        Self
+    }
+    fn on_data(&mut self, user_id: &str, data: Self::Recv) -> Result<(), std::io::Error> {
+        log!("Got {:?} from {:?}", data, user_id);
+        Self::send(user_id, Pong)
+    }
+}
+
+#[turbo::game]
+struct GameState;
+impl GameState {
+    fn update(&mut self) {
+        // Subscribe to the "ping pong" channel to get a `ChannelConnection`
+        if let Some(conn) = PingPongChannel::subscribe("default") {
+            // Pull Pong messages using the `ChannelConnection::recv` method
+            while let Ok(msg) = conn.recv() {
+                log!("Received pong from server!");
+            }
+            if gamepad::get(0).start.just_pressed() {
+                // Send a Ping message using the `ChannelConnection::send` method
+                let _ = conn.send(&Ping);
+                log!("Sent ping to the server!");
+            }
+        }
+    }
+}
+```
+
+:::
+
+### Update your config
+
+Update your `turbo.toml` file to include the following section:
+
+```toml
+[turbo-os]
+api-url = "https://os.turbo.computer"
+```
+
+Next, create a free dev account at https://os.turbo.computer. The dashboard will have your user ID.
+
+```sh
+turbo run -w --user <YOUR_USER_ID>
+```
+
+It will prompt for a one-time password you can also find on your Turbo OS dashboard.
+
+Once your game window opens, it will upload your program:
+
+```sh
+[turbo] Uploading "pingpong" (YOUR_PROGRAM_ID)...
+[turbo] Uploaded "pingpong" (YOUR_PROGRAM_ID) ✨
+```
+
+When connects to the channel, you will see some output like the following:
+
+```sh
+[turbo] Channel connection open:
+- program      : YOUR_PROGRAM_ID
+- channel name : main
+- channel id   : default
+- inspector url: https://os.turbo.computer/channels/YOUR_PROGRAM_ID/main/default/inspector
+```
+
+If you press the start button on a gamepad or space on a keyboard, you will see the following output on the command line:
+
+```sh
+[turbo] Sent ping to the server!
+[turbo] Received pong from server!
+```
+
+### Check the Channel Inspector
+
+You can visit that "inspector url" to view the channel inspector page. There, you can observe messages sent to/from the server, user connection/disconnection events, and logs:
+
+![Channel inspector screenshot](/pingpong-inspector.png)
+
+:::tip[TIP]
+
+**This page is essential for debugging.** Use it to track server logs and channel activity.
+
+:::
+
+::::

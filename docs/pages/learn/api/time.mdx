@@ -2,28 +2,83 @@
 
 ## Overview
 
-Turbo provides two main APIs for dealing with time: `tick` which provides monotonic time and `time::now` which provides a unix timestamp.
+Turbo provides two main APIs for handling time: `tick()` for deterministic, monotonic time and `time::now()` for real-world Unix timestamps.
 
-In the context of game development and operating systems, "monotonic time" refers to a clock that always moves forward at a consistent rate, unaffected by system time adjustments or daylight saving time, ensuring accurate elapsed time measurements
-
-:::tip
-In general, `tick` is the better default choice for most game logic since it provides more granular values than unix timestamps. The monotonic values from `tick` also helps prevent and fix bugs since they are deterministic - equivalent to the number elapsed frames of your game - and have no possibility of changing mid-game-loop. Prefer `time::now` when displaying clock time to a user or calculating time relative to another unix timestamp.
-:::
+Monotonic time is ideal for game logic. It increases consistently with each game loop frame and is not affected by user system clock changes, time zones, or daylight savings. Use `tick` to measure elapsed time or schedule time-based events during gameplay. Use `time::now` when displaying the real-world time or comparing to external timestamps.
 
 ## API
 
-### `tick`
+### `time::tick()`
 
-Returns the number of times the game loop has executed so far.
+Returns the number of frames that have elapsed since the game started.
 
-```rs
-tick() -> u32
+```rust
+time::tick() -> u32
 ```
 
-### `time::now`
+### `time::now()`
 
-Returns a unix timestamp.
+Returns the current system time as a Unix timestamp (seconds since the Unix epoch).
 
-```rs
+```rust
 time::now() -> u32
+```
+
+## Usage
+
+### Doing Something on an Interval
+
+```rust
+if time::tick() % 60 == 0 {
+    // This will be `true` once every 60 frames (~1s)
+}
+
+if time::tick() % 60 < 30 {
+    // This will be `true` for the first 30 frames (~0.5s) of every 60 frames (~1s)
+}
+```
+
+### Screen Shake for 10 Frames
+
+```rust
+#[turbo::game]
+struct GameState {
+    shake_start: Option<u32>,
+}
+```
+
+Then in your `update` method:
+
+```rust
+if player_took_damage() {
+    self.shake_start = Some(time::tick());
+}
+
+let shake_active = self.shake_start
+    .map(|start| time::tick() - start < 10)
+    .unwrap_or(false);
+
+if shake_active {
+    camera::shake(5);
+}
+```
+
+### Calculating Durations
+
+```rust
+#[turbo::game]
+struct GameState {
+    last_tick: usize,
+    event_start: u64,
+}
+```
+
+Then in your `update` method:
+
+```rust
+// Number of frames elapsed
+let delta_frames = time::tick() - self.last_tick;
+
+// Number of milliseconds elapsed
+let millis = time::now() - self.event_start;
 ```

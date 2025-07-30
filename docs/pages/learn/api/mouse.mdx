@@ -1,0 +1,108 @@
+# Mouse
+
+## Overview
+
+The `Mouse` API provides a unified interface for querying the current mouse position, button states, and scroll behavior. It supports both screen-space (for UI) and world-space (for in-game interactions) access.
+
+## API
+
+### `mouse::screen`
+
+Returns the current mouse state in fixed screen-space pixel coordinates.
+
+```rust
+mouse::screen() -> ScreenMouse
+```
+
+### `mouse::world`
+
+Returns the current mouse state transformed into world-space coordinates, relative to the current camera view.
+
+```rust
+mouse::world() -> WorldMouse
+```
+
+## Usage
+
+### Reading Mouse Position & State
+
+```rust
+// World-space position (accounts for camera zoom & pan)
+let world_mouse = mouse::world();
+let (world_x, world_y) = world_mouse.xy();
+
+// Screen-space position (e.g. for UI)
+let screen_mouse = mouse::screen();
+let (screen_x, screen_y) = screen_mouse.xy();
+
+// Mouse button states
+if screen_mouse.left.just_pressed() {
+    // Fired on the frame the left button goes down
+}
+if screen_mouse.left.pressed() {
+    // True every frame the left button is held
+}
+if screen_mouse.left.just_released() {
+    // Fired on the frame the left button goes up
+}
+if screen_mouse.left.released() {
+    // True every frame the left button is not held
+}
+
+// Scroll wheel delta (horizontal and vertical)
+let (scroll_dx, scroll_dy) = screen_mouse.scroll_xy();
+```
+
+### Hit-Testing Bounds
+
+```rs
+let target = Bounds::new(100, 100, 64, 64);
+
+// Screen-space
+let screen_mouse = mouse::screen();
+if screen_mouse.intersects_bounds(target) {
+    // Mouse relative to the screen is inside `target`
+}
+if screen_mouse.left_clicked_bounds(target) {
+    // Mouse relative to the screen just pressed on `target`
+}
+if screen_mouse.right_clicked_bounds(target) {
+    // Mouse relative to the screen just right-pressed on `target`
+}
+
+// World-space
+let world_mouse = mouse::world();
+if world_mouse.intersects_bounds(target) {
+    // Mouse relative to the camera is inside `target`
+}
+if world_mouse.left_clicked_bounds(target) {
+    // Mouse relative to the camera just left-pressed on `target`
+}
+if world_mouse.right_clicked_bounds(target) {
+    // Mouse relative to the camera just right-pressed on `target`
+}
+```
+
+### Hit-Testing Arbitrary Rectangles
+
+Suppose you have a sprite at (50, 30) sized 100×20:
+
+```rs
+// Screen-space
+let screen_mouse = mouse::screen();
+if screen_mouse.intersects(50, 30, 100, 20) {
+    // Mouse is over the rectangle in screen coordinates
+}
+if screen_mouse.intersects(50, 30, 100, 20) && screen_mouse.just_pressed() {
+    // Mouse just clicked/tapped the rectangle in screen coordinates
+}
+
+// World-space
+let world_mouse = mouse::world();
+if world_mouse.intersects(50, 30, 100, 20) {
+    // Mouse is over the rectangle in world coordinates
+}
+if world_mouse.intersects(50, 30, 100, 20) && world_mouse.just_pressed() {
+    // Mouse just clicked/tapped the rectangle in world coordinates
+}
+```

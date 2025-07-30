@@ -17,6 +17,7 @@ jobs:
         run: npm ci && npm run build
 
       - name: Deploy to Firebase Hosting
+        id: deploy      
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
@@ -33,6 +34,7 @@ jobs:
             --arg repo "$GITHUB_REPOSITORY" \
             --arg url "https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}" \
             --arg commit "${GITHUB_SHA}" \
+            --arg deploy_url "https://docs.turbo.computer" \
             --arg timestamp "$TIMESTAMP" \
             '{
               "embeds": [{
@@ -40,6 +42,7 @@ jobs:
                 "description": ("Project **\($repo)** has been deployed."),
                 "color": 7506394,
                 "fields": [
+                  {"name": "URL", "value": $deploy_url}
                   {"name": "Commit", "value": "[\($commit)](\($url))"}
                 ],
                 "footer": { "text": "Firebase Deploy" },

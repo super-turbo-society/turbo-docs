@@ -22,17 +22,19 @@ text!(
     x = i32,
     y = i32,
     color = u32,
-    font = &str
+    font = &str,
+    fixed = bool,
 )
 ```
 
-| Param   | Type   | Default      | Description                                                  |
-| :------ | :----- | :----------- | :----------------------------------------------------------- |
-| -       | `&str` | -            | Text to be displayed                                         |
-| `x`     | `i32`  | `0`          | Starting x position of the text                              |
-| `y`     | `i32`  | `0`          | Starting y position of the text                              |
-| `color` | `u32`  | `0xffffffff` | Hex color to display text in                                 |
-| `font`  | `&str` | `"medium"`   | Size to display text in: `"small"`, `"medium"`, or `"large"` |
+| Param   | Type   | Default      | Description                                                           |
+| :------ | :----- | :----------- | :-------------------------------------------------------------------- |
+| -       | `&str` | -            | Text to be displayed.                                                 |
+| `x`     | `i32`  | `0`          | Starting x position of the text.                                      |
+| `y`     | `i32`  | `0`          | Starting y position of the text.                                      |
+| `color` | `u32`  | `0xffffffff` | Hex color to display text in.                                         |
+| `font`  | `&str` | `"medium"`   | Size to display text in: `"small"`, `"medium"`, or `"large"`.         |
+| `fixed` | `bool` | `false`      | If `true`, the text's size and position are unaffected by the camera. |
 
 ## Usage
 

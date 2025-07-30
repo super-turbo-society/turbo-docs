@@ -4,58 +4,45 @@
 
 ## Overview
 
-Use `Bounds` to arrange your canvas into rectangular regions. It is a great way to set up your UI and create buttons and menus on your screen.
+`Bounds` represents a rectangular region in 2D space. It is the core primitive for low-res immediate-mode graphics, providing essential methods for positioning, sizing, and geometric operations.
 
 ## API
 
-### `bounds::canvas`
+### `bounds::screen`
 
-Returns the fixed canvas bounds without any camera position or zoom adjustments. This is typically useful for GUI elements that are fixed in size and position relative to the game's canvas.
-
-```rust
-bounds::canvas() -> Bounds
-```
-
-### `bounds::viewport`
-
-Returns the current viewport bounds with the current camera offset applied. This is typically used to get the canvas or screen boundaries.
+Returns the screen-space (fixed) bounds. This is typically useful for GUI elements that are unaffected by any camera position or zoom adjustments.
 
 ```rust
-bounds::viewport() -> Bounds
+bounds::screen() -> Bounds
 ```
 
-:::details[`Bounds`]
+### `bounds::world`
 
-```rs
-pub struct Bounds {
-    x: i32,
-    y: i32,
-    w: u32,
-    h: u32,
-}
+Returns the world-space (camera-relative) bounds. This is typically used to position bounds relative to game objects.
+
+```rust
+bounds::world() -> Bounds
 ```
-
-:::
 
 ## Usage
 
-### Create a bounds for the full screen size
+### Creating a bounds that fills the screen
 
 ```rs
-// create a new bounds that fills the full space of your screen
-let canvas_bounds = bounds::canvas();
+// Create a new bounds that fills the full space of your game screen
+let screen_bounds = bounds::screen();
 ```
 
-### Create a bounds of a set size and center it
+### Centering a fixed-size bounds
 
 ```rs
-let canvas_bounds = bounds::canvas();
-// create a new bounds that is 48 px wide and 14 px tall
-let bounds = Bounds::with_size(48, 14)
-    // center it horizontally and vertically within the whole screen
-    .anchor_center(&canvas_bounds)
-    // move it up 16px
-    .translate_y(-16);
+// Create a new bounds that fills the full space of your game screen
+let screen_bounds = bounds::screen();
+
+// Create a new bounds that is 48 px wide and 14 px tall
+let bounds = bounds::size(48, 14)
+    // Center it horizontally and vertically within the whole screen
+    .anchor_center(&screen_bounds);
 ```
 
 ### Adjusting your bounds
@@ -63,82 +50,86 @@ let bounds = Bounds::with_size(48, 14)
 In most cases, you can adjust your bounds with set pixel amounts, or by fractions of another bounds.
 
 ```rs
-let parent = Bounds::new(0, 0, 200, 100);
-// create a new bounds, half as wide as the parent
+// Create a bounds that is 200px wide and 100px tall
+let parent = bounds::size(200, 100);
+
+// Create a new bounds, half as wide as the parent
 let child = parent.adjust_width_by_fraction(0.5);
 ```
 
-### Use your bounds to draw a rectangle
+### Using your bounds to draw a rectangle
 
 Once you have your bounds in the correct position, you can access its values.
 
 ```rs
-let canvas_bounds = bounds::canvas();
-// create a new bounds that is 48 px wide and 14 px tall
-let bounds = Bounds::with_size(48, 14)
-    // centers it horizontally and vertically within the whole screen
-    .anchor_center(&canvas_bounds)
-    // move it up 16px
+// Create a new bounds that fills the full space of your game screen
+let screen_bounds = bounds::screen();
+
+// Create a new bounds that is 48 px wide and 14 px tall
+let bounds = bounds::size(48, 14)
+    // Center it horizontally and vertically within the whole screen
+    .anchor_center(&screen_bounds)
+    // Move it up 16px
     .translate_y(-16);
-// highlight-start
+
 rect!(
+    // Use the bounds to position and size the rectangle
+    bounds = bounds,
+    // Full with white
     color = 0xffffffff,
-    // Use the bounds position for x and y
-    xy = bounds.xy(),
-    // Use the bounds size for w and h
-    wh = bounds.wh(),
 );
-// highlight-end
 ```
 
-### Complete Example
+### Making buttons with bounds
 
-Create a row of 3 buttons that use `bounds` to recognize whenever they are hovered or clicked
+Create a row of 3 interactive buttons using bounds.
 
 ```rs
-turbo::go!({
-    let p = pointer();
-    let canvas_bounds = bounds::canvas();
-    let buttons = canvas_bounds
-        .height(32)
-        .inset_left(8)
-        .inset_right(8)
-        .anchor_center(&canvas_bounds)
-        .inset_bottom(12)
-        .columns_with_gap(3, 12); //create a vec of 3 buttons, equally separated, with 12 horizontal pixels between them
-    for (i, btn) in buttons.into_iter().enumerate() {
-        let label = match i {
-            0 => "One",
-            1 => "Two",
-            2 => "Three",
-            _ => "",
-        };
-        let (regular_color, hover_color, pressed_color) = match i {
-            0 => (0x8833AAff, 0xAA55CCff, 0x800080FF),
-            1 => (0xCC3333ff, 0xFF5555ff, 0xFF0000FF),
-            2 => (0x33CCFFff, 0x66DDFFFF, 0x00FFFFFF),
-            _ => (0x3333CCff, 0x5555FFff, 0x000000ff),
-        };
-        let is_btn_hovered = p.xy().intersects_bounds(btn);
-        rect!(
-            color = if p.pressed() && is_btn_hovered {
-                pressed_color
-            } else if is_btn_hovered {
-                hover_color
-            } else {
-                regular_color
-            },
-            w = btn.w(),
-            h = btn.h(),
-            x = btn.x(),
-            y = btn.y(),
-            border_radius = 2,
-        );
+// Get pointer input
+let p = pointer::get();
 
-        let btn_inner = btn.inset_left(4).inset_top(4);
-        text!(label, x = btn_inner.x(), y = btn_inner.y(), font = "medium");
-    }
-});
+// Create a vector of 3 bounds:
+// 1. Use the screen bounds to start
+// 2. Create an 8px inset on all sides
+// 3. Set height to 32px
+// 4. Anchor to the center of the screen
+// 5. Split into 3 columns with a 12px gap between them
+let screen_bounds = bounds::screen();
+let buttons = screen_bounds
+    .inset(8)
+    .height(32)
+    .anchor_center(&screen_bounds)
+    .columns_with_gap(3, 12);
+
+// Loop over each Bounds and draw a button
+for (i, btn) in buttons.into_iter().enumerate() {
+    // Set up button colors and labels by their index
+    let (label, regular_color, hover_color, pressed_color) = match i {
+        0 => ("One", 0x8833AAff, 0xAA55CCff, 0x800080FF),
+        1 => ("Two", 0xCC3333ff, 0xFF5555ff, 0xFF0000FF),
+        2 => ("Three", 0x33CCFFff, 0x66DDFFFF, 0x00FFFFFF),
+        _ => continue,
+    };
+
+    // Determine the button color based on pointer state and position
+    let color = if p.just_pressed_bounds(btn) {
+        pressed_color
+    } else if p.intersects_bounds(btn) {
+        hover_color
+    } else {
+        regular_color
+    };
+
+    // Use the bounds and pointer state to draw the button
+    rect!(
+        bounds = btn,
+        color = color,
+        border_radius = 2,
+    );
+
+    // Use the button bounds with a 4px inset (inner padding)
+    text_box!(label, bounds = btn.inset(4), font = "medium");
+}
 ```
 
 ![Bounds example showing a simple button row](/bounds_example.gif)

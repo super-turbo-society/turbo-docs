@@ -22,17 +22,21 @@ nine_slice!(
     y = i32,
     w = u32,
     h = u32,
+    fixed = true,
+    bounds = Bounds,
 )
 ```
 
-| Param     | Type                   | Default | Description                               |
-| :-------- | :--------------------- | :------ | :---------------------------------------- |
-| `name`    | `&str`                 |         | Name of the sprite to use as a nine-slice |
-| `margins` | `(u32, u32, u32, u32)` | `0`     | The margins of the nine-slice sprite      |
-| `x`       | `i32`                  | `0`     | X position of the nine-slice              |
-| `y`       | `i32`                  | `0`     | Y position of the nine-slice              |
-| `w`       | `u32`                  | `0`     | The width of the nine-slice               |
-| `h`       | `u32`                  | `0`     | The height of the nine-slice              |
+| Param     | Type                   | Default | Description                                                                 |
+| :-------- | :--------------------- | :------ | :-------------------------------------------------------------------------- |
+| `name`    | `&str`                 |         | Name of the sprite to use as a nine-slice.                                  |
+| `margins` | `(u32, u32, u32, u32)` | `0`     | The margins of the nine-slice sprite.                                       |
+| `x`       | `i32`                  | `0`     | X position of the nine-slice.                                               |
+| `y`       | `i32`                  | `0`     | Y position of the nine-slice.                                               |
+| `w`       | `u32`                  | `0`     | The width of the nine-slice.                                                |
+| `h`       | `u32`                  | `0`     | The height of the nine-slice.                                               |
+| `fixed`   | `bool`                 | `false` | If `true`, the nine-slice's size and position are unaffected by the camera. |
+| `bounds`  | `Bounds`               |         | Sets the `x`, `y`, `w`, `h` of the nine-slice.                              |
 
 :::note
 To render a nine-slice turbo needs to know the sprite file name and the margins. The margins are the distances in pixels of each edge, starting from the left and moving clockwise.

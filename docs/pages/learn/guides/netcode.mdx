@@ -1,0 +1,191 @@
+# Understanding Network Code
+
+![Packet storm illustration](/turbi-reading-nobg.png)
+
+## Overview
+
+Turbo OS is designed for networked multiplayer games and services where reliability, latency, and state synchronization are critical. This guide outlines the key **best practices** for building stable and performant netcode using Turbo's APIs.
+
+## Core Principles
+
+::::steps
+
+### Authenticate During Development
+
+To upload and update programs, you must run your project as an **authenticated user**:
+
+```sh
+turbo run -w --user <YOUR_USER_ID>
+```
+
+:::note
+Using the `--guest` flag will not allow you to upload program updates
+:::
+
+Your user ID and authentication code can be found in your [Turbo OS Dashboard](https://os.turbo.computer/dashboard).
+
+---
+
+### Get a Fresh Channel Connection Each Frame
+
+Channel subscriptions are **poll-based**, not event-driven. Call `Channel::subscribe` every update frame to maintain the connection.
+
+```rs
+if let Some(conn) = MyChannel::subscribe("default") {
+    while let Ok(msg) = conn.recv() {
+        log!("Received: {:?}", msg);
+    }
+}
+```
+
+:::warning
+You won't stay connected unless you call `subscribe()` **each frame**.
+:::
+
+---
+
+### Watch Files Each Frame
+
+File updates are **push-based**. You must `watch()` files in every update loop to stay in sync with the latest file data:
+
+```rs
+let counter = Counter::watch("counter")
+    .parse()
+    .unwrap_or(Counter { value: 0 });
+```
+
+:::warning
+Loading a file takes more than one frame (~16ms). Be sure to call `watch()` **each frame**.
+:::
+
+---
+
+### Gate Messages Behind User Intent
+
+**Do not execute commands or send channel messages each frame.**
+
+Always check for a deliberate player action first:
+
+```rs
+if gamepad::get(0).start.just_pressed() {
+    let cmd = Ping;
+    let _ = conn.send(&cmd);
+}
+```
+
+---
+
+### Commands vs Channels
+
+- **Use Commands when:**
+
+  - You are writing to a file or mutating program state.
+  - You want the server to store a result and keep a track record of player actions.
+  - Player actions are discrete and not latency-sensitive (e.g. "cast spell", "equip item").
+
+- **Use Channels when:**
+  - You need real-time communication (e.g. player position, chat, combat).
+  - You want broadcast behavior (multiple clients receive).
+  - Latency is critical and persistent state isn't required.
+
+**Summary**
+At the cost of latency, Commands support a larger total number of players, persistent game data, robust player analytics, and a verifiable track record of in-game transactions. If you are more concerned with latency and your game state is ephemeral, Channels are typically a better choice. Channels are also a recommended default if you are not sure where to start.
+
+:::tip
+You can combine both. For example: use a channel for combat actions, and commands to commit kills or rewards.
+:::
+
+### Optimize Communication
+
+Efficient message design is critical for fast-paced gameplay and scalability. Small, infrequent messages reduce latency, lower bandwidth usage, and increase the number of players your game can support.
+
+#### 🧠 General Principles
+
+- **Minimize data size**  
+  Keep your `Send` and `Recv` structs and enums as small as possible—remove unused fields and prefer compact types like `u8` and `bool` where possible. Be cautious of fields that can grow to any size such as `String`, `Vec`, `HashMap`, `BTreeMap`, etc.
+
+- **Avoid chatty behavior**  
+  Do not send messages every frame. Only send when there is meaningful state change or clear player intent.
+
+- **Use intervals, not floods**  
+  Broadcast shared state or sync events every 100-200ms ideally, not on every tick.
+
+- **Prefer delta over full state**  
+  Only send what's changed. Full dumps are rarely necessary.
+
+- **Simulate locally**  
+  Use client-side prediction and smoothing (e.g. tweens, lerps) to handle visual continuity.
+
+#### 🚦 Client Messaging Tips
+
+- **Throttle**  
+  Enforce cooldowns or time windows between repeated messages, e.g. one message per 200ms.
+
+- **Debounce**  
+  Wait for a burst of inputs to settle before sending a single representative message.
+
+- **Deduplicate**  
+  Avoid sending repeated identical messages (e.g. holding a key should not fire the same action every frame).
+
+- **Gate behind intent**  
+  All messages—whether commands or channel sends—should be driven by clear user input (e.g. a button press), not polling or idle animations.
+
+Well-designed message protocols are the difference between a game that feels snappy and one that crumbles under real-world latency.
+
+---
+
+### Design for Errors
+
+Turbo OS gives you fast, reliable tools—but real networks are messy. You can’t control every player’s connection. Plan for failure.
+
+**Common issues:**
+
+- Players can disconnect at unexpected times
+- Slow or unstable connections are common
+- Server-side issues can cause temporary degradation
+- Messages do not arrive at the same time for all players
+- Even reliable timers do not guarantee synchronized delivery
+
+**Best practices:**
+
+- Clean up state when players disconnect
+- Handle idle or inactive players to prevent blocking others
+- Never assume success—always handle both `Ok` and `Err`
+- Avoid `unwrap()` and use clear error handling
+- Expect messages to arrive late or out-of-order
+- Read your logs—they are your best debugging tool
+
+:::tip[Monitor Your Programs]
+**Channels**: Every channel connection logs an inspector URL to the command line during development. Use it to monitor state, events, and logs in real time.
+
+**Commands**: Commands can be monitored in real-time from their program's analytics page which can be found on your [Turbo OS Dashboard](https://os.turbo.computer/dashboard).
+:::
+
+### Test with Multiple Accounts
+
+Prior to deploying your game on the web, you can open multiple game windows locally and test with guest accounts. Using the `--guest` flag will generate a new random user which can be handy for testing multiplayer locally during development.
+
+```
+turbo run -w --guest
+```
+
+:::warning
+Guest accounts do not have permission to upload program modifications. You must authenticate with the `--user` flag to make changes to channels and commands.
+:::
+
+## Best Practices Checklist
+
+| ✅ Do This                                | 🚫 Don't Do This                                   |
+| ----------------------------------------- | -------------------------------------------------- |
+| Pass `--user` to update programs          | Try to make program updates with `--guest`         |
+| `subscribe()` to channels **every frame** | Call `subscribe()` once and assume it's persistent |
+| `watch()` files **every frame**           | Assume files take one frame to load                |
+| Send channel messages on user input       | Send channel messages every frame                  |
+| Execute commands on user input            | Execute commands every frame                       |
+| Expect and handle errors                  | Assume the network is always reliable              |
+| Use inspector + analytics to debug        | Ignore server logs and error outputs               |
+
+## Next Steps
+
+- Read the [Channels](/learn/api/networking/channels) documentation for fast-paced multiplayer patterns.
+- Learn how to sync state with [Commands](/learn/api/networking/commands).

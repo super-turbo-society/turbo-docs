@@ -2,7 +2,7 @@
 
 ## Overview
 
-Turbo's concept of a "gamepad" is similar to a SNES controller and maps up to 2 player's local gamepad input to the keyboard:
+Turbo gamepad layouts are similar to a SNES controller. Gamepad controls for players 1 and 2 are automatically mapped to the keyboard:
 
 | Gamepad | Keyboard (P1)       | Keyboard (P2) |
 | ------- | ------------------- | ------------- |
@@ -18,135 +18,66 @@ Turbo's concept of a "gamepad" is similar to a SNES controller and maps up to 2 
 | Select  | `Enter`             | `]`           |
 
 :::note
-Turbo also supports actual gamepads, but it only cares about those buttons.
+With actual gamepads, left analog stick input is mapped to direction buttons. Beyond that, buttons not listed in the table above are ignored.
+:::
+
+:::info
+On mobile web, touch swipes/drags are treated as `gamepad` direction presses.
 :::
 
 ## API
 
-### `gamepad`
+### `gamepad::get`
 
 Gets the gamepad data for a player.
 
 ```rs
-pub fn gamepad(player: u32) -> Gamepad<Button>
+gamepad::get(gamepad_index: u32) -> Gamepad
 ```
 
-| Param    | Type  | Default | Description                          |
-| :------- | :---- | :------ | :----------------------------------- |
-| `player` | `u32` |         | The player to get gamepad input for. |
-
-<details>
-<summary>**`Gamepad`**</summary>
-
-```rs
-/// Represents the state of various gamepad buttons.
-#[repr(C, packed)]
-#[derive(Clone, Copy, Debug, PartialEq, bytemuck::Pod, bytemuck::Zeroable)]
-pub struct Gamepad<T: Copy> {
-    /// The state of the up button.
-    pub up: T,
-    /// The state of the down button.
-    pub down: T,
-    /// The state of the left button.
-    pub left: T,
-    /// The state of the right button.
-    pub right: T,
-    /// The state of the A button.
-    pub a: T,
-    /// The state of the B button.
-    pub b: T,
-    /// The state of the X button.
-    pub x: T,
-    /// The state of the Y button.
-    pub y: T,
-    /// The state of the Start button.
-    pub start: T,
-    /// The state of the Select button.
-    pub select: T,
-}
-```
-
-</details>
-
-<details>
-<summary>**`Button`**</summary>
-
-```rs
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Button {
-    Released = 0,
-    JustPressed = 1,
-    Pressed = 2,
-    JustReleased = 3,
-}
-```
-
-</details>
+| Param           | Type  | Default | Description            |
+| :-------------- | :---- | :------ | :--------------------- |
+| `gamepad_index` | `u32` |         | The gamepad input for. |
 
 ## Usage
 
 ### Basics
 
-To retrieve the gamepad state of a player, use the `gamepad` function. The player is `0`-indexed, so `0` is player 1, `1` is player 2, etc.
+To retrieve the gamepad state of a player, use the `gamepad` function.
 
 ```rs
 // Get the gamepad state for player 1
-let p1_gamepad = gamepad(0);
+let p1_gamepad = gamepad::get(0);
 
 // Get the gamepad state for player 2
-let p2_gamepad = gamepad(1);
+let p2_gamepad = gamepad::get(1);
 ```
 
-### Convenience Methods
+:::note
+Gamepads are `0`-indexed, so `0` is player 1, `1` is player 2, etc.
+:::
+
+### Button Methods
 
 To check the button states for players, utilize the following methods after obtaining the gamepad state using the `gamepad` function:
 
 ```rs
-// Get the gamepad state for player 1
-let gp = gamepad(0);
+let gp = gamepad::get(0);
 
-// Checks if the A button is JustPressed
 if gp.a.just_pressed() {
-    // Handle JustPressed state
+    // Fired at the instant the button/touch goes down
 }
-
-// Checks if the A button is JustPressed or Pressed
 if gp.a.pressed() {
-    // Handle JustPressed and Pressed states
+    // True every frame the button is held down
 }
-
-// Checks if the A button is JustReleased
 if gp.a.just_released() {
-    // Handle JustReleased state
+    // Fired at the moment the button is released
 }
-
-// Checks if the A button is JustReleased or Released
 if gp.a.released() {
-    // Handle JustReleased and Released states
+    // True every frame the button is NOT held down
 }
 ```
 
-### Matching `Button` Variants
-
-You can also match on the `Button` variants directly:
-
-```rs
-// Get the gamepad state for player 1
-let gp = gamepad(0);
-
-// Check the input state of the Start button
-match gp.start {
-    Button::JustPressed => {
-        // Handle the JustPressed state
-    },
-    Button::Pressed => {
-        // Handle the Pressed state
-    },
-    Button::JustReleased => {
-        // Handle the JustReleased state
-    },
-    Button::JustReleased => {
-        // Handle the Released state
-    },
-}
-```
+:::note
+This example just demonstrates checking the a button, but you can check all other buttons listed in the table above (`gp.start`, `gp.up`, etc)
+:::

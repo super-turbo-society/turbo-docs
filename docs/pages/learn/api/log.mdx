@@ -31,13 +31,13 @@ log!("hello!");
 Log your game state:
 
 ```rust
-let state = GameState::load();
+let state = GameState::new();
 log!("My game state = {:?}", state);
 ```
 
 You can interpolate multiple vars:
 
 ```rust
-let (canvas_width, canvas_height) = resolution();
+let (canvas_width, canvas_height) = canvas::resolution();
 log!("Canvas - width = {:?}, height = {:?}", canvas_width, canvas_height);
 ```
