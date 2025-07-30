@@ -78,7 +78,6 @@ if gamepad::get(0).start.just_pressed() {
 ### Commands vs Channels
 
 - **Use Commands when:**
-
   - You are writing to a file or mutating program state.
   - You want the server to store a result and keep a track record of player actions.
   - Player actions are discrete and not latency-sensitive (e.g. "cast spell", "equip item").

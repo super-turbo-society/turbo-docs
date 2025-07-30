@@ -116,7 +116,7 @@ camera::pan_z(z: f32, duration: usize, easing: Easing)
 
 ### `camera::shake`
 
-Applies a screen-space shake around the last known stable camera position.
+Applies a screen-space shake amount (in pixels) around the last known stable camera position.
 
 ```rust
 camera::shake(amount: usize)
@@ -125,10 +125,6 @@ camera::shake(amount: usize)
 | Param    | Type    | Description                                     |
 | -------- | ------- | ----------------------------------------------- |
 | `amount` | `usize` | Maximum pixel offset in any direction per axis. |
-
-:::note
-Automatically updates the origin if the last shake was more than 1 frame ago.
-:::
 
 :::tip[Example]
 
@@ -139,6 +135,30 @@ camera::shake(2);
 ```
 
 :::
+
+### `camera::is_shaking`
+
+Returns `true` if a shake effect is currently active.
+
+```rust
+camera::is_shaking() -> bool
+```
+
+### `camera::shake_amount`
+
+Returns the current shake intensity (in pixels).
+
+```rust
+camera::shake_amount() -> usize
+```
+
+### `camera::remove_shake`
+
+Stops any ongoing camera shake and restores the stable position.
+
+```rust
+camera::remove_shake()
+```
 
 ### `camera::xyz`
 
