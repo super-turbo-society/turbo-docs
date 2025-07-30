@@ -46,7 +46,7 @@ You won't stay connected unless you call `subscribe()` **each frame**.
 
 ### Watch Files Each Frame
 
-File updates is **push-based**. You must `watch()` files in every update loop to receive updates:
+File updates are **push-based**. You must `watch()` files in every update loop to stay in sync with the latest file data:
 
 ```rs
 let counter = Counter::watch("counter")
@@ -78,6 +78,7 @@ if gamepad::get(0).start.just_pressed() {
 ### Commands vs Channels
 
 - **Use Commands when:**
+
   - You are writing to a file or mutating program state.
   - You want the server to store a result and keep a track record of player actions.
   - Player actions are discrete and not latency-sensitive (e.g. "cast spell", "equip item").
@@ -158,6 +159,18 @@ Turbo OS gives you fast, reliable toolsâ€”but real networks are messy. You canâ€
 **Channels**: Every channel connection logs an inspector URL to the command line during development. Use it to monitor state, events, and logs in real time.
 
 **Commands**: Commands can be monitored in real-time from their program's analytics page which can be found on your [Turbo OS Dashboard](https://os.turbo.computer/dashboard).
+:::
+
+### Test with Multiple Accounts
+
+Prior to deploying your game on the web, you can open multiple game windows locally and test with guest accounts. Using the `--guest` flag will generate a new random user which can be handy for testing multiplayer locally during development.
+
+```
+turbo run -w --guest
+```
+
+:::warning
+Guest accounts do not have permission to upload program modifications. You must authenticate with the `--user` flag to make changes to channels and commands.
 :::
 
 ## Best Practices Checklist
