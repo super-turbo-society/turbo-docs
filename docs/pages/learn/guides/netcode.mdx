@@ -46,7 +46,7 @@ You won't stay connected unless you call `subscribe()` **each frame**.
 
 ### Watch Files Each Frame
 
-Like channels, getting file updates is **poll-based**. You must `watch()` files in every update loop:
+File updates is **push-based**. You must `watch()` files in every update loop to receive updates:
 
 ```rs
 let counter = Counter::watch("counter")
@@ -55,7 +55,7 @@ let counter = Counter::watch("counter")
 ```
 
 :::warning
-File watching is **not persistent**. You must call `watch()` each frame.
+Loading a file takes more than one frame (~16ms). Be sure to call `watch()` **each frame**.
 :::
 
 ---
@@ -95,7 +95,7 @@ At the cost of latency, Commands support a larger total number of players, persi
 You can combine both. For example: use a channel for combat actions, and commands to commit kills or rewards.
 :::
 
-### Optimizing Communication
+### Optimize Communication
 
 Efficient message design is critical for fast-paced gameplay and scalability. Small, infrequent messages reduce latency, lower bandwidth usage, and increase the number of players your game can support.
 
