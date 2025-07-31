@@ -201,7 +201,7 @@ audio::seek_to(name: &str, seconds: f32)
 
 | Param    | Type   | Default | Description                                       |
 | :------- | :----- | :------ | :------------------------------------------------ |
-| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `name`   | `&str` |         | The name of the audio asset to seek.              |
 | `seconds`| `f32`  |         | Sets the playback to respective seconds           |
 
 ### `audio::seek_by`
@@ -214,7 +214,7 @@ audio::seek_by(name: &str, seconds: f32)
 
 | Param    | Type   | Default | Description                                       |
 | :------- | :----- | :------ | :------------------------------------------------ |
-| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `name`   | `&str` |         | The name of the audio asset to seek.              |
 | `seconds`| `f32`  |         | Moves the playback to respective seconds          |
 
 ### `audio::get_sound_state`
@@ -234,10 +234,11 @@ Returns the sound's current state represented by an f32 value.
 audio::get_sound_state(name: &str) -> f32
 ```
 
-| Param    | Type   | Default | Description                                       |
-| :------- | :----- | :------ | :------------------------------------------------ |
-| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
-| `state`  | `f32`  |         | Current playback state of the sound.              |
+| Param    | Type   | Default | Description                                           |
+| :------- | :----- | :------ | :---------------------------------------------------  |
+| `name`   | `&str` |         | The name of the audio asset to set the sound state of.|
+| `state`  | `f32`  |         | Current playback state of the sound.                  |
+
 
 ### `audio::get_playback_position`
 
@@ -247,23 +248,10 @@ Gets the current playback position of the sound (in seconds)
 audio::get_playback_position(name: &str) -> f32
 ```
 
-| Param    | Type   | Default | Description                                       |
-| :------- | :----- | :------ | :------------------------------------------------ |
-| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
-| `state`  | `f32`  |         | Current playback state of the sound.              |
-
-### `audio::get_playback_position`
-
-Gets the current playback position of the sound (in seconds)
-
-```rs
-audio::get_playback_position(name: &str) -> f32
-```
-
-| Param    | Type   | Default | Description                                       |
-| :------- | :----- | :------ | :------------------------------------------------ |
-| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
-| `state`  | `f32`  |         | Current playback state of the sound.              |
+| Param    | Type   | Default | Description                                        |
+| :------- | :----- | :------ | :------------------------------------------------- |
+| `name`   | `&str` |         | The name of the audio asset to set the position of.|
+| `state`  | `f32`  |         | Current playback state of the sound.               |
 
 
 ### `audio::set_playback_rate_semitones`
@@ -276,7 +264,7 @@ audio::set_playback_rate_semitones(name: &str, semitones: f64)
 
 | Param       | Type   | Default | Description                                               |
 | :---------- | :----- | :------ | :-------------------------------------------------------- |
-| `name`      | `&str` |         | The name of the audio asset to set the panning of.        |
+| `name`      | `&str` |         | The name of the audio asset to set the rate of.           |
 | `semitones` | `f64`  |         | Value of semitones to shift. Clamped between -12 and 12   |
 
 ### `audio::set_playback_rate_factor`
@@ -289,5 +277,26 @@ audio::set_playback_rate_factor(name: &str, factor: f64)
 
 | Param     | Type   | Default | Description                                         |
 | :-------- | :----- | :------ | :-------------------------------------------------- |
-| `name`    | `&str` |         | The name of the audio asset to set the panning of.  |
+| `name`    | `&str` |         | The name of the audio asset to set the rate of.     |
 | `factor`  | `f64`  |         | Value of factor to multiply playback by.            |
+
+
+### `audio::set_loop_region`
+
+Set the loop region for a sound.
+
+Negative `start` or `end` values indicate an open range (i.e., no bound).
+- `start < 0.0 && end < 0.0` disables looping
+- `start >= 0.0 && end < 0.0` loops from `start` to end
+- `start < 0.0 && end >= 0.0` loops from start to `end`
+- `start >= 0.0 && end >= 0.0` loops from `start` to `end`
+
+```rs
+audio::set_loop_region(name: &str, start:f64, end:f64)
+```
+
+| Param     | Type   | Default | Description                                         |
+| :-------- | :----- | :------ | :-------------------------------------------------- |
+| `name`    | `&str` |         | The name of the audio asset to set the loop in.     |
+| `start`   | `f64`  |         | Loop start in seconds (use -1.0 for None)           |
+| `end`     | `f64`  |         | Loop end in seconds (use -1.0 for None)             |
