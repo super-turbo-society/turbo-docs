@@ -156,3 +156,147 @@ audio::unmute(name: &str)
 | Param  | Type   | Default | Description                            |
 | :----- | :----- | :------ | :------------------------------------- |
 | `name` | `&str` |         | The name of the audio asset to unmute. |
+
+
+### `audio::get_duration`
+
+Gets the current duration of the sound identified by `name`, expressed as seconds.
+
+```rs
+audio::get_duration(name: &str) -> f64
+```
+
+| Param  | Type   | Default | Description                                       |
+| :----- | :----- | :------ | :------------------------------------------------ |
+| `name` | `&str` |         | The name of the audio asset to get the volume of. |
+
+### `audio::set_panning`
+
+Sets the volume of the sound identified by `name`, using a `-1.0` to `1.0` linear scale.
+
+```rs
+audio::set_panning(name: &str, panning: f32)
+```
+
+:::note
+Pans sound to the left or right with 0 as the center. Defaults to 0.
+:::
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to set the panning of.|
+| `panning`| `f32`  |         | Sets the panning (between -1.0-1.0)               |
+
+### `audio::seek_to`
+
+Sets the location of the playback of the sound to the seconds passed. The sound identified by `name`.
+
+```rs
+audio::seek_to(name: &str, seconds: f32)
+```
+
+:::note
+ Note: if seconds exceed duration will not work.
+:::
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to seek.              |
+| `seconds`| `f32`  |         | Sets the playback to respective seconds           |
+
+### `audio::seek_by`
+
+Moves the location of playback by the seconds passed. The sound identified by `name`.
+
+```rs
+audio::seek_by(name: &str, seconds: f32)
+```
+
+| Param    | Type   | Default | Description                                       |
+| :------- | :----- | :------ | :------------------------------------------------ |
+| `name`   | `&str` |         | The name of the audio asset to seek.              |
+| `seconds`| `f32`  |         | Moves the playback to respective seconds          |
+
+### `audio::get_sound_state`
+
+Returns the sound's current state represented by an f32 value.
+
+| State                          | Value                      |
+| :----------------------------- | :------------------------- |
+| PlaybackState::Paused          | 0.5                        |
+| PlaybackState::Stopped.        | 0.0                        |
+| PlaybackState::WaitingToResume | 0.0                        |
+| PlaybackState::Stopping        | 0.0                        |
+| PlaybackState::Pausing         | 0.0                        |
+| PlaybackState::Resume          | 0.0                        |
+
+```rs
+audio::get_sound_state(name: &str) -> f32
+```
+
+| Param    | Type   | Default | Description                                           |
+| :------- | :----- | :------ | :---------------------------------------------------  |
+| `name`   | `&str` |         | The name of the audio asset to set the sound state of.|
+| `state`  | `f32`  |         | Current playback state of the sound.                  |
+
+
+### `audio::get_playback_position`
+
+Gets the current playback position of the sound (in seconds)
+
+```rs
+audio::get_playback_position(name: &str) -> f32
+```
+
+| Param    | Type   | Default | Description                                        |
+| :------- | :----- | :------ | :------------------------------------------------- |
+| `name`   | `&str` |         | The name of the audio asset to set the position of.|
+| `state`  | `f32`  |         | Current playback state of the sound.               |
+
+
+### `audio::set_playback_rate_semitones`
+
+Gets the current playback rate based on raising or lowering semitones. 
+
+```rs
+audio::set_playback_rate_semitones(name: &str, semitones: f64)
+```
+
+| Param       | Type   | Default | Description                                               |
+| :---------- | :----- | :------ | :-------------------------------------------------------- |
+| `name`      | `&str` |         | The name of the audio asset to set the rate of.           |
+| `semitones` | `f64`  |         | Value of semitones to shift. Clamped between -12 and 12   |
+
+### `audio::set_playback_rate_factor`
+
+Gets the current playback rate based on factor. Clamped between 0.5 and 2.
+
+```rs
+audio::set_playback_rate_factor(name: &str, factor: f64)
+```
+
+| Param     | Type   | Default | Description                                         |
+| :-------- | :----- | :------ | :-------------------------------------------------- |
+| `name`    | `&str` |         | The name of the audio asset to set the rate of.     |
+| `factor`  | `f64`  |         | Value of factor to multiply playback by.            |
+
+
+### `audio::set_loop_region`
+
+Set the loop region for a sound.
+
+Negative `start` or `end` values indicate an open range (i.e., no bound).
+- `start < 0.0 && end < 0.0` disables looping
+- `start >= 0.0 && end < 0.0` loops from `start` to end
+- `start < 0.0 && end >= 0.0` loops from start to `end`
+- `start >= 0.0 && end >= 0.0` loops from `start` to `end`
+
+```rs
+audio::set_loop_region(name: &str, start:f64, end:f64)
+```
+
+| Param     | Type   | Default | Description                                         |
+| :-------- | :----- | :------ | :-------------------------------------------------- |
+| `name`    | `&str` |         | The name of the audio asset to set the loop in.     |
+| `start`   | `f64`  |         | Loop start in seconds (use -1.0 for None)           |
+| `end`     | `f64`  |         | Loop end in seconds (use -1.0 for None)             |
