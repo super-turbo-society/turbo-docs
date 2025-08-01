@@ -14,7 +14,7 @@ To demonstrate, let's make a "ping pong" channel that accepts "ping" messages an
 
 Let's define our `Ping` and `Pong` structs:
 
-```rs
+```rs [src/lib.rs]
 use turbo::*;
 
 #[turbo::serialize]
@@ -30,7 +30,7 @@ We will send `Ping` to the channel and receive `Pong` from the channel.
 
 Here, we use the `turbo::os::channel` macro to tag our ChannelHandler with program and channel names.
 
-```rs
+```rs [src/lib.rs]
 use turbo::*;
 
 #[turbo::serialize]
@@ -51,7 +51,7 @@ The macro will ensure our program is uploaded and will add an additional `subscr
 
 Next, we have to implement the `ChannelHandler` trait:
 
-```rs
+```rs [src/lib.rs]
 use turbo::*;
 
 #[turbo::serialize]
@@ -89,7 +89,7 @@ Last, we can hook up the client
 
 Subscribe to the "ping pong" channel to get a `ChannelConnection` which we will call `conn`:
 
-```rs
+```rs [src/lib.rs]
 use turbo::*;
 
 #[turbo::game]
@@ -110,7 +110,7 @@ impl GameState {
 
 Pull Pong messages using the `ChannelConnection::recv` method:
 
-```rs
+```rs [src/lib.rs]
 use turbo::*;
 
 #[turbo::game]
@@ -133,7 +133,7 @@ impl GameState {
 
 Send a Ping message to the channel whenever the start button is pressed using the `ChannelConnection::send` method:
 
-```rs
+```rs [src/lib.rs]
 use turbo::*;
 
 #[turbo::game]
