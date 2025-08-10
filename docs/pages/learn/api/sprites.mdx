@@ -160,7 +160,7 @@ There are several ways you can transition between animations, but one of the sim
 let anim = animation::get("player_character");
 if gamepad(0).a.just_pressed() {
     anim.use_sprite("player_dash");
-    a.set_repeat(1); // only play the animation 1 time
+    anim.set_repeat(1); // only play the animation 1 time
 }
 sprite!(
     animation_key = "player_character",
