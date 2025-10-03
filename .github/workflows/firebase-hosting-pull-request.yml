@@ -51,7 +51,7 @@ jobs:
             '{
               "embeds": [{
                 "title": "🧪 PR Preview Deployed",
-                "description": ("Pull Request \($pr_number): [\($pr_title)](\($pr_url))"),
+                "description": ("Pull Request " + $pr_number + ": [" + $pr_title + "](" + $pr_url + ")"),
                 "color": 3447003,
                 "fields": [
                   {"name": "Author", "value": $pr_author},
