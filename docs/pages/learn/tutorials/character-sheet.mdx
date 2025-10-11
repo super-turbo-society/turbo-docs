@@ -234,6 +234,7 @@ struct GameState {
     player: Player, // [!code ++] [!code focus] [!code hl]
     frames: u32, // [!code ++] [!code focus] [!code hl]
     spawned: bool, // [!code ++] [!code focus] [!code hl]
+    equip: bool, // [!code ++] [!code focus] [!code hl]
 }
 
 impl GameState {
@@ -244,6 +245,7 @@ impl GameState {
             player: Player::new(), // [!code ++] [!code focus] [!code hl]
             frames: 0,  // [!code ++] [!code focus] [!code hl]
             spawned: false, // [!code ++] [!code focus] [!code hl]
+            equip: false, // [!code ++] [!code focus] [!code hl]
         }
     }
     pub fn update(&mut self) {
