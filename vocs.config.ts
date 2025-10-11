@@ -93,8 +93,8 @@ export default defineConfig({
             link: "/learn/tutorials/hello-world",
           },
           {
-            text: "State Machine",
-            link: "/learn/tutorials/state-machine",
+            text: "Character Sheet",
+            link: "/learn/tutorials/character-sheet",
           },
           {
             text: "Pancake Cat",
