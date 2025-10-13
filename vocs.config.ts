@@ -100,9 +100,13 @@ export default defineConfig({
           //   text: "Pong",
           //   link: "/learn/tutorials/pong",
           // },
+          {
+            text: "Space Shooter (Part 1)",
+            link: "/learn/tutorials/space-shooter-part-1",
+          },
           // {
-          //   text: "Space Shooter",
-          //   link: "/learn/tutorials/space-shooter",
+          //   text: "Space Shooter (Part 2)",
+          //   link: "/learn/tutorials/space-shooter-part-2",
           // },
         ],
       },
