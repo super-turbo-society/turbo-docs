@@ -18,12 +18,12 @@
 
 **What You'll Learn**
 
-- [x] How to initialize and run a Turbo project
-- [x] How to make new files and utilize them
-- [x] How to flip between menus using state machines
+- [x] How to use multiple Rust files
+- [x] How State Machines make it easy to organize your code
+- [x] How to use Enums in Rust
 - [x] How to import and use sprites
-- [x] An introduction to `Tweens`, `Bounds`, `Gamepad`, and `Camera`
-- [x] How to utilize various Turbo Macros
+- [x] The power of `Tweens`, `Bounds`, `Gamepad`, and `Camera`
+
 
 :::
 
@@ -56,6 +56,10 @@ character-sheet/          # Your project's root directory.
 
 ### Create `state.rs` and `player.rs` files
 
+:::tip[What is a State Machine?]
+A State Machine is a programming pattern used to keep your game code organized as you move between different states in the game. In this case, we are going to use it to separate the code for showing different in-game menus: Stats, Loadout and Character. 
+:::
+
 Inside your project directory, create a file named `state`. This file will contain your state machine.
 
 ```
@@ -67,7 +71,7 @@ your-project-dir/       # Your project's root directory.
 └── turbo.toml          # Turbo configuration.
 ```
 
-repeat this process but name it `player` to add in a `player` file. This file will contain your player struct.
+Repeat this process but name it `player` to add in a `player` file. This file will contain your player struct.
 
 ```
 your-project-dir/       # Your project's root directory.
@@ -106,7 +110,7 @@ use crate::*; // [!code ++] [!code focus] [!code hl]
 
 ```
 
-This will make the code we write in `state` and `player` to be recognized inside of `lib.rs` and vice versa. Don't forget to save each file with Cmd+S or Ctrl+S.
+This will allow the code we write in `state.rs` and `player.rs` to be recognized inside of `lib.rs` and vice versa. Don't forget to save each file with Cmd+S or Ctrl+S.
 
 ### Run the Game
 
@@ -121,9 +125,10 @@ If you want it to always appear above your other open windows you can run it wit
 ```bash [Terminal]
 turbo run -w -A character-sheet
 ```
-The `-A` will make it "always on top". 
 
-Additionally, if you run it from the directory you can forgo the project name
+The `-A` will make it "always on top". Since Turbo games update as soon as you save, it's good practice to keep the game running while you are coding!
+
+Additionally, if you run the command from the directory you saved your game in, you can forgo the project name, like this
 
 ```bash [Terminal]
 turbo run -w -A
@@ -147,9 +152,13 @@ pub enum Screen { // [!code ++] [!code focus] [!code hl]
 } // [!code ++] [!code focus] [!code hl]
 ```
 
+:::tip[Development Tip]
+An enum lets you define a collection of related named values. In this case we use it for the different screens in our game. Using `enums` makes your code much more readable and less error prone.
+:::
+
 ### `player.rs`
 
-Add this code to your `player.rs` file. These structs and enums will build out the basis of our character, inventory, and loadout screens.
+Add this code to your `player.rs` file. These `structs` and `enums` will build out the basis of our character, inventory, and loadout screens.
 
 ```rs [src/player.rs]
 use crate::*; 
@@ -216,7 +225,7 @@ By adding an `impl` for the `player` we can intialize it in gamestate with a `ne
 
 We also added in values like the index and slots for our `inventory` and `loadout`
 
-### `lib.rs` & GameState Initialization
+### `lib.rs` & `GameState` Initialization
 
 Now we can head into `lib.rs` and add the following fields to `GameState`
 
@@ -257,7 +266,7 @@ impl GameState {
 
 ### Adding in the State Machine
 
-Now we'll add in an empty state machine. This will be how we can flip between each screen easily.
+Now we'll add in an empty state machine into the `state.rs` file. We'll use it to change between screens.
 
 ```rs [src/state.rs]
 use crate::*; 
@@ -280,28 +289,28 @@ pub fn state_machine(state: &mut GameState) { // [!code ++] [!code focus] [!code
     } // [!code ++] [!code focus] [!code hl]
 } // [!code ++] [!code focus] [!code hl]
 ```
-Lets add our state machine to our update loop so we can view the changes we make to it in real time
+And then we'll call the `state_machine` function from our update loop, so that it is always running.
 
 ```rs [src/lib.rs]
 pub fn update(&mut self) {
-    state_machine(self); // [!code ++] [!code focus] [!code hl]
     // This is where your main game loop code goes
     // The stuff in this block will run ~60x per sec
+    state_machine(self); // [!code ++] [!code focus] [!code hl]
 }
 ```
 
 Make sure to save your project after adding it in.
 
 :::tip[Development Tip]
-Saving your project is done with Cmd+S (MacOS) or Ctrl+S (Windows).
-Reloading your project is done with Cmd+R (MacOS) or Ctrl+R (Windows).
+Saving your project is done with `Cmd+S` (MacOS) or `Ctrl+S` (Windows).
+If you ever need to reset your game, you can do that with `Cmd+R` (MacOS) or `Ctrl+R` (Windows).
 
-Try saving after every step!
+It is smart to save after every step!
 :::
 
 ### Adding in our player sprite
 
-Alright lets display our character in the middle of the screen and start creating their character screen
+Now that we have built the foundation, we can add some visuals to our game! Lets start by displaying our character in the middle of the screen and start creating their character screen
 
 Inside your project directory, create a folder named `sprites`. This folder will contain all your game sprites.
 
@@ -321,14 +330,14 @@ Add the following files to the `sprites` directory.
 - [x] [potion.aseprite](https://raw.githubusercontent.com/Stophii/character-sheet/master/sprites/potion.aseprite)
 
 :::tip[Development Tip]
-You may have noticed the player sprite is a `.aseprite` file. Turbo has unique interactions with [Aseprite](https://www.aseprite.org/) being able to call tags directly in the code. We will be taking advantage of this, feel free to read more about it [here.](https://docs.turbo.computer/learn/api/sprites)
+You can see the player sprite is a `.aseprite` file. [Aseprite](https://www.aseprite.org/) is a great tool for pixel art, and Turbo has a deep integration that lets you read the animation tags straight from the files. You can read more about it [here.](https://docs.turbo.computer/learn/api/sprites)
 :::
 
 ### Character Screen
 
 Lets display our player character and start building a stat screen around him in the `Screen::Character` portion of our `state_machine`
 
-It's as easy to display him as this, make sure to save right after
+We just need one line of code to draw the sprite. Make sure to save after this, and now you should see the character on screen.
 
 ```rs [src/state.rs]
 pub fn state_machine(state: &mut GameState) { 
@@ -343,8 +352,9 @@ pub fn state_machine(state: &mut GameState) {
     } 
 }
 ```
+![Character displayed in one line of code](/character-sheet.png)
 
-We want to add a little bit more though, go ahead add the following and lets break it down
+Let's fill up this screen with some more info about the character:
 
 ```rs [src/state.rs]
 pub fn state_machine(state: &mut GameState) { 
@@ -380,16 +390,20 @@ pub fn state_machine(state: &mut GameState) {
     } 
 }
 ```
-Nice now we have our character screen setup! We added in a way to view their current stats that will vary based on loadout. We also added in some personality, changing their animation every 6 seconds to a randomly chosen animation as well as a spawn in animation that only plays once upon initial load. 
+![Character screen displaying stats](/stepcharacter.gif)
 
-We used [`rect!`](https://docs.turbo.computer/learn/api/rectangles) for the menu, [`text_box!`](https://docs.turbo.computer/learn/api/text_box) for the text, and [`sprite!`](https://docs.turbo.computer/learn/api/sprites) for the animation. We also made use of [`random::u32`](https://docs.turbo.computer/learn/api/randomness/) to randomly select a sprite so they don't sit on the `player#Idle` sprite. These are all built in Turbo Macros!
+Nice, now we have our character screen setup! We added in a way to view their current stats that will vary based on loadout. We also added in some personality, changing their animation every 6 seconds to a randomly chosen animation as well as a spawn in animation that only plays once upon initial load. 
+
+We used several built in Turbo macros in this section: [`rect!`](https://docs.turbo.computer/learn/api/rectangles) for the menu, [`text_box!`](https://docs.turbo.computer/learn/api/text_box) for the text, and [`sprite!`](https://docs.turbo.computer/learn/api/sprites) for the animation. We also made use of [`random::u32`](https://docs.turbo.computer/learn/api/randomness/) to randomly select an animation from the provided list.
 
 ### Adding State Machine controls
 
-Lets build out the inventory screen next. Our first step needs to be enabling the functionality to switch to it.
+Lets build out the inventory screen next. Our first step needs to be adding functionality to switch screens.
 
 ```rs [src/lib.rs]
     pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
         state_machine(self);
         if gamepad::get(0).a.just_pressed() { // [!code ++] [!code focus] [!code hl]
             self.screen = Screen::Inventory; // [!code ++] [!code focus] [!code hl]
@@ -400,12 +414,10 @@ Lets build out the inventory screen next. Our first step needs to be enabling th
         if gamepad::get(0).x.just_pressed() { // [!code ++] [!code focus] [!code hl]
             self.screen = Screen::Loadout; // [!code ++] [!code focus] [!code hl]
         } // [!code ++] [!code focus] [!code hl]
-        // This is where your main game loop code goes
-        // The stuff in this block will run ~60x per sec
     }
 ```
 
-now if we press `a` we can switch to the `Screen::Inventory` and if we press `b` we can switch back to `Screen::Character`. We added in pressing `x` to switch to `Screen::Loadout`.
+Now if we press `a` we can switch to the `Screen::Inventory` and if we press `b` we can switch back to `Screen::Character`. We added in pressing `x` to switch to `Screen::Loadout`.
 
 :::tip[Development Tip]
 Turbo controls support gamepad and keyboard:
@@ -421,9 +433,9 @@ Check out a full list in our [API](https://docs.turbo.computer/learn/api/gamepad
 
 ### Adding `Tweens` and `Const`
 
-If this is your first time seeing or hearing about tweens, awesome! They allow for smooth transitions of `f32` (decimal) values, they're easy to implement, and great for polish!
+If this is your first time seeing or hearing about `tweens`, awesome! `Tweens` allow for smooth transitions of `f32` (decimal) values. They're easy to implement, and great for making your game look polished!
 
-We need one specific `Tween` in the `GameState` for each value we want to be able to manipulate, we are going to add 8 tweens and initialize them, as well as a `Const` to the top. `Const` are just values that won't be changing
+We need one `Tween` instance in the `GameState` for each value we want to be able to manipulate. In total we are going to add 8 tweens and initialize them, as well as a `Const` to the top. `Consts` are just values that won't be changing
 
 ```rs [src/lib.rs]
 const POS: [(f32, f32); 4] = [(118.0,49.0), (154.0,34.0), (127.0,15.0), (101.0,34.0)]; // [!code ++] [!code focus] [!code hl]
@@ -483,6 +495,8 @@ impl GameState {
         }
     }
     pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
         state_machine(self);
 
         if gamepad::get(0).a.just_pressed() {
@@ -496,20 +510,18 @@ impl GameState {
         if gamepad::get(0).x.just_pressed() {
             self.screen = Screen::Loadout;
         }
-        // This is where your main game loop code goes
-        // The stuff in this block will run ~60x per sec
     }
 }
 ```
 The `Tweens` will give our inventory screen a lot of personality. The `Const` represent where our inventory slots will be located on the canvas. Now we can build out that `Screen::Inventory`
 
 :::tip[Development Tip]
-[`Tweens`](https://docs.turbo.computer/learn/api/tween) need an initial starting value as `f32`, an `easing`, and a duration as `usize` to initialize. Feel free to tweak the `duration` and `easing`
+[`Tweens`](https://docs.turbo.computer/learn/api/tween) need an initial starting value as `f32`, an `easing`, and a duration as `usize` to initialize. Feel free to tweak the `duration` and `easing` to suit your preference!
 :::
 
 ### Inventory Screen
 
-Inside our state machine  in `state.rs` add the following
+Inside our state machine in `state.rs` add the following
 
 ```rs [src/state.rs]
     Screen::Character => { 
@@ -608,6 +620,8 @@ And add the controls to `lib.rs`
 
 ```rs [src/lib.rs]
     pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
         state_machine(self);
 
         if gamepad::get(0).a.just_pressed() {
@@ -629,10 +643,10 @@ And add the controls to `lib.rs`
         if gamepad::get(0).right.just_pressed() { // [!code ++] [!code focus] [!code hl]
             self.player.inventory_index = (self.player.inventory_index + 1) % self.player.inventory_slots; // [!code ++] [!code focus] [!code hl]
         } // [!code ++] [!code focus] [!code hl]
-        // This is where your main game loop code goes
-        // The stuff in this block will run ~60x per sec
     }
 ```
+
+![Inventory screen completed with character and tweening](/stepinventory.gif)
 
 We make use of [`camera::set_xyz`](https://docs.turbo.computer/learn/api/camera) [`tween`](https://docs.turbo.computer/learn/api/tween) and of course [`sprite!`](https://docs.turbo.computer/learn/api/sprites) and [`rect!`](https://docs.turbo.computer/learn/api/rectangles) again.
 
@@ -640,7 +654,7 @@ The `Tweens` allow for smooth movement of the `x` and `y` values of our squares 
 
 The controls change the value of `state.inventory_index` and we change the values of our `tweens` based on what that inventory index is. We have wrapping as well so we never hit an "end".
 
-Zooming in with the `camera` allows you to see our characters face and item sprites as the player looks through their inventory. It also makes the item descriptions and names larger and easier to view. Our main characters idle also has them blink, which is a nice touch while browsing the inventory system.
+Zooming in with the `camera` allows you to see our character's face and item sprites as the player looks through their inventory. It also makes the item descriptions and names larger and easier to view. Our main character's idle animation has them blink, which is a nice touch while browsing the inventory system.
 
 
 Next up is the `Screen::Loadout`
@@ -705,6 +719,8 @@ We need to spruce up our controls in the `lib.rs` real quick
 
 ```rs [src/lib.rs]
 pub fn update(&mut self) {
+    // This is where your main game loop code goes
+    // The stuff in this block will run ~60x per sec
     state_machine(self);
     match self.screen { // [!code ++] [!code focus] [!code hl]
         Screen::Character => { // [!code ++] [!code focus] [!code hl]
@@ -746,14 +762,13 @@ pub fn update(&mut self) {
             } // [!code ++] [!code focus] [!code hl]
         } // [!code ++] [!code focus] [!code hl]
     } // [!code ++] [!code focus] [!code hl]
-    // This is where your main game loop code goes
-    // The stuff in this block will run ~60x per sec
 }
 ```
+![Loadout screen completed with character playing animation specific to weapon selected](/steploadout.gif)
 
 Awesome now we have controls that are specific to each state. We can enter our `Screen::Inventory` with `a` and we can leave with `b`. We can enter our `Screen::Loadout` with `x` and leave that screen with `b`.
 
-On the loadout screen itself we can use the arrowkeys to switch between sword and gun and equip it with `a`. After equipping our weapon of choice we get an animation to reflect what we have equipped as well as a blue highlight.
+On the loadout screen itself we can use the arrow keys to switch between sword and gun and equip it with `a`. After equipping our weapon of choice we get an animation to reflect what we have equipped as well as a blue highlight.
 
 We made use of `bounds` for the sword and gun UI choices. `Bounds` is a useful tool when making your game work on multiple resolutions as well as adding touch/tap controls!
 
@@ -761,11 +776,11 @@ We made use of `bounds` for the sword and gun UI choices. `Bounds` is a useful t
 
 You have made a working character sheet! you used a lot of tools that will be valuable to master like the `state machine`, `tweening`, and `bounds`. You used the basics like `rect!` `sprite!` and `text_box!`. 
 
-The project can always be improved, if you want to do more I suggest the following:
+You can use this as the start of an RPG game! If you want to do more, I suggest the following:
 
 :::warning[Quest]
 Now with the tutorial completed you can improve it further! Try doing the following:
-- [ ] Add your own sprites
+- [ ] Add your own sprites to change the main character
 - [ ] Fill out the rest of the inventory with items instead of empty slots
 - [ ] Add another weapon option
 - [ ] Tween the size of the sprites in the inventory menu
@@ -773,9 +788,7 @@ Now with the tutorial completed you can improve it further! Try doing the follow
 - [ ] Add a title screen!
 :::
 
-Thanks for following along and I hope it was helpful! Turboooooooooooooo
-
 ## Next Steps
 
-- Complete the `Quest` above, post your results in the discord!
+- Complete the `Quest` above, post your results in the [Turbo discord](https://discord.com/invite/makegamesfast)!
 - Try your hand at the [pancake cat tutorial](/learn/tutorials/pancake-cat)
