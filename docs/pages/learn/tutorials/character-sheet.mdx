@@ -10,7 +10,7 @@
 
 **Difficulty**
 
-> ★★☆☆☆
+> ★★★☆☆
 
 **Time Estimate**
 
@@ -56,7 +56,7 @@ character-sheet/          # Your project's root directory.
 
 ### Create `state.rs` and `player.rs` files
 
-Inside your project directory, create a file named `state`. This file will contain your state machine.
+Inside your project directory, create a file named `state.rs`. This file will contain your state machine.
 
 ```
 your-project-dir/       # Your project's root directory.
@@ -67,7 +67,7 @@ your-project-dir/       # Your project's root directory.
 └── turbo.toml          # Turbo configuration.
 ```
 
-Repeat this process but name it `player` to add in a `player` file. This file will contain your player struct.
+Repeat this process but name it `player.rs` to add in a `player.rs` file. This file will contain your player struct.
 
 ```
 your-project-dir/       # Your project's root directory.
@@ -79,7 +79,7 @@ your-project-dir/       # Your project's root directory.
 └── turbo.toml          # Turbo configuration.
 ```
 
-### Enabling another File 
+### Enabling other Files 
 
 Add the following lines of code to the top of each file.
 
@@ -189,7 +189,7 @@ impl Player { // [!code ++] [!code focus] [!code hl]
             loadout: Loadout { // [!code ++] [!code focus] [!code hl]
                 weapon: Weapon::Sword, // [!code ++] [!code focus] [!code hl]
                 passive: "ATK Up".to_string(), // [!code ++] [!code focus] [!code hl]
-            } // [!code ++] [!code focus] [!code hl]
+            }, // [!code ++] [!code focus] [!code hl]
             loadout_index: 0, // [!code ++] [!code focus] [!code hl]
             loadout_slots: 2, // [!code ++] [!code focus] [!code hl]
         } // [!code ++] [!code focus] [!code hl]
@@ -216,7 +216,7 @@ pub struct Loadout { // [!code ++] [!code focus] [!code hl]
     pub passive: String, // [!code ++] [!code focus] [!code hl]
 } // [!code ++] [!code focus] [!code hl]
 ```
-By adding an `impl` for the `player` we can intialize it in gamestate with a `new()` function. We also have an `enum` for our `Weapon` and `structs` for the `Item` and `Loadout`. We'll be altering these values and adding more functions to our `impl` later!
+By adding an `impl` for the `Player` we can initialize it in GameState with a `new()` function. We also have an `enum` for our `Weapon` and `structs` for the `Item` and `Loadout`. We'll be altering these values and adding more functions to our `impl` later!
 
 We also added in values like the index and slots for our `inventory` and `loadout`
 
@@ -261,7 +261,7 @@ impl GameState {
 
 ### Adding in the State Machine
 
-Now we'll add in an empty state machine into the `state.rs` file. We'll use it to change between screens.
+Now we'll add an empty state machine to the `state.rs` file. We'll use it to change between screens.
 
 ```rs [src/state.rs]
 use crate::*; 
@@ -349,7 +349,7 @@ pub fn state_machine(state: &mut GameState) {
 ```
 ![Character displayed in one line of code](/character-sheet.png)
 
-We want to add a little bit more though, go ahead add the following and lets break it down
+We want to add a little bit more though. Go ahead add the following and lets break it down:
 
 ```rs [src/state.rs]
 pub fn state_machine(state: &mut GameState) { 
@@ -387,7 +387,7 @@ pub fn state_machine(state: &mut GameState) {
 ```
 ![Character sheet with stats and animation loop every 6 seconds](/stepcharacter.gif)
 
-Nice now we have our character screen setup! We added in a way to view their current stats that will vary based on loadout. We also added in some personality, changing their animation every 6 seconds to a randomly chosen animation as well as a spawn in animation that only plays once upon initial load. 
+Nice! Now we have our character screen set up! We added in a way to view their current stats that will vary based on loadout. We also added in some personality, changing their animation every 6 seconds to a randomly chosen animation as well as a spawn in animation that only plays once upon initial load. 
 
 We used several built in Turbo macros in this section: [`rect!`](https://docs.turbo.computer/learn/api/rectangles) for the menu, [`text_box!`](https://docs.turbo.computer/learn/api/text_box) for the text, and [`sprite!`](https://docs.turbo.computer/learn/api/sprites) for the animation. We also made use of [`random::u32`](https://docs.turbo.computer/learn/api/randomness/) to randomly select an animation from the provided list.
 
@@ -516,7 +516,7 @@ The `Tweens` will give our inventory screen a lot of personality. The `Const` re
 
 ### Inventory Screen
 
-Inside our state machine in `state.rs` add the following
+Inside our state machine in `state.rs` add the following:
 
 ```rs [src/state.rs]
     Screen::Character => { 
