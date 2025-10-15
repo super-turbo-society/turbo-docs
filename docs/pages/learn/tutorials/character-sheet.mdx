@@ -385,6 +385,8 @@ pub fn state_machine(state: &mut GameState) {
     } 
 }
 ```
+![Character sheet with stats and animation loop every 6 seconds](/stepcharacter.gif)
+
 Nice now we have our character screen setup! We added in a way to view their current stats that will vary based on loadout. We also added in some personality, changing their animation every 6 seconds to a randomly chosen animation as well as a spawn in animation that only plays once upon initial load. 
 
 We used several built in Turbo macros in this section: [`rect!`](https://docs.turbo.computer/learn/api/rectangles) for the menu, [`text_box!`](https://docs.turbo.computer/learn/api/text_box) for the text, and [`sprite!`](https://docs.turbo.computer/learn/api/sprites) for the animation. We also made use of [`random::u32`](https://docs.turbo.computer/learn/api/randomness/) to randomly select an animation from the provided list.
