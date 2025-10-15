@@ -22,8 +22,8 @@
 - [x] How State Machines make it easy to organize your code
 - [x] How to use Enums in Rust
 - [x] How to import and use sprites
-- [x] The power of `Tweens`, `Bounds`, `Gamepad`, and `Camera`
-
+- [x] An introduction to `Tweens`, `Bounds`, `Gamepad`, and `Camera`
+- [x] How to utilize various Turbo Macros
 
 :::
 
@@ -55,10 +55,6 @@ character-sheet/          # Your project's root directory.
 ```
 
 ### Create `state.rs` and `player.rs` files
-
-:::tip[What is a State Machine?]
-A State Machine is a programming pattern used to keep your game code organized as you move between different states in the game. In this case, we are going to use it to separate the code for showing different in-game menus: Stats, Loadout and Character. 
-:::
 
 Inside your project directory, create a file named `state`. This file will contain your state machine.
 
@@ -125,8 +121,7 @@ If you want it to always appear above your other open windows you can run it wit
 ```bash [Terminal]
 turbo run -w -A character-sheet
 ```
-
-The `-A` will make it "always on top". Since Turbo games update as soon as you save, it's good practice to keep the game running while you are coding!
+The `-A` will make it "always on top". 
 
 Additionally, if you run the command from the directory you saved your game in, you can forgo the project name, like this
 
@@ -354,7 +349,7 @@ pub fn state_machine(state: &mut GameState) {
 ```
 ![Character displayed in one line of code](/character-sheet.png)
 
-Let's fill up this screen with some more info about the character:
+We want to add a little bit more though, go ahead add the following and lets break it down
 
 ```rs [src/state.rs]
 pub fn state_machine(state: &mut GameState) { 
@@ -390,9 +385,7 @@ pub fn state_machine(state: &mut GameState) {
     } 
 }
 ```
-![Character screen displaying stats](/stepcharacter.gif)
-
-Nice, now we have our character screen setup! We added in a way to view their current stats that will vary based on loadout. We also added in some personality, changing their animation every 6 seconds to a randomly chosen animation as well as a spawn in animation that only plays once upon initial load. 
+Nice now we have our character screen setup! We added in a way to view their current stats that will vary based on loadout. We also added in some personality, changing their animation every 6 seconds to a randomly chosen animation as well as a spawn in animation that only plays once upon initial load. 
 
 We used several built in Turbo macros in this section: [`rect!`](https://docs.turbo.computer/learn/api/rectangles) for the menu, [`text_box!`](https://docs.turbo.computer/learn/api/text_box) for the text, and [`sprite!`](https://docs.turbo.computer/learn/api/sprites) for the animation. We also made use of [`random::u32`](https://docs.turbo.computer/learn/api/randomness/) to randomly select an animation from the provided list.
 
