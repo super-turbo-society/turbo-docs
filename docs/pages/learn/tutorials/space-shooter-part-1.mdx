@@ -1,4 +1,4 @@
-# Space Shooter (Part 1) [Manuever in zero G, shoot the baddies.]
+# Space Shooter [Manuever in zero G, shoot the baddies.]
 
 ![Turbo game window with the finished Space Shooter game in action.](/space-shooter-gameplay.gif)
 
@@ -6,8 +6,7 @@
 
 :::info[Summary]
 
-> In this two part tutorial, you will build a complex Space Shooter with enemies and powerups.
-In Part 1, you will set the project up with the player, projectiles, and one enemy type.
+> In this tutorial, you will build a retro Space Shooter game!
 
 **Difficulty**
 
@@ -29,7 +28,7 @@ In Part 1, you will set the project up with the player, projectiles, and one ene
 ## Walkthrough
 
 :::tip[Development Tip]
-The full source code of this game is [available on Github](https://github.com/super-turbo-society/turbo-demos/tree/main/pancake-cat)
+The full source code of this game is [available on Github](https://github.com/super-turbo-society/turbo-demos/tree/main/space-shooter)
 :::
 
 ::::steps
@@ -946,7 +945,7 @@ impl GameState {
 ```
 Save all your work, and you should see a swarm of enemies flooding your game window!
 :::tip[Development Tip]
-A little noisy, huh? We'll be adding a state manager in the next part so the enemies don't spawn and shoot without player input. 
+A little noisy, huh? We'll be adding a state manager later on so the game doesn't just start right away. 
 But if you want peace and quiet until then you can comment out the `audio::play()` function in the `new()` function in `projectile.rs`!
 :::
 
@@ -1089,18 +1088,18 @@ fn update(&mut self) {
 }
 ```
 
-Save everything, and you're done with Part 1! Play around in the game window, shoot some enemies, and take some damage.
+Save everything, and click back into your game window. Move around, shoot some enemies, and take some damage.
 :::tip[Development Tip]
 Now that the Player can die and we haven't programmed an in-game reset, you can hot reload to play again! Hit `ctrl+R` or `cmd+R` at anytime while playing to reset the `GameState`!
 :::
 
-![Completed Part 1!](/space-shooter-part-1.gif)
+![Completed Game Loop!](/space-shooter-part-1.gif)
 
 ### Game State Machine
 
-With our core structs defined and implemented, let's add some logic to delay the start of the game until the player inputs, as well as adding an in-game reset.
+Now that our core gameplay is running, let's add some logic to set up a start and end, and a way to replay the game.
 
-Start by creating a new enum in `lib.rs` and properties in `GameState`:
+Start by creating a new `enum` in `lib.rs` and properties in `GameState`:
 
 ```rs [src/lib.rs]
 use turbo::*;
@@ -1137,7 +1136,7 @@ impl GameState {
     }
 ...
 ```
-We'll use this enum to manage what we call in our `update()` scope, and record the `tick` the game started for future timing logic:
+We'll use this enum to manage what we call in our `update()` scope, and the `tick` keeps track of when the game started for future timing logic:
 
 ```rs [src/lib.rs] 
 fn update(&mut self) {
@@ -1228,7 +1227,7 @@ fn draw(&self) {
 ```
 ### Displaying Game Info
 
-With so many moving parts in our game at this point, let's give the player some info about their status with a heads up display! 
+Next, let's give the player some info about their status by adding a simple heads up display! 
 We'll create a UI to display the player's HP, score, and notifications.
 
 Before we get to drawing, add some properties in the `Player` struct to store notifications:
@@ -1308,7 +1307,9 @@ pub fn update(&mut self, projectiles: &mut Vec<Projectile>) {
 }
 ```
 
-This scope runs when there are notifications to display, increasing the notifcations timer, reseting it and removing the first displayed notifications from the list.
+This scope runs when there are notifications to display, increasing the notifications timer, resetting it and removing the first displayed notification from the list.
+
+We aren't going to send any notifications in this tutorial, but you could use them when significant events happen in the game, like if the player finds a new power up or gets an achievement. 
 
 Now we can create a function to draw all of our heads up display information!
 Add the following function to the `impl` scope of the `Player` struct:
@@ -1402,8 +1403,9 @@ Wow. After all that code, you have a playable game loop with a solid foundation.
 
 We created `Player`, `Enemy`, and `Projectile` structs, are updating and drawing them using the `GameState`, checking for collisions between them all, and organized 400+ lines of code into easily readable sub files!
 
-If you continue to the next part, we'll add more dynamism with enemy types, powerups, and a difficulty ramp! We'll also add score tracking, main menu and gameover screens.
-
 ## Next Steps
 
-- Continue this project with [`Space Shooter Part 2`](/learn/tutorials/space-shooter-part-2)!
+- Add more enemy types. Give them new sprites and movement patterns.
+- Create power-ups for the player to collect
+- Change the `speed`, `fire_rate` or `enemy.hp` to personalize the game
+- Use `turbo -export` to export your game and [host it on the web](/learn/guides/web-publishing)
