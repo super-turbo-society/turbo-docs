@@ -81,24 +81,24 @@ space-shooter/       # Your project's root directory.
 
 Add the following files to the `audio` folder:
 
-- [x] [projectile_player.wav](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/audio/projectile_player_shoot.wav)
-- [x] [projectile_enemy.wav](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/audio/projectile_enemy_shoot.wav)
-- [x] [projectile_hit.wav](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/audio/projectile_hit.wav)
+> - [x] [projectile_player.wav](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/audio/projectile_player_shoot.wav)
+> - [x] [projectile_enemy.wav](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/audio/projectile_enemy_shoot.wav)
+> - [x] [projectile_hit.wav](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/audio/projectile_hit.wav)
 
 Add the following files to the `sprites` folder:
 
-Player Sprites 
-
-- [x] [player.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/player.gif)
-- [x] [player_shooting.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/player_shooting.gif)
-- [x] [projectile_player.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/projectile_player.gif)
-- [x] [projectile_player_hit.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/space-shooter/sprites/projectile_player_hit.gif)
-
-Enemy sprites
-
-- [x] [shooter.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/shooter.gif)
-- [x] [projectile_enemy.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/projectile_enemy.gif)
-- [x] [projectile_enemy_hit.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/projectile_enemy_hit.gif)
+> Player Sprites 
+>
+> - [x] [player.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/player.gif)
+> - [x] [player_shooting.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/player_shooting.gif)
+> - [x] [projectile_player.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/projectile_player.gif)
+> - [x] [projectile_player_hit.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/space-shooter/sprites/projectile_player_hit.gif)
+> 
+> Enemy sprites
+>
+> - [x] [shooter.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/shooter.gif)
+> - [x] [projectile_enemy.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/projectile_enemy.gif)
+> - [x] [projectile_enemy_hit.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/projectile_enemy_hit.gif)
 
 We'll be adding more sprites later!
 
@@ -164,7 +164,7 @@ space-shooter/       # Your project's root directory.
 ├── audio/              # The directory of your audio assets.
 ├── sprites/            # The directory of your sprite assets.
 ├── src/                # The directory of your code.
-│   └── model/          # The directory for sub files. <!-- [!code focus] [!code hl] [!code ++] -->
+│   ├── model/          # The directory for sub files. <!-- [!code focus] [!code hl] [!code ++] -->
 │   │   └── mod.rs      # A reference to all sub files in this folder. <!-- [!code focus] [!code hl] [!code ++] -->
 │   │   └── player.rs   # A sub file to contain the Player struct. <!-- [!code focus] [!code hl] [!code ++] -->
 │   └── lib.rs          # The main file for the game.
@@ -320,13 +320,13 @@ pub fn update(&mut self) {
 }
 ```
 :::info[Code Breakdown]
-> - Only update this scope when hp is above 0
-> - Capture keyboard input with `x_input` and `y_input`
-> - Set `dx` and `dy` to input values while normalizing diagonal values
-> - Translate stored `x` and `y` positions by `dx` and `dy` multiplied by a `speed` value
-> - Clamp `x` `y` positions to screen bounds
-> - Set `hitbox` position for collision checking
-> - Before these steps, deaccelerate `dx` and `dy` every frame
+- Only update this scope when hp is above 0
+- Capture keyboard input with `x_input` and `y_input`
+- Set `dx` and `dy` to input values while normalizing diagonal values
+- Translate stored `x` and `y` positions by `dx` and `dy` multiplied by a `speed` value
+- Clamp `x` `y` positions to screen bounds
+- Set `hitbox` position for collision checking
+- Before these steps, deaccelerate `dx` and `dy` every frame
 :::
 
 ```rs [src/model/player.rs]
@@ -347,10 +347,10 @@ pub fn draw(&self) {
 }
 ```
 :::info[Code Breakdown]
-> - Only update this scope when hp is above 0
-> - Create a local `SpriteAnimation` variable, `anim`, accessed using the key string `"p_key"`
-> - Construct a string for `anim` to use, setting which file in the `sprites` folder it will draw
-> - Draw a `sprite!()`, passing the same key used to set up the `SpriteAnimation`, `"p_key"`.
+- Only update this scope when hp is above 0
+- Create a local `SpriteAnimation` variable, `anim`, accessed using the key string `"p_key"`
+- Construct a string for `anim` to use, setting which file in the `sprites` folder it will draw
+- Draw a `sprite!()`, passing the same key used to set up the `SpriteAnimation`, `"p_key"`.
 :::
 
 :::tip[Development Tip]
@@ -405,7 +405,7 @@ space-shooter/           # Your project's root directory.
 ├── audio/                  # The directory of your audio assets.
 ├── sprites/                # The directory of your sprite assets.
 ├── src/                    # The directory of your code.
-│   └── model/              # The directory for sub files. 
+│   ├── model/              # The directory for sub files. 
 │   │   └── mod.rs          # A reference to all sub files in this folder.
 │   │   └── player.rs       # A sub file to contain the Player struct.
 │   │   └── projectile.rs   # A sub file to contain the Projectile struct. <!-- [!code focus] [!code hl] [!code ++] -->
@@ -729,7 +729,7 @@ space-shooter/              # Your project's root directory.
 ├── audio/                  # The directory of your audio assets.
 ├── sprites/                # The directory of your sprite assets.
 ├── src/                    # The directory of your code.
-│   └── model/              # The directory for sub files. 
+│   ├── model/              # The directory for sub files. 
 │   │   └── enemy.rs        # A sub file to contain the Enemy struct. <!-- [!code focus] [!code hl] [!code ++] -->
 │   │   └── mod.rs          # A reference to all sub files in this folder.
 │   │   └── player.rs       # A sub file to contain the Player struct.
@@ -756,12 +756,13 @@ use super::*;
 
 // Different types of enemies
 #[turbo::serialize]
+#[derive(PartialEq)]
 pub enum EnemyType {
-    Tank,
+    Meteor,
     Shooter,
+    Tank,
     Turret,
     Zipper,
-    Meteor,
 }
 
 #[turbo::serialize]
@@ -772,12 +773,12 @@ pub struct Enemy {
     pub hitbox: Bounds,
     x: f32,
     y: f32, 
+    pub angle: f32,
+
+    pub hp: u32,
 
     hit_timer: u32, // used for hit animation
     pub destroyed: bool,
-
-    pub hp: u32,
-    pub angle: f32,
 }
 
 impl Enemy {
@@ -791,12 +792,12 @@ impl Enemy {
             hitbox: Bounds::new(x, y, 16, 16),
             x, 
             y,
+            angle: 0.0,
+
+            hp: 8,
 
             hit_timer: 0,
             destroyed: false,
-            
-            hp: 8,
-            angle: 0.0,
         }
     }
 
@@ -957,7 +958,7 @@ Add these functions inside of the `impl` scope for each struct:
 pub fn take_damage(&mut self, damage: u32) {
     self.hp = self.hp.saturating_sub(damage); // reduce HP by damage amount
     camera::shake(5.0); // camera shake
-    self.hit_timer = 20; // invincibility frame timer and drawing flag
+    self.hit_timer = 30; // invincibility frame timer and drawing flag
 }
 ```
 ```rs [src/model/enemy.rs]
@@ -1104,4 +1105,4 @@ If you continue to the next part, we'll add more dynamism with enemy types, powe
 
 ## Next Steps
 
-- Continue this project with [`Space Shooter Part 2`](/learn/tutorials/space-shooter)!
+- Continue this project with [`Space Shooter Part 2`](/learn/tutorials/space-shooter-part-2)!

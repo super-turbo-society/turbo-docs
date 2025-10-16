@@ -1,0 +1,662 @@
+# Space Shooter (Part 2) [Manuever in zero G, shoot the baddies.]
+
+![Turbo game window with the finished Space Shooter game in action.](/space-shooter-gameplay.gif)
+
+## Overview
+
+:::info[Summary]
+
+> In Part 2 of our Space Shooter tutorial, we'll expand on Part 1 by adding enemy types, powerups, and a UI.
+
+**Difficulty**
+
+> ★★★★☆
+
+**Time Estimate**
+
+> ~1 hour
+
+**What You'll Learn**
+
+- Manage game state with state machine
+- Advanced `enum`s with type properties
+
+:::
+
+## Walkthrough
+
+:::tip[Development Tip]
+The full source code of this game is [available on Github](https://github.com/super-turbo-society/turbo-demos/tree/main/space-shooter).
+
+If you haven't completed [Part 1](/learn/tutorials/space-shooter-part-1), we recommend you start there!
+:::
+::::steps
+
+### Game State Machine
+
+As promised in the last part, let's start by adding some logic to delay the start of the game until the player inputs, as well as adding an in-game reset.
+
+Start by creating a new enum in `lib.rs` and properties in `GameState`:
+
+```rs [src/lib.rs]
+use turbo::*;
+mod model;
+pub use model::*;
+
+#[turbo::serialize] // [!code focus] [!code hl] [!code ++]
+#[derive(PartialEq)] // [!code focus] [!code hl] [!code ++]
+enum Screen { // [!code focus] [!code hl] [!code ++]
+    Menu, // [!code focus] [!code hl] [!code ++] 
+    Game, // [!code focus] [!code hl] [!code ++]
+} // [!code focus] [!code hl] [!code ++]
+
+#[turbo::game]
+struct GameState {
+    screen: Screen, // [!code focus] [!code hl] [!code ++]
+    start_tick: usize, // [!code focus] [!code hl] [!code ++]
+
+    player: Player, 
+    enemies: Vec<Enemy>,
+    projectiles: Vec<Projectile>, 
+}
+ 
+impl GameState {
+    fn new() -> Self {
+        Self {
+            screen: Screen::Menu, // [!code focus] [!code hl] [!code ++]
+            start_tick: 0, // [!code focus] [!code hl] [!code ++]
+
+            player: Player::new(),
+            enemies: vec![],
+            projectiles: vec![], 
+        }
+    }
+...
+```
+We'll use this enum to manage what we call in our `update()` scope, and record the `tick` the game started for future timing logic:
+
+```rs [src/lib.rs] 
+fn update(&mut self) {
+    self.draw();
+    // Menu [!code focus] [!code hl] [!code ++]
+    if self.screen == Screen::Menu { // [!code focus] [!code hl] [!code ++]
+        if gamepad::get(0).start.just_pressed() || gamepad::get(0).a.just_pressed() { // [!code focus] [!code hl] [!code ++]
+            self.screen = Screen::Game; // transition scene [!code focus] [!code hl] [!code ++]
+            self.start_tick = time::tick(); // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+    // Game [!code focus] [!code hl] [!code ++]
+    } else { // [!code focus] [!code hl] [!code ++]
+        self.player.update(&mut self.projectiles);
+        self.spawn_enemies(); 
+        self.enemies.retain_mut(|enemy| { 
+            enemy.update(&mut self.projectiles); 
+            !enemy.destroyed 
+        }); 
+        self.projectiles.retain_mut(|projectile| {
+            projectile.update(&mut self.player, &mut self.enemies);
+            !projectile.destroyed
+        });
+        // Game Over [!code focus] [!code hl] [!code ++]
+        if self.player.hp == 0 { // [!code focus] [!code hl] [!code ++]
+            if gamepad::get(0).start.just_pressed() || gamepad::get(0).a.just_pressed() { // [!code focus] [!code hl] [!code ++]
+                *self = GameState::new(); // [!code focus] [!code hl] [!code ++]
+            } // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+    } // [!code focus] [!code hl] [!code ++]
+}
+
+```
+:::info[Code Breakdown]
+- Check what `Screen` the `GameState` is currently in
+    - If `Menu`, wait for user input then change `screen` to `Game`
+    - If `Game`, do our update logic as we had it before
+- In the `Game` scope, check if the player is below 0 hp
+    - If so, wait for user input to reset the `GameState`
+:::
+
+Now our game has a simple, built-in loop. Let's just add some text to show the player what's happening. Add this function to the `impl` scope of `GameState`:
+
+```rs [src/lib.rs] 
+fn draw_screen(&self) {
+    // If in menu or game over state
+    if self.screen == Screen::Menu || self.player.hp == 0 {
+        // Determine title string
+        let title = 
+            if self.screen == Screen::Menu { "SPACE SHOOTER" } 
+            else { "GAME OVER" };
+        // Draw title
+        text!(
+            &title,
+            x = (screen().w() as i32 / 2) - (title.chars().count() as i32 * 4),
+            y = (screen().h() as i32 / 2) - 16,
+            font = "large"
+        );
+        // Draw prompt to start game, blinking every half second
+        if time::tick() / 4 % 8 < 4 {
+            text!(
+                "Press A or Start",
+                x = (screen().w() as i32 / 2) - 38,
+                y = (screen().h() as i32 / 2) + 8,
+            );
+        }
+    }
+}
+```
+:::info[Code Breakdown]
+- Only update this scope when `screen` is `Menu` or the player's hp is 0
+- Determine the `title` string by which of the above is true
+- Draw `text!()` for the title and input prompt
+    - The input prompt blinks based on the game tick
+:::
+And lastly, call the new function at the end of `GameState`'s `draw()` function:
+```rs [src/lib.rs] 
+fn draw(&self) {
+    self.player.draw();
+    for projectile in self.projectiles.iter() { 
+        projectile.draw(); 
+    } 
+    for enemy in self.enemies.iter() { 
+        enemy.draw(); 
+    } 
+
+    self.draw_screen(); // [!code focus] [!code hl] [!code ++]
+}
+```
+### Displaying Game Info
+
+With so many moving parts in our game already, let's give the player some info about their status with a heads up display! 
+We'll create a UI to display the player's HP, score, and notifications.
+
+Before we get to drawing, add some properties in the `Player` struct to store notifications:
+```rs [src/model/player]
+#[turbo::serialize]
+pub struct Player {
+    pub hitbox: Bounds,
+    x: f32,
+    y: f32,
+    dx: f32, // dx and dy used for velocity
+    dy: f32,
+    
+    pub hp: u32,
+    
+    pub hit_timer: u32, // used for invincibility frames and drawing
+    shoot_timer: u32, // used for rate of fire
+    shooting: bool, // used for shooting animation
+ 
+    // variables used by the HUD to display information
+    pub score: u32,
+    notifications: Vec<String>, // [!code focus] [!code hl] [!code ++]
+    notification_timer: usize, // [!code focus] [!code hl] [!code ++]
+}
+ 
+impl Player {
+    pub fn new() -> Self {
+        let x = ((screen().w() / 2) - 8) as f32;
+        let y = (screen().h() - 64) as f32;
+        Player {
+            // Initialize all fields with default values
+            hitbox: Bounds::new(x, y, 16, 16),
+            x,
+            y,
+            dx: 0.0,
+            dy: 0.0,
+            hp: 3,
+            
+            hit_timer: 0,
+            shoot_timer: 0,
+            shooting: false,
+            
+            score: 0,
+            notifications: vec![ // [!code focus] [!code hl] [!code ++]
+                "Use arrow keys to move.".to_string(), // [!code focus] [!code hl] [!code ++]
+                "Press SPACE or A to shoot.".to_string(), // [!code focus] [!code hl] [!code ++]
+                "Defeat enemies and collect powerups.".to_string(), // [!code focus] [!code hl] [!code ++]
+                "Try to not die. Good luck!".to_string(), // [!code focus] [!code hl] [!code ++]
+            ], // [!code focus] [!code hl] [!code ++]
+            notification_timer: 0, // [!code focus] [!code hl] [!code ++]
+        }
+    }
+
+```
+This `vec` and `usize` timer will keep track of the notifications we'll display to the player.
+The list will act as a queue, where the first element is displayed, and the timer will increment whenever the queue is not empty.
+
+Add the following lines to the end of the `Player` `update()` function:
+
+```rs [src/model/player]
+pub fn update(&mut self, projectiles: &mut Vec<Projectile>) { 
+    ...
+    self.hit_timer = self.hit_timer.saturating_sub(1);
+    // Remove the camera shake
+    if self.hit_timer == 0 {
+        camera::remove_shake();
+    }
+
+    // Notifications timer // [!code focus] [!code hl] [!code ++]
+    if self.notifications.len() > 0 { // [!code focus] [!code hl] [!code ++]
+        self.notification_timer += 1; // [!code focus] [!code hl] [!code ++]
+        // Remove current notification if timer expires // [!code focus] [!code hl] [!code ++]
+        if self.notification_timer >= 120 - 1 { // [!code focus] [!code hl] [!code ++]
+            self.notification_timer = 0; // [!code focus] [!code hl] [!code ++]
+            let _ = self.notifications.remove(0); // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+    } // [!code focus] [!code hl] [!code ++]
+}
+```
+
+This scope runs when there are notifications to display, increasing the notifcations timer, reseting it and removing the first displayed notifications from the list.
+
+Now we can create a function to draw all of our heads up display information!
+Add the following function to the `impl` scope of the `Player` struct:
+
+```rs [src/model/player]
+pub fn draw_hud(&self) {
+    let hud_height = 16; // Height of the HUD panel
+    let hud_padding = 4; // Padding inside the HUD
+
+    // Background rectangle
+    rect!(
+        x = -1,
+        y = -1,
+        w = screen().w() + 2,
+        h = hud_height + 2,
+        border_size = 1,
+        color = 0x000000ff,
+        border_color = 0xffffffff,
+    ); 
+    
+    // Display Health
+    let health_text = format!("HP: {}", self.hp);
+    text!(
+        &health_text,
+        x = hud_padding,
+        y = hud_padding,
+        font = "large",
+        color = 0xffffffff
+    );
+
+    // Display Score
+    let score_text = format!("SCORE: {:0>5}", self.score);
+    let score_text_x = // anchor to the right side of the screen
+        screen().w() as i32 - (score_text.chars().count() as i32 * 8) - hud_padding;
+    text!(
+        &score_text,
+        x = score_text_x,
+        y = hud_padding,
+        font = "large",
+        color = 0xffffffff
+    );
+
+    // Draw notifications
+    for notif in self.notifications.iter() {
+        // center the text based on width of characters
+        let len = notif.chars().count();
+        let w = len * 5;
+        let x = (screen().w() as usize / 2) - (w / 2);
+        rect!(
+            x = x as i32 - 4,
+            y = 24 - 2,
+            w = w as u32 + 4,
+            h = 12,
+            color = 0x5fcde4ff
+        );
+        text!(
+            &notif,
+            x = x as i32,
+            y = 24,
+            font = "medium",
+            color = 0xffffffff
+        );
+        break;
+    }
+}
+```
+This function simply uses `rect!()`s and `text!()`s with some math for centering to display information already stored in the `Player` struct.
+
+So now that we have all our info in one place, we can call our new function in the `GameState`'s `draw()` function:
+
+```rs [src/lib.rs] 
+fn draw(&self) {
+    self.player.draw();
+    for projectile in self.projectiles.iter() { 
+        projectile.draw(); 
+    } 
+    for enemy in self.enemies.iter() { 
+        enemy.draw(); 
+    } 
+
+    self.player.draw_hud(); // [!code focus] [!code hl] [!code ++]
+    self.draw_screen();
+}
+```
+Save your files and check your game window for a more informed playthrough!
+
+
+### Ship Stats
+
+The next two big features we'll be adding are enemy types and powerups. 
+To prepare for those additions we'll create a data struct that will help modify our `Player` and `Enemy` structs.
+
+This data struct will simply store values for our ships' stats, like `max_hp` and `speed`.
+They will also store a new `enum` for the `EnemyStrategy`, which we will use later to determine enemy behavior.
+
+So, begin by creating a new file in the `model` folder named `ship_stats.rs`, and reference it in the `mod.rs` file:
+
+```
+space-shooter/              # Your project's root directory.
+├── audio/                  # The directory of your audio assets.
+├── sprites/                # The directory of your sprite assets.
+├── src/                    # The directory of your code.
+│   ├── model/              # The directory for sub files. 
+│   │   └── enemy.rs        # A sub file to contain the Enemy struct.
+│   │   └── mod.rs          # A reference to all sub files in this folder.
+│   │   └── player.rs       # A sub file to contain the Player struct.
+│   │   └── projectile.rs   # A sub file to contain the Projectile struct.
+│   │   └── ship_stats.rs   # A sub file to contain the ShipStats struct. <!-- [!code focus] [!code hl] [!code ++] -->
+│   └── lib.rs              # The main file for the game.
+```
+```rs [src/model/mod.rs]
+use super::*;
+
+mod enemy;
+pub use enemy::*; 
+
+mod player;
+pub use player::*;
+
+mod projectile;
+pub use projectile::*;
+
+mod ship_stats; // [!code focus] [!code hl] [!code ++]
+pub use ship_stats::*; // [!code focus] [!code hl] [!code ++]
+```
+
+Now, copy the following code into the new `ship_stats.rs` file: 
+
+```rs [src/model/ship_stats.rs]
+use super::*;
+
+#[turbo::serialize]
+pub struct ShipStats {
+    pub max_hp: u32,
+    pub speed: f32,
+    pub fire_rate: u32,
+    pub projectile_speed: f32,
+
+    // Enemy stats the player doesn't use
+    pub points: u32,
+    pub strategy: EnemyStrategy,
+}
+
+#[turbo::serialize]
+pub enum EnemyStrategy {
+    TargetPlayer,
+    ShootDown,
+    MoveDown,
+    ZigZag,
+}
+
+```
+
+The `Player` and every `Enemy` will store an instance of this `ShipStats` struct, which we will use in their update logic.
+The `Player` won't use the last few variables, but here we've outlined the four `EnemyStratgey`s we will implement.
+
+In this file, we will also create `const` variables for our `Player` and `Enemy` structs to copy on initialization. 
+Starting with the player, add the following lines to the end of the file:
+
+```rs [src/model/ship_stats.rs]
+pub const PLAYER_STATS: ShipStats = ShipStats {
+    max_hp: 3,
+    speed: 2.0,
+    fire_rate: 15,
+    projectile_speed: 5.0,
+
+    // must assign even if the player won't use these
+    points: 0,
+    strategy: EnemyStrategy::MoveDown
+};
+
+```
+
+Now that we've defined `ShipStats` and a `const` for the `Player` to use, let's refactor the `Player` struct to utilize it!
+
+First, add a `ShipStats` variable to the player and initialize it to the `const` we made:
+```rs [src/model/player.rs]
+#[turbo::serialize]
+pub struct Player {
+    ...
+    pub hp: u32,
+    stats: ShipStats, // [!code focus] [!code hl] [!code ++]
+
+    pub hit_timer: u32, // used for invincibility frames and drawing
+    ...
+}
+ 
+impl Player {
+pub fn new() -> Self {
+    ...
+    Player {
+        ...
+        hp: PLAYER_STATS.max_hp, // [!code focus] [!code hl] [!code ++]
+        stats: PLAYER_STATS, // [!code focus] [!code hl] [!code ++]
+
+        hit_timer: 0,
+        ...
+    }
+}
+
+```
+Then, make the following revisions in the `player.rs` file:
+```rs [src/model/player.rs]
+pub fn update(&mut self, projectiles: &mut Vec<Projectile>) { 
+...
+    // Apply input to dx and dy, normalizing diagonal movement
+    let magnitude = ((x_input * x_input + y_input * y_input) as f32).sqrt();
+    if x_input != 0.0 {
+        self.dx = x_input / magnitude;
+    }
+    if y_input != 0.0 {
+        self.dy = y_input / magnitude;
+    }
+
+    let speed = 2.0; // [!code focus] [!code hl] [!code --]
+    self.x = (self.x + self.dx * self.stats.speed) // Translate position by input delta multiplied by speed // [!code focus] [!code hl] [!code ++]
+        .clamp(0.0, (screen().w() - self.hitbox.w() - 2) as f32); // Clamp to screen bounds
+    self.y = (self.y + self.dy * self.stats.speed) // [!code focus] [!code hl] [!code ++]
+        .clamp(0.0, (screen().h() - self.hitbox.h() - 2) as f32);
+
+    // Set hitbox position based on float xy values
+    self.hitbox = self.hitbox.position(self.x, self.y);
+
+    // Shooting projectiles 
+    // check if shoot button is pressed 
+    if gamepad::get(0).start.pressed() || gamepad::get(0).a.pressed() { 
+        self.shooting = true; // flag shooting state for animation 
+        // if shoot timer is 0, shoot a projectile 
+        if self.shoot_timer == 0 { 
+            let fire_rate = 15; // [!code focus] [!code hl] [!code --]
+            self.shoot_timer += self.stats.fire_rate; // add cooldown to shoot timer // [!code focus] [!code hl] [!code ++]
+            let projectile_speed = 5.0; // [!code focus] [!code hl] [!code --]
+            for i in 0..=1 {
+                projectiles.push(
+                    Projectile::new(
+                        self.x + i as f32 * 13.0,
+                        self.y - 8.0,
+                        self.stats.projectile_speed, // [!code focus] [!code hl] [!code ++]
+                        -90.0, 
+                        ProjectileOwner::Player, 
+                    ) 
+                ); 
+            } 
+        } 
+        
+    // if not shooting 
+    } else { 
+        self.shooting = false; // flag shooting state for animation 
+    } 
+...
+}
+```
+
+Now that the `Player` stores an instance of a `ShipStats` struct, we can modify its values when we implement powerups!
+Implementing this struct doesn't affect our game yet, but you can play around with the values in the `const PLAYER_STATS` to see its affect.
+
+And, now we can use it to implement new enemy types!
+
+### Enemy Types
+
+As of now, we only have one enemy type that spawns. Let's add some variety with new sprites and behaviors!
+
+We'll start by adding more sprites to our `sprites` folder:
+> - [x] [meteor.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/meteor.gif)
+> - [x] [shooter.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/shooter.gif)
+> - [x] [tank.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/main/space-shooter/sprites/tank.gif)
+> - [x] [zipper.gif](https://raw.githubusercontent.com/super-turbo-society/turbo-demos/refs/heads/space-shooter/sprites/zipper.gif)
+
+Next, let's define stats for each of the `EnemyType`s we defined back in the `enemy.rs` file using the `ShipStats` struct.
+
+Add the following `const`s to the `ship_stats.rs` file:
+
+```rs [src/model/ship_stats.rs]
+pub const METEOR_STATS: ShipStats = ShipStats {
+    max_hp: 2,
+    speed: 2.0,
+    fire_rate: 0, // meteors don't shoot
+    projectile_speed: 0.0,
+ 
+    points: 20,
+    strategy: EnemyStrategy::MoveDown
+};
+
+pub const SHOOTER_STATS: ShipStats = ShipStats {
+    max_hp: 5,
+    speed: 1.0,
+    fire_rate: 25,
+    projectile_speed: 3.5,
+ 
+    points: 30,
+    strategy: EnemyStrategy::TargetPlayer
+};
+
+pub const TANK_STATS: ShipStats = ShipStats {
+    max_hp: 10,
+    speed: 0.25,
+    fire_rate: 10,
+    projectile_speed: 2.5,
+ 
+    points: 50,
+    strategy: EnemyStrategy::ShootDown
+};
+
+pub const TURRET_STATS: ShipStats = ShipStats {
+    max_hp: 6,
+    speed: 0.5,
+    fire_rate: 20,
+    projectile_speed: 4.0,
+ 
+    points: 40,
+    strategy: EnemyStrategy::ShootDown
+};
+
+pub const ZIPPER_STATS: ShipStats = ShipStats {
+    max_hp: 4,
+    speed: 1.0,
+    fire_rate: 0, // zippers don't shoot
+    projectile_speed: 0.0,
+ 
+    points: 20,
+    strategy: EnemyStrategy::ZigZag
+};
+```
+
+Now we have `const ShipStats` for each `EnemyType`, which we'll store an instance of on initialization in the `Enemy` struct, just like the `Player`.
+
+In the `Enemy` struct, add a variable to store this instance, and some logic to the `new()` function in order to assign stats based on the passed `EnemyType`:
+
+```rs [src/model/enemy.rs]
+#[turbo::serialize]
+// Struct for Enemies
+pub struct Enemy {
+    enemy_type: EnemyType,
+    
+    pub hitbox: Bounds,
+    x: f32,
+    y: f32, 
+    pub angle: f32,
+    
+    pub hp: u32,
+    stats: ShipStats, // [!code focus] [!code hl] [!code ++]
+
+    hit_timer: u32, // used for hit animation
+    pub destroyed: bool,
+}
+ 
+impl Enemy {
+    // Initialize different enemy types with different properties
+    pub fn new(enemy_type: EnemyType) -> Self {
+        let (x,y) = ((random::u32() % screen().w()).saturating_sub(32) as f32, -32.0);
+        let stats = match enemy_type { // [!code focus] [!code hl] [!code ++]
+            EnemyType::Meteor => METEOR_STATS, // [!code focus] [!code hl] [!code ++]
+            EnemyType::Shooter => SHOOTER_STATS, // [!code focus] [!code hl] [!code ++]
+            EnemyType::Tank => TANK_STATS, // [!code focus] [!code hl] [!code ++]
+            EnemyType::Turret => TURRET_STATS, // [!code focus] [!code hl] [!code ++]
+            EnemyType::Zipper => ZIPPER_STATS, // [!code focus] [!code hl] [!code ++]
+        }; // [!code focus] [!code hl] [!code ++]
+        let size = // [!code focus] [!code hl] [!code ++]
+            if enemy_type == EnemyType::Meteor { 8 } // [!code focus] [!code hl] [!code ++]
+            else if enemy_type == EnemyType:: Tank { 32 } // [!code focus] [!code hl] [!code ++]
+            else { 16 }; // [!code focus] [!code hl] [!code ++]
+        // Set initial properties based on enemy type
+        Self {
+            enemy_type: enemy_type,
+            
+            hitbox: Bounds::new(x, y, size, size), // [!code focus] [!code hl] [!code ++]
+            x, 
+            y,
+            angle: 0.0,
+ 
+            hp: stats.max_hp, // [!code focus] [!code hl] [!code ++]
+            stats, // [!code focus] [!code hl] [!code ++]
+
+            hit_timer: 0,
+            destroyed: false,
+        }
+    }
+    ...
+}
+```
+
+Now in the `new()` function, we use a match statement of the passed `EnemyType` in order to store an instance of the matching `const` stat block we defined in `ship_stats.rs`.
+We also create a size variable for our hitbox to match our new sprite sizes, also determined by the passed `EnemyType`.
+
+### Integrating Enemy Types
+
+Great! We can now create different enemies for each of our `EnemyType`s. Let's update the rest of the `Enemy` struct to implement these changes.
+
+
+
+### Powerups
+
+
+### Updating and Drawing Powerups
+
+
+### Integrating Powerups
+
+
+### Difficulty Ramping
+
+
+### Final Details
+
+
+::::
+
+## Conclusion
+
+...
+
+
+## Next Steps
+
+...
