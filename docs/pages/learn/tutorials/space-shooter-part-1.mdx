@@ -11,7 +11,7 @@ In Part 1, you will set the project up with the player, projectiles, and one ene
 
 **Difficulty**
 
-> ★★★★☆
+> ★★★☆☆
 
 **Time Estimate**
 
@@ -21,8 +21,8 @@ In Part 1, you will set the project up with the player, projectiles, and one ene
 
 - [x] Organize large projects with multiple files
 - [x] Define game structs and manage them through `GameState`
-- [x] Iterate through lists, updating and drawing game structs
-- [x] Checking for collisions
+- [x] Iterate through lists to draw sprites
+- [x] Check for collisions
 
 :::
 
@@ -148,9 +148,9 @@ We store data that needs to be persistent between frames in the `GameState` stru
 Then, we update and draw our stored data in the `update()` function.
 :::
 
-For now, we have no implemented structs or data we need to store and update here yet.
-As we add to the project, we will come back to add new structs to the `GameState`.
-We do set up a `draw()` function to keep our drawing and updating logic seperate while here.
+We haven't added any structs or data yet, but we will soon.
+
+All we did so far is set up a `draw()` function to keep our drawing and updating logic separate. This helps keep our code organized as we start adding more complex logic.
 
 ### Set Up Project Structure
 
@@ -201,7 +201,7 @@ This lets the subfile reference everything defined in `mod.rs`, including defini
 Now that the project is set up, we can start defining our game structs! 
 
 ### Player
-Starting with the `Player` struct, we will outline some variables we will use to update and draw them. 
+We'll start by creating a `Player Struct` and adding some variables to update and draw it.
 Copy the following code into the `player.rs` file:
 
 ```rs [src/model/player.rs]
@@ -256,7 +256,7 @@ impl Player {
 }
 ```
 
-These are all the variables we will need to track the player as they move and shoot on screen. 
+These are all the variables we need to track the player as they move and shoot onscreen. 
 
 :::tip[Development Tip]
 `Bounds` is a Turbo struct that represents a rectangle with variables `x`, `y`, `w`, and `h`. 
@@ -391,7 +391,7 @@ impl GameState {
     }
 }
 ```
-After saving all your changes, return to the Turbo game window to fly your player ship around!
+After saving all your changes, return to the Turbo game window to fly your player ship around! Use the arrow keys to move. Try changing the `speed` and `deceleration` values to find what feels best.
 ![Player flying around empty game scene](/space-shooter-movement.gif)
 
 ### Projectiles
@@ -488,7 +488,7 @@ impl Projectile {
 
 Once again, we outline all the variables we will need to update and draw our projectiles.
 :::info[Code Breakdown]
-- Just like the player, `x`, `y`, and `hitbox` variables are used for movement and collisions, but also `velocity` and `angle`
+- Just like the player, `x`, `y`, and `hitbox` variables are used for movement and collisions, plus `velocity` and `angle`
 - `anim_key` is a unique string randomly generated on initialization, so every instance of `Projectile` can reference unique `SpriteAnimation`s
 - bools `destroyed` and `collided` will manage the projectile's state; how it updates, its animation state, and removal from the game
 - `damage` and `projectile_owner` will determine how projectiles interact with other entities in the game
@@ -714,9 +714,11 @@ Finally, we need to update the call to the `Player`'s `update()` function in `li
 self.player.update() // [!code focus] [!code hl] [!code --]
 self.player.update(&mut self.projectiles); // [!code focus] [!code hl] [!code ++]
 ```
-Saving all your work, you now should be able to shoot projectiles in the game window! 
+Save all your work, and you should now be able to shoot projectiles in the game window by pressing Space or Z! 
 
 ![Player shooting projectiles](/space-shooter-projectiles.gif)
+
+Play around with the values for `fire_speed` and `projectile_speed` to give the game your own spin.
 
 ### Enemies
 
@@ -815,8 +817,8 @@ Again, we outline the struct for updating and drawing.
 This time, we add some logic to the `new()` function to randomly position enemies when we spawn them.
 And we include a `destroyed` bool, like we do with projectiles.
 
-The `EnemyType` `enum` will be used to add variety to our enemies. 
-For now, we will only implement the `Turret` variant.
+The `EnemyType` `enum` will be used to add variety to our enemies in the future. 
+For now, we will only implement one simple enemy, the `Turret` variant.
 
 ### Updating and Drawing Enemies
 
@@ -875,7 +877,7 @@ pub fn draw(&self) {
 :::info[Code Breakdown]
 - Unlike our other structs, we don't use `SpriteAnimation` because our enemy sprites aren't animated
 - Construct a string and use it to draw a `sprite!()` 
-    - We'll setup logic for using sprites based on `EnemyType` even though we're only implementing `Turret`
+    - We set up logic for using sprites based on `EnemyType` even though we're only implementing `Turret`
 :::
 
 ### Integrate Enemies into the Game
@@ -934,7 +936,7 @@ impl GameState {
         let spawn_rate = 100; // [!code focus] [!code hl] [!code ++]
         // Spawn a new enemy if the tick is a multiple of the spawn rate and there are less than 24 enemies already spawned // [!code focus] [!code hl] [!code ++]
         if time::tick() % spawn_rate == 0 && self.enemies.len() < 24 { // [!code focus] [!code hl] [!code ++]
-            // Spawn a random enemy with these probabilities // [!code focus] [!code hl] [!code ++]
+            // Spawn a new Turret enemy // [!code focus] [!code hl] [!code ++]
             self.enemies.push( // [!code focus] [!code hl] [!code ++]
                 Enemy::new(EnemyType::Turret) // [!code focus] [!code hl] [!code ++]
             ); // [!code focus] [!code hl] [!code ++]
@@ -1056,8 +1058,8 @@ pub fn update(&mut self, player: &mut Player, enemies: &mut Vec<Enemy>) { // [!c
 
 ```
 :::info[Code Breakdown]
-- First, determine if this projectile should check collisions with `Player or `Enemy` based on its `projectile_owner`
-- If it should collide with the player, check if it has invincibilty frames or is already at 0 HP
+- First, determine if this projectile should check collisions with `Player` or `Enemy` based on its `projectile_owner`
+- If it should collide with the player, check if it has invincibility frames or is already at 0 HP
 - If it should collide with an enemy, check if it is already `destroyed`
 - In either case, check if the projectile's hitbox overlaps with the ship's hitbox using `bounds::intersects()`
 - If a collision is registered:
