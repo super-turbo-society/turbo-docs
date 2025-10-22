@@ -1,0 +1,1409 @@
+# Space Shooter [Manuever in zero G, shoot the baddies.]
+
+![Turbo game window with the finished Space Shooter game in action.](/space-shooter-gameplay.gif)
+
+## Overview
+
+:::info[Summary]
+
+> In this tutorial, you will build a retro Space Shooter game!
+
+**Difficulty**
+
+> ★★★☆☆
+
+**Time Estimate**
+
+> ~40 minutes
+
+**What You'll Learn**
+
+- [x] Organize large projects with multiple files
+- [x] Define game structs and manage them through `GameState`
+- [x] Iterate through lists to draw sprites
+- [x] Check for collisions
+
+:::
+
+## Walkthrough
+
+:::tip[Development Tip]
+The full source code of this game is [available on Github](https://github.com/super-turbo-society/turbo-demos/tree/main/space-shooter)
+:::
+
+::::steps
+
+### Initialize the Project
+
+Begin by creating a new project called `space-shooter`:
+
+```bash [Terminal]
+turbo init space-shooter
+```
+
+This initializes a Rust project with the following structure:
+
+```
+space-shooter/          # Your project's root directory.
+├── src/                # The directory of your code. <!-- [!code focus] [!code hl] -->
+│   └── lib.rs          # The main file for the game. <!-- [!code focus] [!code hl] -->
+├── Cargo.toml          # Rust project manifest. <!-- [!code focus] [!code hl] -->
+└── turbo.toml          # Turbo configuration. <!-- [!code focus] [!code hl] -->
+```
+
+### Setup the `turbo.toml`
+
+With the project initialized, open the `turbo.toml` and change the `height` of the `[canvas]` property. This will adjust the aspect ratio and resolution of the game.
+
+```rs [turbo.toml]
+[canvas]
+width = 256
+height = 144 // [!code focus] [!code hl] [!code --]
+height = 512 // [!code focus] [!code hl] [!code ++]
+```
+
+You can also change the `description` and `authors` properties while here.
+
+### Add Sprite and Audio Assets
+
+Inside your project directory, create a folder named `sprites` and a folder named `audio`. These folders will contain all of the game's sprites and audio files.
+
+```
+space-shooter/       # Your project's root directory.
+├── audio/              # The directory of your audio assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── sprites/            # The directory of your sprite assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+
+Add the following files to the `audio` folder:
+
+- [x] [projectile_player.wav](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/audio/projectile_player.wav)
+- [x] [projectile_enemy.wav](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/audio/projectile_enemy.wav)
+- [x] [projectile_hit.wav](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/audio/projectile_hit.wav)
+
+Add the following files to the `sprites` folder:
+
+> Player Sprites 
+>
+> - [x] [player.gif](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/sprites/player.gif)
+> - [x] [player_shooting.gif](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/sprites/player_shooting.gif)
+> - [x] [projectile_player.gif](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/sprites/projectile_player.gif)
+> - [x] [projectile_player_hit.gif](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/sprites/projectile_player_hit.gif)
+> 
+> Enemy sprites
+>
+> - [x] [turret.gif](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/sprites/turret.gif)
+> - [x] [projectile_enemy.gif](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/sprites/projectile_enemy.gif)
+> - [x] [projectile_enemy_hit.gif](https://github.com/super-turbo-society/turbo-demos/raw/main/space-shooter/sprites/projectile_enemy_hit.gif)
+
+:::tip[Development Tip]
+You may add sub-folders to keep your `audio` or `sprites` directories more organized. 
+If you do, you must specify the file path starting from the root folder when referencing them e.g `"player/player_shooting"`.
+:::
+:::tip[Development Tip]
+At this point, we can run our game and leave it running as we make changes. Don't worry, it is just a blank screen for now!
+
+```bash [Terminal]
+turbo run -w space-shooter
+```
+:::
+### Game State Initialization
+
+Add this code to the top of your `lib.rs` file.
+
+```rs [src/lib.rs]
+use turbo::*;
+
+#[turbo::game]
+struct GameState {
+
+}
+
+impl GameState {
+    fn new() -> Self {
+        Self {
+
+        }
+    }
+
+    fn update(&mut self) {
+        self.draw();
+    }
+
+    fn draw(&self) {
+
+    }
+}
+
+```
+:::tip[Development Tip]
+`#[turbo::game]` and the `GameState` struct are what run the game and keep track of everything. 
+We store data that needs to be persistent between frames in the `GameState` struct, such as the player, enemies and projectiles. 
+Then, we update and draw our stored data in the `update()` function.
+:::
+
+We haven't added any structs or data yet, but we will soon.
+
+All we did so far is set up a `draw()` function to keep our drawing and updating logic separate. This helps keep our code organized as we start adding more complex logic.
+
+### Set Up Project Structure
+
+To manage the size of this project, we will utilize sub files to organize our code. 
+Sub files must be accessible throughout the project, so we will set up a model for files to reference each other.
+
+Create a new folder named `model` inside the `src/` folder in your project directory and create two files inside it, `player.rs` and `mod.rs`.
+
+```
+space-shooter/       # Your project's root directory.
+├── audio/              # The directory of your audio assets.
+├── sprites/            # The directory of your sprite assets.
+├── src/                # The directory of your code.
+│   ├── model/          # The directory for sub files. <!-- [!code focus] [!code hl] [!code ++] -->
+│   │   └── mod.rs      # A reference to all sub files in this folder. <!-- [!code focus] [!code hl] [!code ++] -->
+│   │   └── player.rs   # A sub file to contain the Player struct. <!-- [!code focus] [!code hl] [!code ++] -->
+│   └── lib.rs          # The main file for the game.
+```
+
+At the top of the `lib.rs` file, add the following lines:
+
+```rs [src/lib.rs]
+use turbo::*;
+mod model; // [!code focus] [!code hl] [!code ++]
+pub use model::*; // [!code focus] [!code hl] [!code ++]
+```
+This code allows `lib.rs` to reference any files `mod.rs` references.
+
+Add the following code to the `mod.rs` file:
+
+```rs [src/model/mod.rs]
+use super::*;
+
+mod player;
+pub use player::*;
+```
+
+This code allows `mod.rs` to reference both `lib.rs` and `player.rs`, in turn allowing `lib.rs` to access `player.rs` as well.
+Whenever we create a new subfile we have to add `mod` and `use` statements to `mod.rs`.
+
+Finally, add the following line to the top of `player.rs`
+
+```rs [src/model/player.rs]
+use super::*;
+```
+This lets the subfile reference everything defined in `mod.rs`, including definitions in `lib.rs` like `GameState`, because `mod.rs` includes a `use super::*` as well.
+
+Now that the project is set up, we can start defining our game structs! 
+
+### Player
+We'll start by creating a `Player` Struct and adding some variables to update and draw it.
+Copy the following code into the `player.rs` file:
+
+```rs [src/model/player.rs]
+use super::*;
+
+#[turbo::serialize]
+pub struct Player {
+    pub hitbox: Bounds,
+    x: f32,
+    y: f32,
+    dx: f32, // dx and dy used for velocity
+    dy: f32,
+    
+    pub hp: u32,
+    
+    pub hit_timer: u32, // used for invincibility frames and drawing
+    shoot_timer: u32, // used for rate of fire
+    shooting: bool, // used for shooting animation
+
+    // variables used by the HUD to display information
+    pub score: u32,
+}
+
+impl Player {
+    pub fn new() -> Self {
+        let x = ((screen().w() / 2) - 8) as f32;
+        let y = (screen().h() - 64) as f32;
+        Player {
+            // Initialize all fields with default values
+            hitbox: Bounds::new(x, y, 16, 16),
+            x,
+            y,
+            dx: 0.0,
+            dy: 0.0,
+            hp: 3,
+            
+            hit_timer: 0,
+            shoot_timer: 0,
+            shooting: false,
+            
+            score: 0,
+        }
+    }
+
+    pub fn update(&mut self) {
+        
+    }
+
+    pub fn draw(&self) {
+
+    }
+}
+```
+
+These are all the variables we need to track the player as they move and shoot onscreen. 
+
+:::tip[Development Tip]
+`Bounds` is a Turbo struct that represents a rectangle with variables `x`, `y`, `w`, and `h`. 
+It has many useful functions, one of which we'll be using to check collisions between hitboxes.
+You can learn more about them in the [`Bounds`](/learn/api/bounds) documentation.
+:::
+
+We also outline `new()`, `update()` and `draw()` functions. These will be common functions across our game structs.
+We call `new()` when we want to create a new instance of this struct, in this case during initialization of the `GameState`, and call `update()` and `draw()` once per frame in the `GameState` `update()` scope.
+
+
+### Updating and Drawing the Player
+
+Next, we will add some code to the `update()` and `draw()` functions of the `Player` struct. 
+This code will handle player movement and rendering the player sprite. 
+
+Replace the empty functions in the `player.rs` file with the following functions:
+
+```rs [src/model/player.rs]
+pub fn update(&mut self) {
+    if self.hp > 0 {
+        // Player movement
+        let deceleration = 0.9; // Adjust this value to control deceleration speed
+        self.dx *= deceleration; // Reduce xy delta by deceleration factor
+        self.dy *= deceleration;
+
+        // Record keyboard input
+        let mut x_input = 0.0;
+        let mut y_input = 0.0;
+        if gamepad::get(0).up.pressed() {
+            y_input = -1.0;
+        }
+        if gamepad::get(0).down.pressed() {
+            y_input = 1.0;
+        }
+        if gamepad::get(0).left.pressed() {
+            x_input = -1.0;
+        }
+        if gamepad::get(0).right.pressed() {
+            x_input = 1.0;
+        }
+
+        // Apply input to dx and dy, normalizing diagonal movement
+        let magnitude = ((x_input * x_input + y_input * y_input) as f32).sqrt();
+        if x_input != 0.0 {
+            self.dx = x_input / magnitude;
+        }
+        if y_input != 0.0 {
+            self.dy = y_input / magnitude;
+        }
+
+        let speed = 2.0;
+        self.x = (self.x + self.dx * speed) // Translate position by input delta multiplied by speed
+            .clamp(0.0, (screen().w() - self.hitbox.w() - 2) as f32); // Clamp to screen bounds
+        self.y = (self.y + self.dy * speed)
+            .clamp(0.0, (screen().h() - self.hitbox.h() - 2) as f32);
+
+        // Set hitbox position based on float xy values
+        self.hitbox = self.hitbox.position(self.x, self.y);
+    }
+}
+```
+:::info[Code Breakdown]
+- Only update this scope when `hp` is above 0
+- Capture keyboard input with `x_input` and `y_input`
+- Set `dx` and `dy` to input values while normalizing diagonal values
+- Translate stored `x` and `y` positions by `dx` and `dy` multiplied by a `speed` value
+- Clamp `x` `y` positions to screen bounds
+- Set `hitbox` position for collision checking
+- Before these steps, deaccelerate `dx` and `dy` every frame
+:::
+
+```rs [src/model/player.rs]
+pub fn draw(&self) {
+    if self.hp > 0 {
+        // Get reference to SpriteAnimation for player
+        let anim = animation::get("p_key");
+        // Begin to construct the string for which sprite to use
+        let mut sprite = "player".to_string();
+        // Assign the sprite string to the SpriteAnimation
+        anim.use_sprite(&sprite);
+        sprite!(
+            animation_key = "p_key",
+            x = self.x,
+            y = self.y,
+        );
+    }
+}
+```
+:::info[Code Breakdown]
+- Only update this scope when `hp` is above 0
+- Create a local `SpriteAnimation` variable, `anim`, accessed using the key string `"p_key"`
+- Construct a string for `anim` to use, setting which file in the `sprites` folder it will draw
+- Draw a `sprite!()`, passing the same key used to set up the `SpriteAnimation`, `"p_key"`.
+:::
+
+:::tip[Development Tip]
+Using `SpriteAnimation` is a powerful way to manage animated sprites in Turbo. 
+We will be using them to seamlessly swap sprites, track animation states, and control looping. 
+You can learn more about them in the [`Sprites`](/learn/api/sprites) documentation.
+:::
+
+Great! The `Player` struct is now ready to be used in the game.
+
+Our final step before seeing it in action is to return to our `lib.rs` file to add a `player` variable to the `GameState` struct and call these functions we've just defined!
+
+```rs [src/lib.rs]
+use turbo::*;
+mod model;
+pub use model::*;
+
+#[turbo::game]
+struct GameState {
+    player: Player, // [!code focus] [!code hl] [!code ++]
+}
+
+impl GameState {
+    fn new() -> Self {
+        Self {
+            player: Player::new(), // [!code focus] [!code hl] [!code ++]
+        }
+    }
+
+    fn update(&mut self) {
+        self.draw();
+
+        self.player.update(); // [!code focus] [!code hl] [!code ++] 
+    }
+
+    fn draw(&self) {
+        self.player.draw(); // [!code focus] [!code hl] [!code ++] 
+    }
+}
+```
+After saving all your changes, return to the Turbo game window to fly your player ship around! Use the arrow keys to move. Try changing the `speed` and `deceleration` values to find what feels best.
+![Player flying around empty game scene](/space-shooter-movement.gif)
+
+### Projectiles
+
+Now that we have a start on our player controller, let's add projectiles for it to shoot!
+
+We'll start by creating a new file in our `model` folder called `projectile.rs` and reference it in `mod.rs`.
+
+```
+space-shooter/           # Your project's root directory.
+├── audio/                  # The directory of your audio assets.
+├── sprites/                # The directory of your sprite assets.
+├── src/                    # The directory of your code.
+│   ├── model/              # The directory for sub files. 
+│   │   └── mod.rs          # A reference to all sub files in this folder.
+│   │   └── player.rs       # A sub file to contain the Player struct.
+│   │   └── projectile.rs   # A sub file to contain the Projectile struct. <!-- [!code focus] [!code hl] [!code ++] -->
+│   └── lib.rs              # The main file for the game.
+```
+```rs [src/model/mod.rs]
+use super::*;
+
+mod player;
+pub use player::*;
+
+mod projectile; // [!code focus] [!code hl] [!code ++]
+pub use projectile::*; // [!code focus] [!code hl] [!code ++]
+```
+
+Copy the following code into the new `projectile.rs` file:
+
+```rs [src/model/projectile.rs]
+use super::*;
+
+// Enum to determine who fired the projectile
+#[turbo::serialize]
+#[derive(PartialEq)]
+pub enum ProjectileOwner {
+    Enemy,
+    Player,
+}
+
+#[turbo::serialize]
+pub struct Projectile {
+    pub hitbox: Bounds,
+    x: f32, 
+    y: f32, // use f32s to track xy positions for more precise movement
+    pub velocity: f32,
+    angle: f32,
+
+    anim_key: String, // unique, randomly generated key to be used for SpriteAnimations
+
+    pub collided: bool, // Used to control the sprite and update state
+    pub destroyed: bool, // Used to remove projectile from game
+
+    pub damage: u32,
+    pub projectile_owner: ProjectileOwner,
+}
+
+impl Projectile {
+    pub fn new(x: f32, y: f32, velocity: f32, angle: f32, projectile_owner: ProjectileOwner) -> Self {
+        let audio = match projectile_owner {
+            ProjectileOwner::Enemy => "projectile_enemy",
+            ProjectileOwner::Player => "projectile_player",
+        };
+        audio::play(audio);
+        Projectile {
+            // Initialize all fields with default values
+            hitbox: Bounds::new(x, y, 6, 6),
+            x,
+            y,
+            velocity,
+            angle,
+
+            anim_key: random::u32().to_string(),
+            
+            destroyed: false,
+            collided: false,
+            
+            damage: 1,
+            projectile_owner,
+        }
+    }
+
+    pub fn update(&mut self, player: &mut Player) {
+
+    }
+
+    pub fn draw(&self) {
+
+    }
+}
+```
+
+Once again, we outline all the variables we will need to update and draw our projectiles.
+:::info[Code Breakdown]
+- Just like the player, `x`, `y`, and `hitbox` variables are used for movement and collisions, plus `velocity` and `angle`
+- `anim_key` is a unique string randomly generated on initialization, so every instance of `Projectile` can reference unique `SpriteAnimation`s
+- bools `destroyed` and `collided` will manage the projectile's state; how it updates, its animation state, and removal from the game
+- `damage` and `projectile_owner` will determine how projectiles interact with other entities in the game
+:::
+
+:::tip[Development Tip]
+An `enum` is a way to define a type that can be one of several different variants.
+In this case, we use the `ProjectileOwner` enum to determine if a projectile was fired by the player or an enemy.
+We will be using enums for many things in this game, such as powerups and enemy types.
+:::
+
+Unlike the `Player`, when we create a `new()` `Projectile` we call `audio::play()` to play a sound effect, determined by the `projectile_owner`.
+:::tip[Development Tip]
+`audio` is a straightforward module that will play audio files we store in our `audio` folder. 
+Learn about its functions in the [`Audio`](/learn/api/audio) documentation.
+:::
+
+### Updating and Drawing Projectiles
+
+Now we can fill out our `update()` and `draw()` functions for the `Projectile` struct like we did for `Player`:
+
+```rs [src/model/projectile.rs]
+
+pub fn update(&mut self, player: &mut Player) {
+    // If the projectile hasn't collided, update it as normal
+    if !self.collided {
+        // update projectile position
+        let radian_angle = self.angle.to_radians();
+        self.x += self.velocity * radian_angle.cos();
+        self.y += self.velocity * radian_angle.sin();
+
+        // flag the projectile to be destroyed if it goes off screen
+        if self.y < -(self.hitbox.h() as f32)
+        && self.x < -(self.hitbox.w() as f32)
+        && self.x > screen().w() as f32
+        && self.y > screen().h() as f32
+        {
+            self.destroyed = true;
+        }
+    // if the projectile has collided, 
+    } else {
+        // get reference to the SpriteAnimation of the projectile
+        let anim = animation::get(&self.anim_key);
+        // flag projectile as destroyed when the hit animation is done
+        if anim.done() {
+            self.destroyed = true;
+        }
+    }
+
+    // Set hitbox position based on float xy values
+    self.hitbox = self.hitbox.position(self.x, self.y);
+}
+
+```
+:::info[Code Breakdown]
+- Check if it has collided and update contextually
+- If it hasn't collided, update its `x` and `y` position based on its `velocity` and `angle`, destroying it if it goes off screen
+- If it has collided, check if its hit animation is done, then flag it to be destroyed
+- Set `hitbox` position for collision checking
+:::
+
+```rs [src/model/projectile.rs]
+pub fn draw(&self) {
+    // Get reference to SpriteAnimation for projectile
+    let anim = animation::get(&self.anim_key);
+    // Begin to construct the string for which sprite to use
+    let owner = match self.projectile_owner {
+        ProjectileOwner::Enemy => "enemy",
+        ProjectileOwner::Player => "player",
+    };
+    if !self.collided {
+        anim.use_sprite(&format!("projectile_{}", owner));
+    } else {
+        anim.use_sprite(&format!("projectile_{}_hit", owner));
+        anim.set_repeat(0);
+        anim.set_fill_forwards(true);
+    }
+    
+    sprite!(
+        animation_key = &self.anim_key,
+        x = self.x,
+        y = self.y
+    );
+}
+
+```
+:::info[Code Breakdown]
+- Like the `Player`, create a local `SpriteAnimation` variable, `anim`, accessed using the key string `anim_key`
+- Construct a string for `anim` to use, setting which file in the `sprites` folder it will draw
+    - This string is determined by `projectile_owner` and `collided`
+    - If `collided`, set the animation to not repeat and to hold on the last frame when done in order to only play the hit animation once
+- Draw a `sprite!()`, passing the same key used to set up the `SpriteAnimation`, `anim_key`
+:::
+
+### Integrate Projectiles into the Game
+
+Now that the `Projectile` struct is ready, we can integrate it into our game!
+
+First, return to `lib.rs` and create a `projectiles` variable in the `GameState` struct.
+Then, add a loop for the `GameState` to update and draw all projectiles in the `update()` function. 
+
+```rs [src/lib.rs]
+use turbo::*;
+mod model;
+pub use model::*;
+
+#[turbo::game]
+struct GameState {
+    player: Player, 
+    projectiles: Vec<Projectile>, // [!code focus] [!code hl] [!code ++]
+}
+
+impl GameState {
+    fn new() -> Self {
+        Self {
+            player: Player::new(),
+            projectiles: vec![], // [!code focus] [!code hl] [!code ++]
+        }
+    }
+
+    fn update(&mut self) {
+        self.draw();
+
+        self.player.update();
+        self.projectiles.retain_mut(|projectile| { // [!code focus] [!code hl] [!code ++]
+            projectile.update(&mut self.player); // [!code focus] [!code hl] [!code ++]
+            !projectile.destroyed // [!code focus] [!code hl] [!code ++]
+        }); // [!code focus] [!code hl] [!code ++]
+    }
+
+    fn draw(&self) {
+        self.player.draw();
+        for projectile in self.projectiles.iter() { // [!code focus] [!code hl] [!code ++] 
+            projectile.draw(); // [!code focus] [!code hl] [!code ++] 
+        } // [!code focus] [!code hl] [!code ++]
+    }
+}
+```
+
+:::tip[Development Tip]
+`retain_mut()` is a method in Rust that lets you look through and mutate every element in a `Vec` and only **retain** the ones that pass a certain condition. 
+Any `Projectile`s that return `false` in this scope are removed from the `Vec`.
+In this case, we are removing any `Projectile`s that have been flagged as `destroyed`.
+:::
+
+The `GameState` now has a `vec`, or list, of projectiles. 
+Every projectile we create in the game will be added to this list so that the `GameState` can then update and draw them.
+
+But, we still need to add projectiles to this list! Time to return to our `Player` struct and add shooting functionality.
+
+Add a parameter to the `update()` function and paste the following code at the end:
+
+
+```rs [src/model/player.rs]
+pub fn update(&mut self, projectiles: &mut Vec<Projectile>) { // [!code focus] [!code hl] [!code ++]
+    ...
+        // Set hitbox position based on float xy values
+        self.hitbox = self.hitbox.position(self.x, self.y);
+
+        // Shooting projectiles // [!code focus] [!code hl] [!code ++]
+        // check if shoot button is pressed // [!code focus] [!code hl] [!code ++]
+        if gamepad::get(0).start.pressed() || gamepad::get(0).a.pressed() { // [!code focus] [!code hl] [!code ++]
+            self.shooting = true; // flag shooting state for animation // [!code focus] [!code hl] [!code ++]
+            // if shoot timer is 0, shoot a projectile // [!code focus] [!code hl] [!code ++]
+            if self.shoot_timer == 0 { // [!code focus] [!code hl] [!code ++]
+                let fire_rate = 15; // [!code focus] [!code hl] [!code ++]
+                self.shoot_timer += fire_rate; // add cooldown to shoot timer // [!code focus] [!code hl] [!code ++]
+                let projectile_speed = 5.0; // [!code focus] [!code hl] [!code ++]
+                for i in 0..=1 { // [!code focus] [!code hl] [!code ++]
+                    projectiles.push( // [!code focus] [!code hl] [!code ++]
+                        Projectile::new( // [!code focus] [!code hl] [!code ++]
+                            self.x + i as f32 * 13.0, // [!code focus] [!code hl] [!code ++]
+                            self.y - 8.0, // [!code focus] [!code hl] [!code ++]
+                            projectile_speed, // [!code focus] [!code hl] [!code ++]
+                            -90.0, // [!code focus] [!code hl] [!code ++]
+                            ProjectileOwner::Player, // [!code focus] [!code hl] [!code ++]
+                        ) // [!code focus] [!code hl] [!code ++]
+                    ); // [!code focus] [!code hl] [!code ++]
+                } // [!code focus] [!code hl] [!code ++]
+            } // [!code focus] [!code hl] [!code ++]
+        // if not shooting // [!code focus] [!code hl] [!code ++]
+        } else { // [!code focus] [!code hl] [!code ++]
+            self.shooting = false; // flag shooting state for animation // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+        // decrement shoot timer // [!code focus] [!code hl] [!code ++]
+        self.shoot_timer = self.shoot_timer.saturating_sub(1); // [!code focus] [!code hl] [!code ++]
+    }
+}
+```
+:::info[Code Breakdown]
+- Add a `&mut Vec<Projectile>` parameter to the function so the player can mutate the projectile list
+- Check if the shoot button is pressed on keyboard, and set `shooting` bool for animation state
+- Using `shoot_timer`, check if enough time has elapsed to shoot, then add a rate of fire cooldown
+- Use a `for` loop to `push()`, or add, two `new()` projectiles to the `projectiles` vec, constructed with the player's position
+- Decrease `shoot_timer` every frame
+:::
+
+While we're editing the `Player` struct, let's modify its draw function to swap sprites when shooting:
+
+```rs [src/model/player.rs]
+pub fn draw(&self) {
+    // Get reference to SpriteAnimation for player
+    let anim = animation::get("p_key");
+    // Begin to construct the string for which sprite to use
+    let mut sprite = "player".to_string();
+    if self.shooting { // [!code focus] [!code hl] [!code ++]
+        sprite.push_str("_shooting"); // [!code focus] [!code hl] [!code ++]
+    } // [!code focus] [!code hl] [!code ++]
+    // Assign the sprite string to the SpriteAnimation
+    anim.use_sprite(&sprite);
+    // Draw sprite
+    sprite!(
+        animation_key = "p_key",
+        x = self.x,
+        y = self.y,
+    );
+}
+```
+Now, if the `shooting` bool is true, we add `"_shooting"` to the end of our `sprite` string, making it `"player_shooting"`.
+
+Finally, we need to update the call to the `Player`'s `update()` function in `lib.rs` in order to pass our projectile list:
+```rs [src/lib.rs]
+self.player.update() // [!code focus] [!code hl] [!code --]
+self.player.update(&mut self.projectiles); // [!code focus] [!code hl] [!code ++]
+```
+Save all your work, and you should now be able to shoot projectiles in the game window by pressing Space or Z! 
+
+![Player shooting projectiles](/space-shooter-projectiles.gif)
+
+Play around with the values for `fire_speed` and `projectile_speed` to give the game your own spin.
+
+### Enemies
+
+Now that we have a framework for combat, it's time to add enemies!
+
+Start once again by creating a new file in our `model` folder called `enemy.rs` and reference it in `mod.rs`.
+
+```
+space-shooter/              # Your project's root directory.
+├── audio/                  # The directory of your audio assets.
+├── sprites/                # The directory of your sprite assets.
+├── src/                    # The directory of your code.
+│   ├── model/              # The directory for sub files. 
+│   │   └── enemy.rs        # A sub file to contain the Enemy struct. <!-- [!code focus] [!code hl] [!code ++] -->
+│   │   └── mod.rs          # A reference to all sub files in this folder.
+│   │   └── player.rs       # A sub file to contain the Player struct.
+│   │   └── projectile.rs   # A sub file to contain the Projectile struct.
+│   └── lib.rs              # The main file for the game.
+```
+```rs [src/model/mod.rs]
+use super::*;
+
+mod enemy; // [!code focus] [!code hl] [!code ++]
+pub use enemy::*; // [!code focus] [!code hl] [!code ++]
+
+mod player;
+pub use player::*;
+
+mod projectile;
+pub use projectile::*;
+```
+
+Copy the following code into the new `enemy.rs` file:
+
+```rs [src/model/enemy.rs]
+use super::*;
+
+// Different types of enemies
+#[turbo::serialize]
+#[derive(PartialEq)]
+pub enum EnemyType {
+    Meteor,
+    Shooter,
+    Tank,
+    Turret,
+    Zipper,
+}
+
+#[turbo::serialize]
+// Struct for Enemies
+pub struct Enemy {
+    enemy_type: EnemyType,
+    
+    pub hitbox: Bounds,
+    x: f32,
+    y: f32, 
+    pub angle: f32,
+
+    pub hp: u32,
+
+    hit_timer: u32, // used for hit animation
+    pub destroyed: bool,
+}
+
+impl Enemy {
+    // Initialize different enemy types with different properties
+    pub fn new(enemy_type: EnemyType) -> Self {
+        let (x,y) = ((random::u32() % screen().w()).saturating_sub(32) as f32, -32.0);
+        // Set initial properties based on enemy type
+        Self {
+            enemy_type: enemy_type,
+            
+            hitbox: Bounds::new(x, y, 16, 16),
+            x, 
+            y,
+            angle: 0.0,
+
+            hp: 8,
+
+            hit_timer: 0,
+            destroyed: false,
+        }
+    }
+
+    pub fn update(&mut self, projectiles: &mut Vec<Projectile>) {
+
+    }
+
+    pub fn draw(&self) {
+
+    }
+}
+
+```
+Again, we outline the struct for updating and drawing. 
+This time, we add some logic to the `new()` function to randomly position enemies when we spawn them.
+And we include a `destroyed` bool, like we do with projectiles.
+
+The `EnemyType` `enum` will be used to add variety to our enemies in the future. 
+For now, we will only implement one simple enemy, the `Turret` variant.
+
+### Updating and Drawing Enemies
+
+Same as before, fill out the blank `update()` and `draw()` functions:
+
+```rs [src/model/enemy.rs]
+pub fn update(&mut self, projectiles: &mut Vec<Projectile>) {
+    // Move down
+    let speed = 0.5;
+    self.y += speed;
+    // Random chance to fire projectile
+    if random::u32() % 250 == 0 {
+        // Create and shoot projectiles from enemy towards the player
+        projectiles.push(Projectile::new(
+            self.x + (self.hitbox.w() as f32 * 0.5) - (self.hitbox.w() as f32 * 0.5),
+            self.y + (self.hitbox.h() as f32),
+            2.5,
+            90.0,
+            ProjectileOwner::Enemy,
+        ));
+    }
+    // Flag to destroy if moved offscreen 
+    if self.y > (screen().h() + self.hitbox.h()) as f32 {
+        self.destroyed = true;
+    }
+    // Set hitbox position based on float xy values
+    self.hitbox = self.hitbox.position(self.x, self.y);
+}
+```
+:::info[Code Breakdown]
+- Simply translate `y` position to move the enemy down
+- Random chance to fire projectile, adding a `new()` projectile to the `projectiles` list like the `Player` does
+    - Set `projectile_owner` to `Enemy` and change the angle so it travels downwards
+- Flag to destroy if moved outside of screen bounds
+- Set `hitbox` position for collision checking
+:::
+
+```rs [src/model/enemy.rs]
+pub fn draw(&self) {
+    // Construct the string for which sprite to use
+    let sprite = match self.enemy_type {
+        EnemyType::Tank => "tank",
+        EnemyType::Shooter => "shooter",
+        EnemyType::Turret => "turret",
+        EnemyType::Zipper => "zipper",
+        EnemyType::Meteor => "meteor",
+    };
+    // Draw sprite
+    sprite!(
+        &sprite,
+        x = self.hitbox.x(),
+        y = self.hitbox.y(),
+    );
+}
+```
+:::info[Code Breakdown]
+- Unlike our other structs, we don't use `SpriteAnimation` because our enemy sprites aren't animated
+- Construct a string and use it to draw a `sprite!()` 
+    - We set up logic for using sprites based on `EnemyType` even though we're only implementing `Turret`
+:::
+
+### Integrate Enemies into the Game
+Now we have an `Enemy` struct that updates and draws, so let's add some logic to the `GameState` to spawn them on an interval and call those functions.
+
+First, add new properties to the `GameState`, then define a functions to spawn enemies. 
+Then, call the spawning function, as well as updating and drawing all spawned enemies.
+
+```rs [src/lib.rs]
+use turbo::*;
+mod model;
+pub use model::*;
+
+#[turbo::game]
+struct GameState {
+    player: Player, 
+    enemies: Vec<Enemy>, // [!code focus] [!code hl] [!code ++]
+    projectiles: Vec<Projectile>, 
+}
+
+impl GameState {
+    fn new() -> Self {
+        Self {
+            player: Player::new(),
+            enemies: vec![], // [!code focus] [!code hl] [!code ++]
+            projectiles: vec![], 
+        }
+    }
+
+    fn update(&mut self) {
+        self.draw();
+
+        self.player.update(&mut self.projectiles);
+        self.spawn_enemies(); // [!code focus] [!code hl] [!code ++]
+        self.enemies.retain_mut(|enemy| { // [!code focus] [!code hl] [!code ++]
+            enemy.update(&mut self.projectiles); // [!code focus] [!code hl] [!code ++]
+            !enemy.destroyed // [!code focus] [!code hl] [!code ++]
+        }); // [!code focus] [!code hl] [!code ++]
+        self.projectiles.retain_mut(|projectile| { 
+            projectile.update(); 
+            !projectile.destroyed
+        }); 
+    }
+
+    fn draw(&self) {
+        self.player.draw();
+        for enemy in self.enemies.iter() { // [!code focus] [!code hl] [!code ++]
+            enemy.draw(); // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+        for projectile in self.projectiles.iter() {
+            projectile.draw();
+        } 
+    } 
+
+    fn spawn_enemies(&mut self) { // [!code focus] [!code hl] [!code ++]
+        let spawn_rate = 100; // [!code focus] [!code hl] [!code ++]
+        // Spawn a new enemy if the tick is a multiple of the spawn rate and there are less than 24 enemies already spawned // [!code focus] [!code hl] [!code ++]
+        if time::tick() % spawn_rate == 0 && self.enemies.len() < 24 { // [!code focus] [!code hl] [!code ++]
+            // Spawn a new Turret enemy // [!code focus] [!code hl] [!code ++]
+            self.enemies.push( // [!code focus] [!code hl] [!code ++]
+                Enemy::new(EnemyType::Turret) // [!code focus] [!code hl] [!code ++]
+            ); // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+    } // [!code focus] [!code hl] [!code ++]
+}
+```
+Save all your work, and you should see a swarm of enemies flooding your game window!
+:::tip[Development Tip]
+A little noisy, huh? We'll be adding a state manager later on so the game doesn't just start right away. 
+But if you want peace and quiet until then you can comment out the `audio::play()` function in the `new()` function in `projectile.rs`!
+:::
+
+The last step to finishing our combat system is to check for collisions between ships and projectiles, and manage their hit points!
+
+### Collisions and HP
+
+Before we register collisions between ships and projectiles, we'll define damage functions for the `Player` and `Enemy` structs. 
+Add these functions inside of the `impl` scope for each struct:  
+```rs [src/model/player.rs]
+pub fn take_damage(&mut self, damage: u32) {
+    self.hp = self.hp.saturating_sub(damage); // reduce HP by damage amount
+    camera::shake(5.0); // camera shake
+    self.hit_timer = 30; // invincibility frame timer and drawing flag
+}
+```
+```rs [src/model/enemy.rs]
+pub fn take_damage(&mut self, player: &mut Player, damage: u32) {
+    // reduce HP by damage amount and set hit timer for hit effect
+    self.hp = self.hp.saturating_sub(damage);
+    self.hit_timer = 15; // frames to show hit effect
+    // Destroy enemy and increase player score if hp is 0
+    if self.hp == 0 {
+        self.destroyed = true;
+        player.score += 20;
+    }
+}
+```
+Also add these lines to the end of the `Player` `update()` and `Enemy` `update()` functions:
+```rs [src/model/player.rs]
+self.hit_timer = self.hit_timer.saturating_sub(1);
+// Remove the camera shake
+if self.hit_timer == 0 {
+    camera::remove_shake();
+}
+```
+```rs [src/model/enemy.rs]
+self.hit_timer = self.hit_timer.saturating_sub(1);
+```
+These functions will decrease hp values for both `Player` and `Enemy` when called. 
+`Player` will shake the camera, while `Enemy` will flag `destroyed` and increase the `Player`'s score.
+Both structs have a `hit_timer` variable we will use for animating a damaged state, which needs to be decreased every frame.
+
+:::tip[Development Tip]
+The `camera` module is an easy way to control the viewport of your game. 
+Our game's camera is static so we aren't using it much, but the built-in camera shake adds juice!
+Learn more about it in the [`Camera`](/learn/api/camera) documentation.
+:::
+
+Now we can expand our `Projectile` struct. Add some logic to check for collisions, and call these damage functions:
+
+```rs [src/model/projectile.rs]
+ 
+pub fn update(&mut self, player: &mut Player, enemies: &mut Vec<Enemy>) { // [!code focus] [!code hl] [!code ++]
+    // If the projectile hasn't collided, update it as normal
+    if !self.collided {
+        // update projectile position
+        let radian_angle = self.angle.to_radians();
+        self.x += self.velocity * radian_angle.cos();
+        self.y += self.velocity * radian_angle.sin();
+ 
+        // flag the projectile to be destroyed if it goes off screen
+        if self.y < -(self.hitbox.h() as f32)
+        && self.x < -(self.hitbox.w() as f32)
+        && self.x > screen().w() as f32
+        && self.y > screen().h() as f32
+        {
+            self.destroyed = true;
+        }
+
+        // Checking for collisions with player or enemies based on projectile owner // [!code focus] [!code hl] [!code ++]
+        match self.projectile_owner { // [!code focus] [!code hl] [!code ++]
+            // Check collision with player // [!code focus] [!code hl] [!code ++]
+            ProjectileOwner::Enemy => { // [!code focus] [!code hl] [!code ++]
+                if self.hitbox.intersects(&player.hitbox) // [!code focus] [!code hl] [!code ++]
+                && player.hp > 0  // [!code focus] [!code hl] [!code ++]
+                && player.hit_timer == 0 { // player doesn't have i-frames [!code focus] [!code hl] [!code ++]
+                    player.take_damage(self.damage);  // [!code focus] [!code hl] [!code ++]
+                    audio::play("projectile_hit");  // [!code focus] [!code hl] [!code ++]
+                    self.collided = true; // [!code focus] [!code hl] [!code ++]
+                } // [!code focus] [!code hl] [!code ++]
+            } // [!code focus] [!code hl] [!code ++]
+            // Check collision with enemies // [!code focus] [!code hl] [!code ++]
+            ProjectileOwner::Player => { // [!code focus] [!code hl] [!code ++]
+                for enemy in enemies.iter_mut() { // [!code focus] [!code hl] [!code ++]
+                    if self.hitbox.intersects(&enemy.hitbox) && !enemy.destroyed { // [!code focus] [!code hl] [!code ++]
+                        enemy.take_damage(player, self.damage); // [!code focus] [!code hl] [!code ++]
+                        // [!code focus] [!code hl] [!code ++]
+                        audio::play("projectile_hit"); // [!code focus] [!code hl] [!code ++]
+                        self.collided = true; // [!code focus] [!code hl] [!code ++]
+                        break; // Exit loop after first collision // [!code focus] [!code hl] [!code ++]
+                    } // [!code focus] [!code hl] [!code ++]
+                } // [!code focus] [!code hl] [!code ++]
+            } // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+    // if the projectile has collided, 
+    } else {
+        // get reference to the SpriteAnimation of the projectile
+        let anim = animation::get(&self.anim_key);
+        // flag projectile as destroyed when the hit animation is done
+        if anim.done() {
+            self.destroyed = true;
+        }
+    }
+ 
+    // Set hitbox position based on float xy values
+    self.hitbox = self.hitbox.position(self.x, self.y);
+}
+
+```
+:::info[Code Breakdown]
+- First, determine if this projectile should check collisions with `Player` or `Enemy` based on its `projectile_owner`
+- If it should collide with the player, check if it has invincibility frames or is already at 0 HP
+- If it should collide with an enemy, check if it is already `destroyed`
+- In either case, check if the projectile's hitbox overlaps with the ship's hitbox using `bounds::intersects()`
+- If a collision is registered:
+    - Set `collided` to true for animation state transition
+    - Use `audio::play()` to play a hit sound effect
+    - Call `take_damage()` on either `Player` or `Enemy`
+:::
+
+<br/ >
+
+And for our last step, return to `lib.rs` to update the call to our projectiles' `update()` function:
+
+```rs [src/lib.rs]
+fn update(&mut self) {
+    self.draw();
+
+    self.player.update(&mut self.projectiles);
+    self.spawn_enemies(); 
+    self.enemies.retain_mut(|enemy| { 
+        enemy.update(&mut self.projectiles); 
+        !enemy.destroyed 
+    }); 
+    self.projectiles.retain_mut(|projectile| { 
+        projectile.update(&mut self.player, &mut self.enemies); // [!code focus] [!code hl] [!code ++]
+        !projectile.destroyed
+    }); 
+}
+```
+
+Save everything, and click back into your game window. Move around, shoot some enemies, and take some damage.
+:::tip[Development Tip]
+Now that the Player can die and we haven't programmed an in-game reset, you can hot reload to play again! Hit `ctrl+R` or `cmd+R` at anytime while playing to reset the `GameState`!
+:::
+
+![Completed Game Loop!](/space-shooter-part-1.gif)
+
+### Game State Machine
+
+Now that our core gameplay is running, let's add some logic to set up a start and end, and a way to replay the game.
+
+Start by creating a new `enum` in `lib.rs` and properties in `GameState`:
+
+```rs [src/lib.rs]
+use turbo::*;
+mod model;
+pub use model::*;
+
+#[turbo::serialize] // [!code focus] [!code hl] [!code ++]
+#[derive(PartialEq)] // [!code focus] [!code hl] [!code ++]
+enum Screen { // [!code focus] [!code hl] [!code ++]
+    Menu, // [!code focus] [!code hl] [!code ++] 
+    Game, // [!code focus] [!code hl] [!code ++]
+} // [!code focus] [!code hl] [!code ++]
+
+#[turbo::game]
+struct GameState {
+    screen: Screen, // [!code focus] [!code hl] [!code ++]
+    start_tick: usize, // [!code focus] [!code hl] [!code ++]
+
+    player: Player, 
+    enemies: Vec<Enemy>,
+    projectiles: Vec<Projectile>, 
+}
+ 
+impl GameState {
+    fn new() -> Self {
+        Self {
+            screen: Screen::Menu, // [!code focus] [!code hl] [!code ++]
+            start_tick: 0, // [!code focus] [!code hl] [!code ++]
+
+            player: Player::new(),
+            enemies: vec![],
+            projectiles: vec![], 
+        }
+    }
+...
+```
+We'll use this enum to manage what we call in our `update()` scope, and the `tick` keeps track of when the game started for future timing logic:
+
+```rs [src/lib.rs] 
+fn update(&mut self) {
+    self.draw();
+    // Menu [!code focus] [!code hl] [!code ++]
+    if self.screen == Screen::Menu { // [!code focus] [!code hl] [!code ++]
+        if gamepad::get(0).start.just_pressed() || gamepad::get(0).a.just_pressed() { // [!code focus] [!code hl] [!code ++]
+            self.screen = Screen::Game; // transition scene [!code focus] [!code hl] [!code ++]
+            self.start_tick = time::tick(); // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+    // Game [!code focus] [!code hl] [!code ++]
+    } else { // [!code focus] [!code hl] [!code ++]
+        self.player.update(&mut self.projectiles);
+        self.spawn_enemies(); 
+        self.enemies.retain_mut(|enemy| { 
+            enemy.update(&mut self.projectiles); 
+            !enemy.destroyed 
+        }); 
+        self.projectiles.retain_mut(|projectile| {
+            projectile.update(&mut self.player, &mut self.enemies);
+            !projectile.destroyed
+        });
+        // Game Over [!code focus] [!code hl] [!code ++]
+        if self.player.hp == 0 { // [!code focus] [!code hl] [!code ++]
+            if gamepad::get(0).start.just_pressed() || gamepad::get(0).a.just_pressed() { // [!code focus] [!code hl] [!code ++]
+                *self = GameState::new(); // [!code focus] [!code hl] [!code ++]
+            } // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+    } // [!code focus] [!code hl] [!code ++]
+}
+
+```
+:::info[Code Breakdown]
+- Check what `Screen` the `GameState` is currently in
+    - If `Menu`, wait for user input then change `screen` to `Game`
+    - If `Game`, do our update logic as we had it before
+- In the `Game` scope, check if the player is below 0 hp
+    - If so, wait for user input to reset the `GameState`
+:::
+
+Now our game has a simple, built-in loop. Let's just add some text to show the player what's happening. Add this function to the `impl` scope of `GameState`:
+
+```rs [src/lib.rs] 
+fn draw_screen(&self) {
+    // If in menu or game over state
+    if self.screen == Screen::Menu || self.player.hp == 0 {
+        // Determine title string
+        let title = 
+            if self.screen == Screen::Menu { "SPACE SHOOTER" } 
+            else { "GAME OVER" };
+        // Draw title
+        text!(
+            &title,
+            x = (screen().w() as i32 / 2) - (title.chars().count() as i32 * 4),
+            y = (screen().h() as i32 / 2) - 16,
+            font = "large"
+        );
+        // Draw prompt to start game, blinking every half second
+        if time::tick() / 4 % 8 < 4 {
+            text!(
+                "Press A or Start",
+                x = (screen().w() as i32 / 2) - 38,
+                y = (screen().h() as i32 / 2) + 8,
+            );
+        }
+    }
+}
+```
+:::info[Code Breakdown]
+- Only update this scope when `screen` is `Menu` or the player's hp is 0
+- Determine the `title` string by which of the above is true
+- Draw `text!()` for the title and input prompt
+    - The input prompt blinks based on the game tick
+:::
+And lastly, call the new function at the end of `GameState`'s `draw()` function:
+```rs [src/lib.rs] 
+fn draw(&self) {
+    self.player.draw();
+    for projectile in self.projectiles.iter() { 
+        projectile.draw(); 
+    } 
+    for enemy in self.enemies.iter() { 
+        enemy.draw(); 
+    } 
+
+    self.draw_screen(); // [!code focus] [!code hl] [!code ++]
+}
+```
+### Displaying Game Info
+
+Next, let's give the player some info about their status by adding a simple heads up display! 
+We'll create a UI to display the player's HP, score, and notifications.
+
+Before we get to drawing, add some properties in the `Player` struct to store notifications:
+```rs [src/model/player]
+#[turbo::serialize]
+pub struct Player {
+    pub hitbox: Bounds,
+    x: f32,
+    y: f32,
+    dx: f32, // dx and dy used for velocity
+    dy: f32,
+    
+    pub hp: u32,
+    
+    pub hit_timer: u32, // used for invincibility frames and drawing
+    shoot_timer: u32, // used for rate of fire
+    shooting: bool, // used for shooting animation
+ 
+    // variables used by the HUD to display information
+    pub score: u32,
+    notifications: Vec<String>, // [!code focus] [!code hl] [!code ++]
+    notification_timer: usize, // [!code focus] [!code hl] [!code ++]
+}
+ 
+impl Player {
+    pub fn new() -> Self {
+        let x = ((screen().w() / 2) - 8) as f32;
+        let y = (screen().h() - 64) as f32;
+        Player {
+            // Initialize all fields with default values
+            hitbox: Bounds::new(x, y, 16, 16),
+            x,
+            y,
+            dx: 0.0,
+            dy: 0.0,
+            hp: 3,
+            
+            hit_timer: 0,
+            shoot_timer: 0,
+            shooting: false,
+            
+            score: 0,
+            notifications: vec![ // [!code focus] [!code hl] [!code ++]
+                "Use arrow keys to move.".to_string(), // [!code focus] [!code hl] [!code ++]
+                "Press SPACE or A to shoot.".to_string(), // [!code focus] [!code hl] [!code ++]
+                "Defeat enemies and collect powerups.".to_string(), // [!code focus] [!code hl] [!code ++]
+                "Try to not die. Good luck!".to_string(), // [!code focus] [!code hl] [!code ++]
+            ], // [!code focus] [!code hl] [!code ++]
+            notification_timer: 0, // [!code focus] [!code hl] [!code ++]
+        }
+    }
+
+```
+This `vec` and `usize` timer will keep track of the notifications we'll display to the player.
+The list will act as a queue, where the first element is displayed, and the timer will increment whenever the queue is not empty.
+
+Add the following lines to the end of the `Player` `update()` function:
+
+```rs [src/model/player]
+pub fn update(&mut self, projectiles: &mut Vec<Projectile>) { 
+    ...
+    self.hit_timer = self.hit_timer.saturating_sub(1);
+    // Remove the camera shake
+    if self.hit_timer == 0 {
+        camera::remove_shake();
+    }
+
+    // Notifications timer // [!code focus] [!code hl] [!code ++]
+    if self.notifications.len() > 0 { // [!code focus] [!code hl] [!code ++]
+        self.notification_timer += 1; // [!code focus] [!code hl] [!code ++]
+        // Remove current notification if timer expires // [!code focus] [!code hl] [!code ++]
+        if self.notification_timer >= 120 - 1 { // [!code focus] [!code hl] [!code ++]
+            self.notification_timer = 0; // [!code focus] [!code hl] [!code ++]
+            let _ = self.notifications.remove(0); // [!code focus] [!code hl] [!code ++]
+        } // [!code focus] [!code hl] [!code ++]
+    } // [!code focus] [!code hl] [!code ++]
+}
+```
+
+This scope runs when there are notifications to display, increasing the notifications timer, resetting it and removing the first displayed notification from the list.
+
+We aren't going to send any notifications in this tutorial, but you could use them when significant events happen in the game, like if the player finds a new power up or gets an achievement. 
+
+Now we can create a function to draw all of our heads up display information!
+Add the following function to the `impl` scope of the `Player` struct:
+
+```rs [src/model/player]
+pub fn draw_hud(&self) {
+    let hud_height = 16; // Height of the HUD panel
+    let hud_padding = 4; // Padding inside the HUD
+
+    // Background rectangle
+    rect!(
+        x = -1,
+        y = -1,
+        w = screen().w() + 2,
+        h = hud_height + 2,
+        border_size = 1,
+        color = 0x000000ff,
+        border_color = 0xffffffff,
+    ); 
+    
+    // Display Health
+    let health_text = format!("HP: {}", self.hp);
+    text!(
+        &health_text,
+        x = hud_padding,
+        y = hud_padding,
+        font = "large",
+        color = 0xffffffff
+    );
+
+    // Display Score
+    let score_text = format!("SCORE: {:0>5}", self.score);
+    let score_text_x = // anchor to the right side of the screen
+        screen().w() as i32 - (score_text.chars().count() as i32 * 8) - hud_padding;
+    text!(
+        &score_text,
+        x = score_text_x,
+        y = hud_padding,
+        font = "large",
+        color = 0xffffffff
+    );
+
+    // Draw notifications
+    for notif in self.notifications.iter() {
+        // center the text based on width of characters
+        let len = notif.chars().count();
+        let w = len * 5;
+        let x = (screen().w() as usize / 2) - (w / 2);
+        rect!(
+            x = x as i32 - 4,
+            y = 24 - 2,
+            w = w as u32 + 4,
+            h = 12,
+            color = 0x5fcde4ff
+        );
+        text!(
+            &notif,
+            x = x as i32,
+            y = 24,
+            font = "medium",
+            color = 0xffffffff
+        );
+        break;
+    }
+}
+```
+This function simply uses `rect!()`s and `text!()`s with some math for centering to display information already stored in the `Player` struct.
+
+So now that we have all our info in one place, we can call our new function in the `GameState`'s `draw()` function:
+
+```rs [src/lib.rs] 
+fn draw(&self) {
+    self.player.draw();
+    for projectile in self.projectiles.iter() { 
+        projectile.draw(); 
+    } 
+    for enemy in self.enemies.iter() { 
+        enemy.draw(); 
+    } 
+
+    self.player.draw_hud(); // [!code focus] [!code hl] [!code ++]
+    self.draw_screen();
+}
+```
+Save your files and check your game window for a more informed playthrough!
+
+::::
+## Conclusion
+
+Wow. After all that code, you have a playable game loop with a solid foundation. Great work!
+
+We created `Player`, `Enemy`, and `Projectile` structs, are updating and drawing them using the `GameState`, checking for collisions between them all, and organized 400+ lines of code into easily readable sub files!
+
+## Next Steps
+
+- Add more enemy types. Give them new sprites and movement patterns.
+- Create power-ups for the player to collect
+- Change the `speed`, `fire_rate` or `enemy.hp` to personalize the game
+- Use `turbo -export` to export your game and [host it on the web](/learn/guides/web-publishing)
