@@ -1,0 +1,792 @@
+# Character Sheet [Organize your player stats, level up your dev strats]
+
+![Turbo game window gif of the character screen](/character-screen-gif.gif)
+
+## Overview
+
+:::info[Summary]
+
+> In this tutorial you'll build an RPG character sheet which will display your stats, items, and loadout! 
+
+**Difficulty**
+
+> ★★★☆☆
+
+**Time Estimate**
+
+> ~20 minutes
+
+**What You'll Learn**
+
+- [x] How to use multiple Rust files
+- [x] How State Machines make it easy to organize your code
+- [x] How to use Enums in Rust
+- [x] How to import and use sprites
+- [x] An introduction to `Tweens`, `Bounds`, `Gamepad`, and `Camera`
+- [x] How to utilize various Turbo Macros
+
+:::
+
+## Walkthrough
+
+:::tip[Development Tip]
+The full source code of this game is [available on Github](https://github.com/Stophii/character-sheet) and a video guide on state machines is [available on Youtube](https://www.youtube.com/watch?v=0LuQa6T_pKQ&t=2s)
+
+:::
+
+::::steps
+
+### Initialize the Project
+
+Begin by creating a new project called `character-sheet`
+
+```bash [Terminal]
+turbo init character-sheet
+```
+
+This initializes a Rust project with the following structure:
+
+```
+character-sheet/          # Your project's root directory.
+├── src/                # The directory of your code. <!-- [!code focus] [!code hl] -->
+│   └── lib.rs          # The main file for the game. <!-- [!code focus] [!code hl] -->
+├── Cargo.toml          # Rust project manifest. <!-- [!code focus] [!code hl] -->
+└── turbo.toml          # Turbo configuration. <!-- [!code focus] [!code hl] -->
+```
+
+### Create `state.rs` and `player.rs` files
+
+Inside your project directory, create a file named `state.rs`. This file will contain your `state machine`. You'll learn more about `state machines` as you progress through this tutorial.
+
+```
+your-project-dir/       # Your project's root directory.
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+|   └── state.rs        # The main file for your state machine. <!-- [!code focus] [!code hl] [!code ++] -->
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+
+Create another file and call it `player.rs`. This file will contain your player struct.
+
+```
+your-project-dir/       # Your project's root directory.
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+|   └── state.rs        # The main file for your state machine.
+|   └── player.rs       # The main file for your player. <!-- [!code focus] [!code hl] [!code ++] -->
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+
+### Enabling Other Files 
+
+Add the following lines of code to the top of each file.
+
+- [x] lib.rs
+```rs [src/lib.rs]
+use turbo::*;
+
+use state::*; // [!code ++] [!code focus] [!code hl]
+mod state;    // [!code ++] [!code focus] [!code hl]
+use player::*; // [!code ++] [!code focus] [!code hl]
+mod player;    // [!code ++] [!code focus] [!code hl]
+
+```
+- [x] state.rs
+```rs [src/state.rs]
+use crate::*; // [!code ++] [!code focus] [!code hl]
+
+
+```
+- [x] player.rs
+```rs [src/player.rs]
+use crate::*; // [!code ++] [!code focus] [!code hl]
+
+
+```
+
+This will allow the code we write in `state.rs` and `player.rs` to be recognized inside of `lib.rs` and vice versa. Don't forget to save each file with `Cmd+S` or `Ctrl+S`.
+
+### Run the Game
+
+At this point, we can run our game and leave it running as we make changes. Don't worry, it is just a blank screen for now!
+
+```bash [Terminal]
+turbo run -w character-sheet
+```
+
+:::tip[Development Tip]
+If you want it to always appear above your other open windows you can run it with
+```bash [Terminal]
+turbo run -w -A character-sheet
+```
+The `-A` will make it "always on top". 
+
+:::
+
+Now lets go through each individual file and add some code to start making our character sheet work.
+
+### `state.rs`
+
+Add this code to your `state.rs` file. This is an enum we'll use for switching screens:
+
+```rs [src/state.rs]
+use crate::*;
+
+#[turbo::serialize] // add this above structs and enums // [!code ++] [!code focus] [!code hl]
+pub enum Screen { // [!code ++] [!code focus] [!code hl]
+    Character, // [!code ++] [!code focus] [!code hl]
+    Inventory, // [!code ++] [!code focus] [!code hl]
+    Loadout, // [!code ++] [!code focus] [!code hl]
+} // [!code ++] [!code focus] [!code hl]
+```
+
+:::tip[Development Tip]
+An enum lets you define a collection of related named values. In this case we use it for the different screens in our game. Using `enums` makes your code much more readable and less error prone.
+:::
+
+### `player.rs`
+
+Add this code to your `player.rs` file. These `structs` and `enums` will build out the basis of our character, inventory, and loadout screens.
+
+```rs [src/player.rs]
+use crate::*; 
+
+#[turbo::serialize] // add this above structs and enums // [!code ++] [!code focus] [!code hl]
+pub struct Player { // [!code ++] [!code focus] [!code hl]
+    pub name: String, // [!code ++] [!code focus] [!code hl]
+    pub max_hp: f32, // [!code ++] [!code focus] [!code hl]
+    pub current_hp: f32, // [!code ++] [!code focus] [!code hl]
+    pub atk: f32, // [!code ++] [!code focus] [!code hl]
+    pub crit: f32, // [!code ++] [!code focus] [!code hl]
+    pub inventory: Vec<Item>, // [!code ++] [!code focus] [!code hl]
+    pub inventory_index: usize, // [!code ++] [!code focus] [!code hl]
+    pub inventory_slots: usize, // [!code ++] [!code focus] [!code hl]
+    pub loadout: Loadout, // [!code ++] [!code focus] [!code hl]
+    pub loadout_index: usize, // [!code ++] [!code focus] [!code hl]
+    pub loadout_slots: usize, // [!code ++] [!code focus] [!code hl]
+} // [!code ++] [!code focus] [!code hl]
+
+impl Player { // [!code ++] [!code focus] [!code hl]
+    pub fn new() -> Self { // [!code ++] [!code focus] [!code hl]
+        Self { // [!code ++] [!code focus] [!code hl]
+            name: "Shell".to_string(), // [!code ++] [!code focus] [!code hl] 
+            max_hp: 100.0, // [!code ++] [!code focus] [!code hl]
+            current_hp: 100.0, // [!code ++] [!code focus] [!code hl]
+            atk: 1.0, // [!code ++] [!code focus] [!code hl]
+            crit: 2.0, // [!code ++] [!code focus] [!code hl]
+            inventory: vec![ // [!code ++] [!code focus] [!code hl]
+                Item { // [!code ++] [!code focus] [!code hl]
+                    name: "HP Potion".to_string(), // [!code ++] [!code focus] [!code hl]
+                    description: "HP +50".to_string(), // [!code ++] [!code focus] [!code hl]
+                    quantity: 1, // [!code ++] [!code focus] [!code hl]
+                } // [!code ++] [!code focus] [!code hl]
+            ], // [!code ++] [!code focus] [!code hl]
+            inventory_index: 0, // [!code ++] [!code focus] [!code hl]
+            inventory_slots: 4, // [!code ++] [!code focus] [!code hl]
+            loadout: Loadout { // [!code ++] [!code focus] [!code hl]
+                weapon: Weapon::Sword, // [!code ++] [!code focus] [!code hl]
+                passive: "ATK Up".to_string(), // [!code ++] [!code focus] [!code hl]
+            }, // [!code ++] [!code focus] [!code hl]
+            loadout_index: 0, // [!code ++] [!code focus] [!code hl]
+            loadout_slots: 2, // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+    } // [!code ++] [!code focus] [!code hl]
+} // [!code ++] [!code focus] [!code hl]
+
+
+#[turbo::serialize] // [!code ++] [!code focus] [!code hl]
+pub enum Weapon {  // [!code ++] [!code focus] [!code hl]
+    Sword, // [!code ++] [!code focus] [!code hl]
+    Gun, // [!code ++] [!code focus] [!code hl]
+} // [!code ++] [!code focus] [!code hl]
+
+#[turbo::serialize] // [!code ++] [!code focus] [!code hl]
+pub struct Item { // [!code ++] [!code focus] [!code hl]
+    pub name: String, // [!code ++] [!code focus] [!code hl]
+    pub description: String, // [!code ++] [!code focus] [!code hl]
+    pub quantity: u32, // [!code ++] [!code focus] [!code hl]
+} // [!code ++] [!code focus] [!code hl]
+
+#[turbo::serialize] // [!code ++] [!code focus] [!code hl]
+pub struct Loadout { // [!code ++] [!code focus] [!code hl]
+    pub weapon: Weapon, // [!code ++] [!code focus] [!code hl]
+    pub passive: String, // [!code ++] [!code focus] [!code hl]
+} // [!code ++] [!code focus] [!code hl]
+```
+By adding an `impl` for the `Player` we can initialize it in `GameState` with a `new()` function. We also have an `enum` for our `Weapon` and `structs` for the `Item` and `Loadout`. We'll be altering these values and adding more functions to our `impl` later!
+
+We also added in values like the index and slots for our `inventory` and `loadout`
+
+### `lib.rs` & `GameState` Initialization
+
+Now we can head into `lib.rs` and add the following fields to `GameState`
+
+```rs [src/lib.rs]
+use turbo::*;
+
+use state::*; 
+mod state; 
+use player::*; 
+mod player; 
+
+#[turbo::game]
+struct GameState {
+    screen: Screen, // [!code ++] [!code focus] [!code hl]
+    player: Player, // [!code ++] [!code focus] [!code hl]
+    frames: u32, // [!code ++] [!code focus] [!code hl]
+    spawned: bool, // [!code ++] [!code focus] [!code hl]
+    equip: bool, // [!code ++] [!code focus] [!code hl]
+}
+
+impl GameState {
+    pub fn new() -> Self {
+        // initialize your game state
+        Self { 
+            screen: Screen::Character, // [!code ++] [!code focus] [!code hl]
+            player: Player::new(), // [!code ++] [!code focus] [!code hl]
+            frames: 0,  // [!code ++] [!code focus] [!code hl]
+            spawned: false, // [!code ++] [!code focus] [!code hl]
+            equip: false, // [!code ++] [!code focus] [!code hl]
+        }
+    }
+    pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
+    }
+}
+```
+
+### Adding in the State Machine
+
+Now we'll add an empty state machine to the `state.rs` file. We'll use it to change between screens.
+
+```rs [src/state.rs]
+use crate::*; 
+
+#[turbo::serialize] // add this above structs and enums 
+pub enum Screen { 
+    Character, 
+    Inventory, 
+    Loadout, 
+} 
+
+pub fn state_machine(state: &mut GameState) { // [!code ++] [!code focus] [!code hl]
+    match state.screen { // [!code ++] [!code focus] [!code hl]
+        Screen::Character => { // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+        Screen::Inventory => { // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+        Screen::Loadout => { // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+    } // [!code ++] [!code focus] [!code hl]
+} // [!code ++] [!code focus] [!code hl]
+```
+And then we'll call the `state_machine` function from our update loop, so that it is always running.
+
+```rs [src/lib.rs]
+pub fn update(&mut self) {
+    // This is where your main game loop code goes
+    // The stuff in this block will run ~60x per sec
+    state_machine(self); // [!code ++] [!code focus] [!code hl]
+}
+```
+
+Make sure to save your project after adding it in.
+
+:::tip[Development Tip]
+Saving your project is done with `Cmd+S` (MacOS) or `Ctrl+S` (Windows).
+If you ever need to reset your game, you can do that with `Cmd+R` (MacOS) or `Ctrl+R` (Windows).
+
+It is smart to save after every step!
+:::
+
+### Adding in our player sprite
+
+Now that we have the foundation, we can work on the visuals! Lets start by displaying our character in the middle of the screen and start creating their character screen
+
+Inside your project directory, create a folder named `sprites`.
+
+```
+your-project-dir/       # Your project's root directory.
+├── sprites/            # The directory of your sprite assets. <!-- [!code focus] [!code hl] [!code ++] -->
+├── src/                # The directory of your code.
+│   └── lib.rs          # The main file for the game.
+|   └── state.rs        # The main file for your state machine.
+|   └── player.rs       # The main file for your player.
+├── Cargo.toml          # Rust project manifest.
+└── turbo.toml          # Turbo configuration.
+```
+Add the following files to the `sprites` directory.
+
+- [x] [player.aseprite](https://raw.githubusercontent.com/Stophii/character-sheet/master/sprites/player.aseprite)
+- [x] [potion.aseprite](https://raw.githubusercontent.com/Stophii/character-sheet/master/sprites/potion.aseprite)
+
+:::tip[Development Tip]
+You can see the player sprite is a `.aseprite` file. [Aseprite](https://www.aseprite.org/) is a great tool for pixel art, and Turbo has a deep integration that lets you read animation tags straight from the files. You can read more about it [here.](https://docs.turbo.computer/learn/api/sprites)
+:::
+
+### Character Screen
+
+Lets display our player character and start building a stat screen around him in the `Screen::Character` portion of our `state_machine`
+
+We just need one line of code to draw the sprite. Make sure to save after this, and now you should see the character on screen.
+
+```rs [src/state.rs]
+pub fn state_machine(state: &mut GameState) { 
+    match state.screen { 
+        Screen::Character => { 
+            sprite!("player#Idle"); // [!code ++] [!code focus] [!code hl]
+        } 
+        Screen::Inventory => { 
+        } 
+        Screen::Loadout => { 
+        } 
+    } 
+}
+```
+![Character displayed in one line of code](/character-sheet.png)
+
+We want to add a little bit more though. Go ahead add the following and lets break it down:
+
+```rs [src/state.rs]
+pub fn state_machine(state: &mut GameState) { 
+    match state.screen { 
+        Screen::Character => { 
+            state.frames += 1; // [!code ++] [!code focus] [!code hl]
+            let character = animation::get("character"); // [!code ++] [!code focus] [!code hl]
+            sprite!( // [!code ++] [!code focus] [!code hl]
+                animation_key = "character", // [!code ++] [!code focus] [!code hl]
+                default_sprite = "player#Idle", // [!code ++] [!code focus] [!code hl]
+            ); // [!code ++] [!code focus] [!code hl]
+            if !state.spawned { // [!code ++] [!code focus] [!code hl]
+                character.use_sprite("player#Spawn"); // [!code ++] [!code focus] [!code hl]
+                character.set_repeat(1); // [!code ++] [!code focus] [!code hl]
+                state.spawned = true; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+            rect!(x = 140, y = 5, w = 100, h = 130, color = 0x000000ff, border_color = 0xffffffff, border_size = 1, border_radius = 2); // [!code ++] [!code focus] [!code hl]
+            let stats = format!("{}'s stats\n\nHp: {}/{}\nAtk: {}\nCrit: {}%", state.player.name, state.player.max_hp, state.player.current_hp, state.player.atk, state.player.crit); // [!code ++] [!code focus] [!code hl]
+            text_box!(&stats,x = 142, y = 6, w = 98, h = 129); // [!code ++] [!code focus] [!code hl]  
+            if state.frames >= 360 { // [!code ++] [!code focus] [!code hl]
+                let choices = ["player#Jump", "player#Crouch", "player#Dash"]; // [!code ++] [!code focus] [!code hl]
+                let idx = (random::u32() as usize) % choices.len(); // [!code ++] [!code focus] [!code hl]
+                let anim = choices[idx]; // [!code ++] [!code focus] [!code hl]
+                character.use_sprite(anim); // [!code ++] [!code focus] [!code hl]
+                character.set_repeat(1); // [!code ++] [!code focus] [!code hl]
+                state.frames = 0; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+        } 
+        Screen::Inventory => { 
+        } 
+        Screen::Loadout => { 
+        } 
+    } 
+}
+```
+![Character sheet with stats and animation loop every 6 seconds](/stepcharacter.gif)
+
+Nice, now we have our character screen set up! The first part of our code sets up our sprite animation. Then we check if we've `spawned` yet, and if not, we use the `player#Spawn` animation, and set it to repeat 1 time.
+
+After that we use the `format!()` macro to build out the text that will go in our text box. Using `format!()` lets us grab the values from our variables and represent them as text. 
+
+Lastly, we made a system to change the character animation every 360 frames. Turbo's update loop runs at 60 frames per second, so 360 frames is 6 seconds. We put all the available animations into the `choices` array, and then choose one randomly and set that for our animation with `use_sprite`. Then we reset frames to 0 so we can start the count over again.
+
+### Adding State Machine controls
+
+Lets build out the inventory screen next. Our first step needs to be adding functionality to switch screens.
+
+```rs [src/lib.rs]
+    pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
+        state_machine(self);
+        if gamepad::get(0).a.just_pressed() { // [!code ++] [!code focus] [!code hl]
+            self.screen = Screen::Inventory; // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+        if gamepad::get(0).b.just_pressed() { // [!code ++] [!code focus] [!code hl]
+            self.screen = Screen::Character; // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+        if gamepad::get(0).x.just_pressed() { // [!code ++] [!code focus] [!code hl]
+            self.screen = Screen::Loadout; // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+    }
+```
+
+Now if we press `a` we can switch to the `Screen::Inventory` and if we press `b` we can switch back to `Screen::Character`. We added in pressing `x` to switch to `Screen::Loadout`.
+
+:::tip[Development Tip]
+Here is how the `gamepad` buttons map to the keyboard:
+
+| Gamepad | Keyboard (P1)       |
+| ------- | ------------------- |
+| a       | `z`                 |
+| b       | `x`                 |
+| x       | `c`                 |
+| y       | `v`                 |
+| start   | `space`             |
+| select  | `enter`             |
+
+Check out a full list in our [API](https://docs.turbo.computer/learn/api/gamepad) 
+:::
+
+### Adding `Tweens` and `Const`
+
+If this is your first time seeing or hearing about `tweens`, awesome! `Tweens` allow for smooth transitions of `f32` (decimal) values. They're easy to implement, and great for making your game look polished!
+
+We need one `Tween` instance in the `GameState` for each value we want to be able to manipulate. In total we are going to add 8 tweens and initialize them, as well as a `Const` to the top. `Consts` are just values that don't change.
+
+```rs [src/lib.rs]
+const POS: [(f32, f32); 4] = [(118.0,49.0), (154.0,34.0), (127.0,15.0), (101.0,34.0)]; // [!code ++] [!code focus] [!code hl]
+
+#[turbo::game]
+struct GameState {
+    screen: Screen,
+    player: Player, 
+    frames: u32, 
+    spawned: bool,
+    // x value tweens // [!code ++] [!code focus] [!code hl]
+    slot_one_x: Tween<f32>, // [!code ++] [!code focus] [!code hl]
+    slot_two_x: Tween<f32>, // [!code ++] [!code focus] [!code hl]
+    slot_three_x: Tween<f32>, // [!code ++] [!code focus] [!code hl]
+    slot_four_x: Tween<f32>, // [!code ++] [!code focus] [!code hl]
+    // y value tweens // [!code ++] [!code focus] [!code hl]
+    slot_one_y: Tween<f32>, // [!code ++] [!code focus] [!code hl]
+    slot_two_y: Tween<f32>, // [!code ++] [!code focus] [!code hl]
+    slot_three_y: Tween<f32>, // [!code ++] [!code focus] [!code hl]
+    slot_four_y: Tween<f32>, // [!code ++] [!code focus] [!code hl]
+}
+ 
+impl GameState {
+    pub fn new() -> Self {
+        // initialize your game state
+        Self { 
+            screen: Screen::Character, 
+            player: Player::new(),
+            frames: 0,  
+            spawned: false,
+            // x value tweens // [!code ++] [!code focus] [!code hl]
+            slot_one_x: Tween::new(118.0) // [!code ++] [!code focus] [!code hl]
+                .ease(Easing::EaseOutCubic) // [!code ++] [!code focus] [!code hl]
+                .duration(15), // [!code ++] [!code focus] [!code hl]
+            slot_two_x: Tween::new(155.0) // [!code ++] [!code focus] [!code hl]
+                .ease(Easing::EaseOutCubic) // [!code ++] [!code focus] [!code hl]
+                .duration(15), // [!code ++] [!code focus] [!code hl]
+            slot_three_x: Tween::new(128.0) // [!code ++] [!code focus] [!code hl]
+                .ease(Easing::EaseOutCubic) // [!code ++] [!code focus] [!code hl]
+                .duration(15), // [!code ++] [!code focus] [!code hl]
+            slot_four_x: Tween::new(102.0) // [!code ++] [!code focus] [!code hl]
+                .ease(Easing::EaseOutCubic) // [!code ++] [!code focus] [!code hl]
+                .duration(15), // [!code ++] [!code focus] [!code hl]
+            // y value tweens // [!code ++] [!code focus] [!code hl]
+            slot_one_y: Tween::new(49.0) // [!code ++] [!code focus] [!code hl]
+                .ease(Easing::EaseOutCubic) // [!code ++] [!code focus] [!code hl]
+                .duration(15), // [!code ++] [!code focus] [!code hl]
+            slot_two_y: Tween::new(35.0) // [!code ++] [!code focus] [!code hl]
+                .ease(Easing::EaseOutCubic) // [!code ++] [!code focus] [!code hl]
+                .duration(15), // [!code ++] [!code focus] [!code hl]
+            slot_three_y: Tween::new(15.0) // [!code ++] [!code focus] [!code hl]
+                .ease(Easing::EaseOutCubic) // [!code ++] [!code focus] [!code hl]
+                .duration(15), // [!code ++] [!code focus] [!code hl]
+            slot_four_y: Tween::new(35.0) // [!code ++] [!code focus] [!code hl]
+                .ease(Easing::EaseOutCubic) // [!code ++] [!code focus] [!code hl]
+                .duration(15), // [!code ++] [!code focus] [!code hl]
+        }
+    }
+    pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
+        state_machine(self);
+
+        if gamepad::get(0).a.just_pressed() {
+            self.screen = Screen::Inventory;
+        } 
+
+        if gamepad::get(0).b.just_pressed() {
+            self.screen = Screen::Character;
+        }
+
+        if gamepad::get(0).x.just_pressed() {
+            self.screen = Screen::Loadout;
+        }
+    }
+}
+```
+The `Tweens` will give our inventory screen a lot of personality. The `Const` represent where our inventory slots will be located on the canvas. Now we can build out that `Screen::Inventory`
+
+:::tip[Development Tip]
+[`Tweens`](https://docs.turbo.computer/learn/api/tween) need an initial starting value as `f32`, an `easing`, and a duration as `usize` to initialize. Feel free to tweak the `duration` and `easing` to suit your preference!
+:::
+
+### Inventory Screen
+
+Inside our state machine in `state.rs` add the following:
+
+```rs [src/state.rs]
+    Screen::Character => { 
+        camera::reset(); // [!code ++] [!code focus] [!code hl]
+        state.frames += 1;
+
+        let character = animation::get("character");
+
+        sprite!(
+            animation_key = "character",
+            default_sprite = "player#Idle",
+        );
+
+        if !state.spawned {
+            character.use_sprite("player#Spawn");
+            character.set_repeat(1);
+            state.spawned = true;
+        }
+
+        rect!(x = 140, y = 5, w = 100, h = 130, color = 0x000000ff, border_color = 0xffffffff, border_size = 1, border_radius = 2);
+        let stats = format!("{}'s stats\n\nHp: {}/{}\nAtk: {}\nCrit: {}%", state.player.name, state.player.current_hp, state.player.max_hp, state.player.atk, state.player.crit);
+        text_box!(&stats,x = 142, y = 6, w = 98, h = 129);
+
+        match state.player.loadout.weapon {
+            Weapon::Sword => { state.player.atk = 6.0 }
+            Weapon::Gun => { state.player.crit = 20.0}
+        }
+        
+        if state.frames >= 360 {
+            let choices = ["player#Jump", "player#Crouch", "player#Dash"];
+
+            let idx = (random::u32() as usize) % choices.len();
+            let anim = choices[idx];
+
+            character.use_sprite(anim);
+            character.set_repeat(1);
+
+            state.frames = 0;
+        }
+    } 
+    Screen::Inventory => {
+        camera::set_xyz(110, 50, 2.0); // [!code ++] [!code focus] [!code hl]
+        // define the slots and currently selected slot // [!code ++] [!code focus] [!code hl]
+        let len = POS.len(); // [!code ++] [!code focus] [!code hl]
+        let idx = state.player.inventory_index % len; // [!code ++] [!code focus] [!code hl]
+        let p1 = POS[(0 + idx) % len]; // [!code ++] [!code focus] [!code hl]
+        let p2 = POS[(1 + idx) % len]; // [!code ++] [!code focus] [!code hl]
+        let p3 = POS[(2 + idx) % len]; // [!code ++] [!code focus] [!code hl]
+        let p4 = POS[(3 + idx) % len]; // [!code ++] [!code focus] [!code hl]
+        // simplify the .get() of tween // [!code ++] [!code focus] [!code hl]
+        let one_x = state.slot_one_x.get(); // [!code ++] [!code focus] [!code hl]
+        let one_y = state.slot_one_y.get(); // [!code ++] [!code focus] [!code hl]
+        let two_x = state.slot_two_x.get(); // [!code ++] [!code focus] [!code hl]
+        let two_y = state.slot_two_y.get(); // [!code ++] [!code focus] [!code hl]
+        let three_x = state.slot_three_x.get(); // [!code ++] [!code focus] [!code hl]
+        let three_y = state.slot_three_y.get(); // [!code ++] [!code focus] [!code hl]
+        let four_x = state.slot_four_x.get(); // [!code ++] [!code focus] [!code hl]
+        let four_y = state.slot_four_y.get(); // [!code ++] [!code focus] [!code hl] 
+        // pair the x and y into one slot // [!code ++] [!code focus] [!code hl]
+        let slot_one = (one_x, one_y); // [!code ++] [!code focus] [!code hl]
+        let slot_two = (two_x, two_y); // [!code ++] [!code focus] [!code hl]
+        let slot_three = (three_x, three_y); // [!code ++] [!code focus] [!code hl]
+        let slot_four = (four_x, four_y); // [!code ++] [!code focus] [!code hl]
+        // alter the size of the square according to if it's in the "front" slot // [!code ++] [!code focus] [!code hl]
+        let size_one = if state.player.inventory_index == 0 {(36, 36)} else {(17,17)}; // [!code ++] [!code focus] [!code hl]
+        let size_two = if state.player.inventory_index == 3 {(36, 36)} else {(17,17)}; // [!code ++] [!code focus] [!code hl]
+        let size_three = if state.player.inventory_index == 2 {(36, 36)} else {(17,17)}; // [!code ++] [!code focus] [!code hl]
+        let size_four = if state.player.inventory_index == 1 {(36, 36)} else {(17,17)}; // [!code ++] [!code focus] [!code hl]
+        // set the tween based on state.player.inventory_index // [!code ++] [!code focus] [!code hl]
+        state.slot_one_x.set(p1.0); state.slot_one_y.set(p1.1); // [!code ++] [!code focus] [!code hl]
+        state.slot_two_x.set(p2.0); state.slot_two_y.set(p2.1); // [!code ++] [!code focus] [!code hl]
+        state.slot_three_x.set(p3.0); state.slot_three_y.set(p3.1); // [!code ++] [!code focus] [!code hl]
+        state.slot_four_x.set(p4.0); state.slot_four_y.set(p4.1); // [!code ++] [!code focus] [!code hl]
+        // draw it! // [!code ++] [!code focus] [!code hl]
+        rect!(xy = slot_one, wh = size_one, color = 0xffffff77, border_radius = 4); // [!code ++] [!code focus] [!code hl]
+        rect!(xy = slot_two, wh = size_two, color = 0xffffff44, border_radius = 4); // [!code ++] [!code focus] [!code hl]
+        rect!(xy = slot_three, wh = size_three, color = 0xffffff44, border_radius = 4); // [!code ++] [!code focus] [!code hl]
+        rect!(xy = slot_four, wh = size_four, color = 0xffffff44, border_radius = 4); // [!code ++] [!code focus] [!code hl]
+        sprite!("potion#HP Charge", xy = if state.player.inventory_index == 0 {(slot_one.0 + 1.0, slot_one.1+ 1.0) } else { slot_one }, scale = if state.player.inventory_index == 0 {1.0} else {0.5}); // [!code ++] [!code focus] [!code hl]
+        sprite!( // [!code ++] [!code focus] [!code hl]
+            animation_key = "character", // [!code ++] [!code focus] [!code hl]
+            default_sprite = "player#Idle", // [!code ++] [!code focus] [!code hl]
+        ); // [!code ++] [!code focus] [!code hl]
+        let debug = match state.player.inventory.get(state.player.inventory_index) { // [!code ++] [!code focus] [!code hl]
+            Some(item) => format!("{} x{}\n{}", item.name, item.quantity, item.description), // [!code ++] [!code focus] [!code hl]
+            None => "".to_string(), // [!code ++] [!code focus] [!code hl]
+        }; // [!code ++] [!code focus] [!code hl]
+        match state.player.inventory_index { // [!code ++] [!code focus] [!code hl]
+            0 => {text!(&debug, x = 47, y = 15)}, // [!code ++] [!code focus] [!code hl]
+            _ => {text!("Empty slot...", x = 50, y = 15)}, // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+    } 
+```
+
+And add the controls to `lib.rs`
+
+```rs [src/lib.rs]
+    pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
+        state_machine(self);
+
+        if gamepad::get(0).a.just_pressed() {
+            self.screen = Screen::Inventory;
+        } 
+
+        if gamepad::get(0).b.just_pressed() {
+            self.screen = Screen::Character;
+        }
+
+        if gamepad::get(0).x.just_pressed() {
+            self.screen = Screen::Loadout;
+        }
+
+        if gamepad::get(0).left.just_pressed() { // [!code ++] [!code focus] [!code hl]
+            self.player.inventory_index = (self.player.inventory_index + self.player.inventory_slots - 1) % self.player.inventory_slots; // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+
+        if gamepad::get(0).right.just_pressed() { // [!code ++] [!code focus] [!code hl]
+            self.player.inventory_index = (self.player.inventory_index + 1) % self.player.inventory_slots; // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+    }
+```
+
+![Inventory screen completed with character and tweening](/stepinventory.gif)
+
+We make use of [`camera::set_xyz`](https://docs.turbo.computer/learn/api/camera) [`tween`](https://docs.turbo.computer/learn/api/tween) and of course [`sprite!`](https://docs.turbo.computer/learn/api/sprites) and [`rect!`](https://docs.turbo.computer/learn/api/rectangles) again.
+
+The `Tweens` allow for smooth movement of the `x` and `y` values of our squares which are our inventory slots. We also change the size of each square if it is in the front slot. We also change the size of the item.
+
+The controls change the value of `state.inventory_index` and we change the values of our `tweens` based on what that inventory index is. We have wrapping as well so we never hit an "end".
+
+Zooming in with the `camera` allows you to see our character's face and item sprites as the player looks through their inventory. It also makes the item descriptions and names larger and easier to view. Our main character's idle animation has them blink, which is a nice touch while browsing the inventory system.
+
+
+Next up is the `Screen::Loadout`
+
+### Loadout Screen
+
+Add the following code inside the `Screen::Loadout` of our `state_machine`
+
+```rs [src/state.rs]
+    Screen::Loadout => { 
+        let character = animation::get("character"); // [!code ++] [!code focus] [!code hl]
+        let equipcolorsword = if matches!(state.player.loadout.weapon, Weapon::Sword) { 0x00FFFFFF } else { 0xFFFFFFFF }; // [!code ++] [!code focus] [!code hl]
+        let equipcolorgun = if matches!(state.player.loadout.weapon, Weapon::Gun) { 0x00FFFFFF } else { 0xFFFFFFFF }; // [!code ++] [!code focus] [!code hl]
+        sprite!( // [!code ++] [!code focus] [!code hl]
+            animation_key = "character", // [!code ++] [!code focus] [!code hl]
+            default_sprite = "player#Idle", // [!code ++] [!code focus] [!code hl]
+        ); // [!code ++] [!code focus] [!code hl]
+        rect!(x = 140, y = 5, w = 100, h = 60, color = 0x000000ff, border_color = 0xffffffff, border_size = 1, border_radius = 2); // [!code ++] [!code focus] [!code hl]
+        let stats = format!("{}'s loadout\n\nWpn: {:?}\n\nPassive: {}", state.player.name, state.player.loadout.weapon, state.player.loadout.passive); // [!code ++] [!code focus] [!code hl]
+        text_box!(&stats,x = 142, y = 6, w = 98, h = 129); // [!code ++] [!code focus] [!code hl]
+        let sword = Bounds::new(140, 80, 40, 30); // [!code ++] [!code focus] [!code hl]
+        let gun = Bounds::new(200, 80, 40, 30); // [!code ++] [!code focus] [!code hl]
+        rect!(bounds = sword, color = 0x000000ff, border_color = equipcolorsword, border_size = 1, border_radius = 2); // [!code ++] [!code focus] [!code hl]
+        rect!(bounds = gun, color = 0x000000ff, border_color = equipcolorgun, border_size = 1, border_radius = 2); // [!code ++] [!code focus] [!code hl]
+        text_box!("Sword", x = sword.x(), y = sword.y() + 10, w = sword.w(), align = "center"); // [!code ++] [!code focus] [!code hl]
+        text_box!("Gun", x = gun.x(), y = gun.y() + 10, w = gun.w(), align = "center"); // [!code ++] [!code focus] [!code hl]
+        if state.player.loadout_index == 1 { // [!code ++] [!code focus] [!code hl]
+            rect!(x = 215, y = 67, w = 10, h = 10, rotation = 45); // [!code ++] [!code focus] [!code hl]
+        } else { // [!code ++] [!code focus] [!code hl]
+            rect!(x = 155, y = 67, w = 10, h = 10, rotation = 45); // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+        if state.equip { // [!code ++] [!code focus] [!code hl]
+            match state.player.loadout_index { // [!code ++] [!code focus] [!code hl]
+                0 => { // [!code ++] [!code focus] [!code hl]
+                    character.use_sprite("player#Sword"); // [!code ++] [!code focus] [!code hl]
+                    character.set_repeat(1); // [!code ++] [!code focus] [!code hl]
+                    state.equip = false; // [!code ++] [!code focus] [!code hl]
+                    state.player.loadout.weapon = Weapon::Sword; // [!code ++] [!code focus] [!code hl]
+                    state.player.loadout.passive = "ATK up".to_string(); // [!code ++] [!code focus] [!code hl]
+                    state.player.atk = 6.0; // [!code ++] [!code focus] [!code hl]
+                    state.player.crit = 2.0; // [!code ++] [!code focus] [!code hl]
+                }, // [!code ++] [!code focus] [!code hl]
+                1 => { // [!code ++] [!code focus] [!code hl]
+                    character.use_sprite("player#Gun"); // [!code ++] [!code focus] [!code hl]
+                    character.set_repeat(1); // [!code ++] [!code focus] [!code hl]
+                    state.equip = false; // [!code ++] [!code focus] [!code hl]
+                    state.player.loadout.weapon = Weapon::Gun; // [!code ++] [!code focus] [!code hl]
+                    state.player.loadout.passive = "CRIT up".to_string(); // [!code ++] [!code focus] [!code hl]
+                    state.player.atk = 4.0; // [!code ++] [!code focus] [!code hl]
+                    state.player.crit = 20.0; // [!code ++] [!code focus] [!code hl]
+                } // [!code ++] [!code focus] [!code hl]
+                _ => { // [!code ++] [!code focus] [!code hl]
+// [!code ++] [!code focus] [!code hl]
+                } // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+        rect!(x = 140, y = 65, w = 100, h = 6, color = 0x000000ff); // [!code ++] [!code focus] [!code hl]
+    } 
+```
+
+Now we need to spruce up our controls in the `lib.rs`:
+
+```rs [src/lib.rs]
+pub fn update(&mut self) {
+    // This is where your main game loop code goes
+    // The stuff in this block will run ~60x per sec
+    state_machine(self);
+    match self.screen { // [!code ++] [!code focus] [!code hl]
+        Screen::Character => { // [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).a.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.screen = Screen::Inventory; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).x.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.screen = Screen::Loadout; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+        }, // [!code ++] [!code focus] [!code hl]
+        Screen::Inventory => { // [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).left.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.player.inventory_index = (self.player.inventory_index + self.player.inventory_slots - 1) % self.player.inventory_slots; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+// [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).right.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.player.inventory_index = (self.player.inventory_index + 1) % self.player.inventory_slots; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+// [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).b.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.screen = Screen::Character; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+        }, // [!code ++] [!code focus] [!code hl]
+        Screen::Loadout => { // [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).right.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.player.loadout_index = (self.player.loadout_index + self.player.loadout_slots - 1) % self.player.loadout_slots; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+// [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).left.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.player.loadout_index = (self.player.loadout_index + 1) % self.player.loadout_slots; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+// [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).a.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.equip = true; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+// [!code ++] [!code focus] [!code hl]
+            if gamepad::get(0).b.just_pressed() { // [!code ++] [!code focus] [!code hl]
+                self.screen = Screen::Character; // [!code ++] [!code focus] [!code hl]
+            } // [!code ++] [!code focus] [!code hl]
+        } // [!code ++] [!code focus] [!code hl]
+    } // [!code ++] [!code focus] [!code hl]
+}
+```
+![Loadout screen completed with character playing animation specific to weapon selected](/steploadout.gif)
+
+Awesome! Now we have controls that are specific to each state. We can enter our `Screen::Inventory` with `a` and we can leave with `b`. We can enter our `Screen::Loadout` with `x` and leave that screen with `b`.
+
+On the loadout screen itself we can use the arrow keys to switch between sword and gun and equip it with `a`. After equipping our weapon of choice we get an animation to reflect what we have equipped as well as a blue highlight.
+
+We made use of `bounds` for the sword and gun UI choices. `Bounds` is a useful tool when making your game work on multiple resolutions as well as adding touch/tap controls!
+
+## Conclusion
+
+You have made a working character sheet! you used a lot of tools that will be valuable to master like the `state machine`, `tweening`, and `bounds`. You used the basics like `rect!` `sprite!` and `text_box!`. 
+
+You can use this as the start of an RPG game! If you want to do more, I suggest the following:
+
+:::warning[Quest]
+- [ ] Add your own sprites to change the main character
+- [ ] Fill out the rest of the inventory with items instead of empty slots
+- [ ] Add another weapon option
+- [ ] Tween the size of the sprites in the inventory menu
+- [ ] Add indicators for controls
+- [ ] Add a title screen!
+:::
+
+## Next Steps
+
+- Complete the `Quest` above, post your results in the [Turbo discord](https://discord.com/invite/makegamesfast)!
+- Try your hand at the [pancake cat tutorial](/learn/tutorials/pancake-cat)

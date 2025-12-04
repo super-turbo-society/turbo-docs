@@ -1,0 +1,107 @@
+# Save and Load
+
+## Overview
+
+Use `Save` and `Load` to store data from Turbo into local storage, and retrieve it the next time the same user plays the game. 
+
+### `local::save()`
+
+Saves your game to the browser's local storage by converting data into a `borsh::vec`. Any data that is used in your Turbo game can be converted to `borsh`, you don't need to worry about matching a certain type.
+
+```rust
+local::save(data: &[u8]) -> Result<i32, i32>
+```
+
+### `local::load()`
+
+Loads your game by reading the `borsh::vec` created by `local::save`.
+
+```rust
+local::load() -> Result<Vec<u8>, i32> 
+```
+
+## Usage
+
+### Saving
+
+Add this function into your `Gamestate's` `impl` to save the entire `Gamestate`:
+
+```rust
+pub fn save_local(&self) {
+    //serialize the GameState
+    let data = borsh::to_vec(self);
+    if let Ok(d) = data {
+        let _ = local::save(&d);
+    } else {
+        log!("error saving");
+    }
+}
+```
+
+Call this function whenever you require a save:
+
+```rust
+self.save_local();
+```
+
+### Loading
+
+```rust
+pub fn load_local() -> GameState {
+    let data = local::load().unwrap_or_else(|_| vec![]);
+    match borsh::from_slice(&data) {
+        Ok(state) => return state,
+        Err(_) => {
+            log!("error loading game state");
+            return GameState::new();
+        }
+    }
+}
+```
+
+Call this function whenever you require a load to get the stored `GameState`:
+
+```rust
+*self = GameState::load_local();
+```
+
+### Autoloading On Boot
+
+When booting up your game if data exists it will be loaded, if not it will create a new save.
+
+```rust
+use turbo::*;
+
+#[turbo::game]
+struct GameState {
+    // Add fields here
+}
+impl GameState {
+
+    pub fn new() -> Self { 
+        // initialize your game state 
+        GameState::load_local() 
+    }
+
+    pub fn create() -> Self { 
+        Self { 
+        } 
+    } 
+
+    pub fn update(&mut self) {
+        // This is where your main game loop code goes
+        // The stuff in this block will run ~60x per sec
+        text!("Hello, world!!!");
+    }
+}
+```
+
+### Delete Saved Data
+
+Wipe the `GameState`, returning it back to its defaulted values.
+
+```rust
+*self = GameState::create();
+```
+
+Save after doing this to wipe your previous data.

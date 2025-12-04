@@ -92,6 +92,7 @@ export default defineConfig({
             text: "Hello, World!",
             link: "/learn/tutorials/hello-world",
           },
+
           {
             text: "Pancake Cat",
             link: "/learn/tutorials/pancake-cat",
@@ -103,6 +104,10 @@ export default defineConfig({
           {
             text: "Space Shooter",
             link: "/learn/tutorials/space-shooter-part-1",
+          },
+          {
+            text: "Character Sheet",
+            link: "/learn/tutorials/character-sheet",
           },
           // {
           //   text: "Space Shooter (Part 2)",
@@ -166,6 +171,7 @@ export default defineConfig({
           { text: "Circles", link: "/learn/api/circles" },
           { text: "Background Color", link: "/learn/api/clear" },
           { text: "Ellipses", link: "/learn/api/ellipses" },
+          { text: "Events", link: "/learn/api/events" },
           { text: "Gamepad", link: "/learn/api/gamepad" },
           { text: "Keyboard", link: "/learn/api/keyboard" },
           { text: "Lines", link: "/learn/api/lines" },
@@ -175,6 +181,7 @@ export default defineConfig({
           { text: "Pointer", link: "/learn/api/pointer" },
           { text: "Randomness", link: "/learn/api/randomness" },
           { text: "Rectangles", link: "/learn/api/rectangles" },
+          { text: "Save and Load", link: "/learn/api/save" },
           { text: "Sprites", link: "/learn/api/sprites" },
           { text: "Text", link: "/learn/api/text" },
           { text: "Text Boxes", link: "/learn/api/text_box" },
